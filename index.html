@@ -56,33 +56,42 @@ header .wrap{display:flex;align-items:center;gap:16px;padding:10px max(5vw,16px)
 .menubtn[aria-expanded=true] .bars i:nth-child(3){top:5px;transform:rotate(-45deg)}
 nav.menu{position:absolute;left:0;right:0;top:100%;background:var(--bg);border-bottom:2px solid var(--line);box-shadow:0 24px 40px -12px rgb(0 0 0/.25);
  opacity:0;visibility:hidden;transform:translateY(-10px);transition:opacity .2s,transform .25s,visibility 0s .25s;max-height:calc(100vh - 70px);overflow:auto}
+nav.menu:focus{outline:none}
 nav.menu.open{opacity:1;visibility:visible;transform:none;transition:opacity .2s,transform .25s}
-.mgrid{max-width:1240px;margin:0 auto;padding:clamp(24px,3vw,40px) max(5vw,16px);display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,.8fr) minmax(0,1fr);gap:clamp(20px,3vw,48px)}
-.mlabel{font:700 13px Archivo,sans-serif;text-transform:uppercase;color:var(--soft);margin:0 0 10px}
-.mbig{list-style:none;margin:0;padding:0}
-.mbig a{display:flex;align-items:center;gap:16px;font:900 clamp(30px,3.6vw,46px)/1.1 Archivo,sans-serif;text-transform:uppercase;text-decoration:none;padding:8px 0;border-bottom:2px solid var(--hair)}
-.mbig a small{margin-left:auto;font:500 14px "IBM Plex Sans",sans-serif;text-transform:none;color:var(--soft);text-align:right}
-.mbig a svg{width:26px;height:26px;flex:none;fill:none;stroke:currentColor;stroke-width:2.5;opacity:0;transform:translateX(-8px);transition:opacity .15s,transform .15s}
-.mbig a:hover,.mbig a:focus-visible{color:var(--red2)}
-.mbig a:hover svg,.mbig a:focus-visible svg{opacity:1;transform:none}
+.mgrid{max-width:1240px;margin:0 auto;padding:clamp(22px,3vw,36px) max(5vw,16px);display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,.7fr) minmax(0,.9fr);gap:clamp(20px,3vw,44px);align-items:start}
+.mlabel{font:700 13px Archivo,sans-serif;text-transform:uppercase;letter-spacing:.02em;color:var(--soft);margin:0 0 12px}
+.mtiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;list-style:none;margin:0;padding:0}
+.mtiles li:first-child{grid-column:1/-1}
+.mtile{position:relative;display:flex;flex-direction:column;gap:2px;height:100%;border:2px solid var(--line);border-radius:16px;padding:14px 44px 14px 18px;text-decoration:none;transition:background .15s,color .15s,transform .15s}
+.mtile b{font:900 clamp(20px,1.9vw,26px)/1.05 Archivo,sans-serif;text-transform:uppercase}
+.mtile span{font-size:14px;color:var(--soft)}
+.mtile svg{position:absolute;right:16px;top:50%;width:22px;height:22px;margin-top:-11px;fill:none;stroke:currentColor;stroke-width:2.5;transition:transform .15s}
+.mtile:hover,.mtile:focus-visible{background:var(--ink);color:var(--bg);transform:translateY(-1px)}
+.mtile:hover span,.mtile:focus-visible span{color:inherit;opacity:.75}
+.mtile:hover svg{transform:translateX(3px)}
+.mtile.feat{background:var(--red);border-color:var(--red);color:var(--cream);padding-block:18px}
+.mtile.feat b{font-size:clamp(26px,2.6vw,34px)}
+.mtile.feat span{color:#f1dcdc}
+.mtile.feat:hover{background:var(--ink);border-color:var(--ink)}
 .msmall{list-style:none;margin:0;padding:0}
-.msmall a{display:block;font-weight:600;font-size:17px;text-decoration:none;padding:9px 0}
-.msmall a:hover{color:var(--red2);text-decoration:underline}
-.mcard{background:var(--red);color:var(--cream);border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:12px}
-.mcard .mlabel{color:#f1dcdc}
-.mcard h3{font-size:26px}
-.mcard a.lst{display:flex;align-items:center;gap:12px;background:rgb(243 239 231/.12);border:1.5px solid rgb(243 239 231/.35);border-radius:14px;padding:10px 14px;text-decoration:none;font-weight:600}
-.mcard a.lst:hover{background:var(--cream);color:#85272C}
+.msmall li+li{border-top:1px solid var(--hair)}
+.msmall a{display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:16px;text-decoration:none;padding:11px 0}
+.msmall a::after{content:"→";opacity:.35;transition:opacity .15s,transform .15s}
+.msmall a:hover{color:var(--red2)}.msmall a:hover::after{opacity:1;transform:translateX(3px)}
+.mcard{background:var(--ink);color:var(--bg);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.mcard .mlabel{color:#e9a9ad;margin:0}
+.mcard h3{font-size:22px;margin:0 0 4px}
+.mcard a.lst{display:flex;align-items:center;gap:12px;border:1.5px solid rgb(243 239 231/.25);border-radius:12px;padding:10px 14px;text-decoration:none;font-weight:600;font-size:15px}
+.mcard a.lst:hover{background:var(--red);border-color:var(--red)}
 .mcard a.lst svg{width:20px;height:20px;fill:currentColor;flex:none}
-.mcard .cta{margin-top:4px;background:var(--cream);color:#85272C;border-color:var(--cream);justify-content:center}
-nav.menu.open .mbig li{animation:mIn .35s both}
-nav.menu.open .mbig li:nth-child(2){animation-delay:.03s}nav.menu.open .mbig li:nth-child(3){animation-delay:.06s}nav.menu.open .mbig li:nth-child(4){animation-delay:.09s}nav.menu.open .mbig li:nth-child(5){animation-delay:.12s}
+nav.menu.open .mtiles li,nav.menu.open .msmall li,nav.menu.open .mcard{animation:mIn .3s both}
+nav.menu.open .mtiles li:nth-child(2){animation-delay:.03s}nav.menu.open .mtiles li:nth-child(3){animation-delay:.06s}nav.menu.open .mtiles li:nth-child(4){animation-delay:.09s}nav.menu.open .mtiles li:nth-child(5){animation-delay:.12s}
 @keyframes mIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .mscrim{position:fixed;inset:0;background:rgb(0 0 0/.35);opacity:0;visibility:hidden;transition:opacity .2s,visibility 0s .2s;z-index:19}
 .mscrim.open{opacity:1;visibility:visible;transition:opacity .2s}
-@media(max-width:860px){.mgrid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.mgrid>div:first-child{grid-column:1/-1}}
-@media(max-width:560px){.mgrid{grid-template-columns:minmax(0,1fr)}.mbig a small{display:none}}
-@media (prefers-reduced-motion:reduce){nav.menu,nav.menu.open,.mscrim,.menubtn .bars i{transition:none}nav.menu.open .mbig li{animation:none}}
+@media(max-width:900px){.mgrid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.mgrid>div:first-child{grid-column:1/-1}}
+@media(max-width:560px){.mgrid{grid-template-columns:minmax(0,1fr)}.mtiles{grid-template-columns:minmax(0,1fr)}}
+@media (prefers-reduced-motion:reduce){nav.menu,nav.menu.open,.mscrim,.menubtn .bars i{transition:none}nav.menu.open .mtiles li,nav.menu.open .msmall li,nav.menu.open .mcard{animation:none}}
 
 /* hero */
 .hero{position:relative;border-bottom:2px solid var(--line);overflow:hidden}
@@ -352,9 +361,9 @@ footer small{opacity:.7}
   <button class="cartbtn" id="cartbtn" aria-label="Open cart"><svg viewBox="0 0 24 24"><path d="M3 4h2l2.4 11h11L21 8H6.2"/><circle cx="9" cy="19.5" r="1.5"/><circle cx="17" cy="19.5" r="1.5"/></svg><b id="count"></b></button>
   <button class="menubtn" id="menubtn" aria-expanded="false" aria-controls="menu"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><span id="menulbl">Menu</span></button>
  </div>
- <nav class="menu" id="menu" aria-label="Main">
+ <nav class="menu" id="menu" aria-label="Main" tabindex="-1">
   <div class="mgrid">
-   <div><p class="mlabel">Explore</p><ul class="mbig"><li><a href="#episodes">Episodes<small>Watch and listen</small><svg viewBox="0 0 34 34"><path d="M6 17h22M19 8l9 9-9 9"/></svg></a></li><li><a href="#store">Shop<small>Signature Hats</small><svg viewBox="0 0 34 34"><path d="M6 17h22M19 8l9 9-9 9"/></svg></a></li><li><a href="advertise.html">Advertise<small>Book ad spots</small><svg viewBox="0 0 34 34"><path d="M6 17h22M19 8l9 9-9 9"/></svg></a></li><li><a href="guest.html">Be a guest<small>Come on the show</small><svg viewBox="0 0 34 34"><path d="M6 17h22M19 8l9 9-9 9"/></svg></a></li><li><a href="#host">The host<small>Meet Scott Beck</small><svg viewBox="0 0 34 34"><path d="M6 17h22M19 8l9 9-9 9"/></svg></a></li></ul></div>
+   <div><p class="mlabel">Explore</p><ul class="mtiles"><li><a class="mtile feat" href="#episodes"><b>Episodes</b><span>Watch and listen to the latest</span><svg viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a></li><li><a class="mtile" href="#store"><b>Shop</b><span>Signature Hats</span><svg viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a></li><li><a class="mtile" href="advertise.html"><b>Advertise</b><span>Book ad spots</span><svg viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a></li><li><a class="mtile" href="guest.html"><b>Be a guest</b><span>Come on the show</span><svg viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a></li><li><a class="mtile" href="#host"><b>The host</b><span>Meet Scott Beck</span><svg viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a></li></ul></div>
    <div><p class="mlabel">More</p><ul class="msmall">
     <li><a href="https://www.herdreportpodcast.com/guests/">Past guests</a></li>
     <li><a href="https://www.herdreportpodcast.com/blog/">Blog</a></li>
@@ -362,7 +371,7 @@ footer small{opacity:.7}
     <li><a href="https://www.herdreportpodcast.com/reviews/new/">Leave a review</a></li>
     <li><a href="https://www.herdreportpodcast.com/contact/">Contact</a></li>
    </ul></div>
-   <div class="mcard"><p class="mlabel" style="margin:0">Watch &amp; listen</p><h3>Never miss an episode</h3>
+   <div class="mcard"><p class="mlabel">Watch &amp; listen</p><h3>Never miss an episode</h3>
     <a class="lst" href="https://www.youtube.com/@herdreportpodcast"><svg><use href="#i-yt"/></svg>YouTube</a>
     <a class="lst" href="https://open.spotify.com/show/37IlQvHObaNPHxXoUcjEyz"><svg><use href="#i-sp"/></svg>Spotify</a>
     <a class="lst" href="https://podcasts.apple.com/us/podcast/id1835474334?mt=2&amp;ls=1"><svg><use href="#i-ap"/></svg>Apple Podcasts</a>
@@ -656,7 +665,7 @@ fetch('data/stats.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(d=>
 }).catch(()=>{});
 const btn=document.getElementById('menubtn'),menu=document.getElementById('menu');
 const ms=document.getElementById('mscrim'),lbl=document.getElementById('menulbl');
-const setMenu=o=>{menu.classList.toggle('open',o);ms.classList.toggle('open',o);btn.setAttribute('aria-expanded',o);lbl.textContent=o?'Close':'Menu';if(o)setTimeout(()=>menu.querySelector('a').focus({preventScroll:true}),60)};
+const setMenu=o=>{menu.classList.toggle('open',o);ms.classList.toggle('open',o);btn.setAttribute('aria-expanded',o);lbl.textContent=o?'Close':'Menu';if(o)setTimeout(()=>menu.focus({preventScroll:true}),60)};
 btn.addEventListener('click',()=>setMenu(!menu.classList.contains('open')));
 menu.addEventListener('click',e=>{if(e.target.closest('a'))setMenu(false)});
 ms.addEventListener('click',()=>setMenu(false));

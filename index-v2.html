@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Herd Report Podcast</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: loud, friendly, ranch-radio poster, like a show that's having fun
+   IDEA: a cattle brand burned into a sale-barn poster; the HR brand is the show's "ring"
+   PICTURE: a big rotating brand stamp in the hero, a drawn Signature Hat in merch
+   COLOUR and TYPE: Herd Report red, ink, cream; Archivo 900 shouting, IBM Plex Sans talking
+   LAYOUT: utility bar, header, hero, merch, host, episodes, closing links, footer (New Heights order) */
+:root{color-scheme:light;
+--bg:#F3EFE7;--ink:#0B0B0D;--red:#85272C;--red2:#85272C;
+--card:#FFFFFF;--line:#0B0B0D;--soft:#5a5450;--cream:#F3EFE7}
+
+*{box-sizing:border-box;min-width:0}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "IBM Plex Sans",system-ui,sans-serif;overflow-x:clip}
+a{color:inherit}
+h1,h2,h3,.disp{font-family:Archivo,Impact,sans-serif;font-weight:900;line-height:1.02;text-transform:uppercase;margin:0;text-wrap:balance}
+.wrap{max-width:1240px;margin:0 auto}
+.band{padding:clamp(40px,6vw,88px) max(5vw,16px)}
+:focus-visible{outline:3px solid var(--red2);outline-offset:3px}
+
+/* utility bar */
+.util{background:var(--red);color:var(--cream);font-size:14px;font-weight:500}
+.util .wrap{display:flex;flex-wrap:wrap;gap:4px 22px;justify-content:center;padding:8px 16px}
+.util a{text-decoration:none;padding:4px 0}.util a:hover{text-decoration:underline}
+
+/* header */
+header{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:2px solid var(--line)}
+header .wrap{display:flex;align-items:center;gap:16px;padding:10px max(5vw,16px)}
+.acct{display:flex;align-items:center;gap:8px}.acct[hidden]{display:none}
+.acct a,.acct .so{font:700 13px Archivo,sans-serif;text-transform:uppercase;border:2px solid var(--line);border-radius:999px;height:40px;padding:0 14px;display:inline-flex;align-items:center;background:none;color:inherit;text-decoration:none;cursor:pointer;white-space:nowrap}
+.acct a{background:var(--red);border-color:var(--red);color:var(--cream)}
+.acct .so:hover{background:var(--ink);color:var(--bg)}
+@media(max-width:600px){.acct{display:none}}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;margin-right:auto}
+.logo img{height:40px;width:auto;flex:none}
+.dk{display:none}
+
+
+.flogo img{height:64px;width:auto}
+.logo b{font:900 22px/1 Archivo,sans-serif;text-transform:uppercase;letter-spacing:-.01em}
+.socials{display:flex;gap:4px}
+.socials a{display:grid;place-items:center;width:44px;height:44px;border-radius:50%}
+.socials a:hover{background:color-mix(in srgb,var(--red) 14%,transparent)}
+.socials svg{width:20px;height:20px;fill:currentColor}
+.menubtn{font:700 15px Archivo,sans-serif;text-transform:uppercase;background:var(--ink);color:var(--bg);border:0;border-radius:999px;padding:0 20px;height:44px;cursor:pointer}
+.menubtn{display:inline-flex;align-items:center;gap:10px}
+.menubtn .bars{position:relative;width:16px;height:12px}
+.menubtn .bars i{position:absolute;left:0;width:16px;height:2px;border-radius:2px;background:currentColor;transition:transform .25s,opacity .2s,top .25s}
+.menubtn .bars i:nth-child(1){top:0}.menubtn .bars i:nth-child(2){top:5px}.menubtn .bars i:nth-child(3){top:10px}
+.menubtn[aria-expanded=true]{background:var(--red)}
+.menubtn[aria-expanded=true] .bars i:nth-child(1){top:5px;transform:rotate(45deg)}
+.menubtn[aria-expanded=true] .bars i:nth-child(2){opacity:0}
+.menubtn[aria-expanded=true] .bars i:nth-child(3){top:5px;transform:rotate(-45deg)}
+nav.menu{position:absolute;left:0;right:0;top:100%;background:var(--bg);border-bottom:2px solid var(--line);box-shadow:0 24px 40px -12px rgb(0 0 0/.25);
+ opacity:0;visibility:hidden;transform:translateY(-10px);transition:opacity .2s,transform .25s,visibility 0s .25s;max-height:calc(100vh - 70px);overflow:auto}
+nav.menu:focus{outline:none}
+nav.menu.open{opacity:1;visibility:visible;transform:none;transition:opacity .2s,transform .25s}
+.mlist{max-width:1240px;margin:0 auto;padding:clamp(18px,2.5vw,28px) max(5vw,16px) clamp(20px,3vw,32px)}
+.mlist ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(5,auto);grid-auto-flow:column;column-gap:clamp(24px,5vw,72px)}
+.mlist li{border-bottom:1px solid var(--hair)}
+.mlist li a{display:flex;justify-content:space-between;align-items:center;padding:14px 2px;font:700 20px Archivo,sans-serif;text-transform:uppercase;text-decoration:none}
+.mlist li a:hover,.mlist li a:focus-visible{color:var(--red2)}
+.mlisten{margin:18px 0 0;font-size:15px;color:var(--soft)}
+.mlisten a{color:var(--ink);font-weight:600}
+.mlisten a:hover{color:var(--red2)}
+.mscrim{position:fixed;inset:0;background:rgb(0 0 0/.35);opacity:0;visibility:hidden;transition:opacity .2s,visibility 0s .2s;z-index:19}
+.mscrim.open{opacity:1;visibility:visible;transition:opacity .2s}
+@media(max-width:600px){.mlist ul{grid-template-columns:minmax(0,1fr);grid-template-rows:none;grid-auto-flow:row}.mlist li a{font-size:18px;padding:13px 2px}}
+@media (prefers-reduced-motion:reduce){nav.menu,nav.menu.open,.mscrim,.menubtn .bars i{transition:none}}
+
+/* hero */
+.onair{display:flex;align-items:center;gap:12px}
+.eq{display:inline-flex;align-items:center;gap:3px;height:26px;flex:none}
+.eq i{display:block;width:4px;height:100%;border-radius:2px;background:#F3EFE7;transform-origin:center;animation:eq 1.1s ease-in-out infinite}
+.eq i:nth-child(odd){background:#d9545c}
+.eq i:nth-child(1){animation-delay:-.2s}.eq i:nth-child(2){animation-delay:-.7s;animation-duration:.9s}.eq i:nth-child(3){animation-delay:-.4s;animation-duration:1.3s}
+.eq i:nth-child(4){animation-delay:-.9s}.eq i:nth-child(5){animation-delay:-.1s;animation-duration:.8s}.eq i:nth-child(6){animation-delay:-.6s;animation-duration:1.2s}.eq i:nth-child(7){animation-delay:-.3s;animation-duration:1s}
+@keyframes eq{0%,100%{transform:scaleY(.25)}50%{transform:scaleY(1)}}
+@media (prefers-reduced-motion:reduce){.eq i{animation:none;transform:scaleY(.6)}}
+@media(max-width:600px){.hero .kick.onair{font-size:14px;gap:10px}.eq{height:20px}.eq i{width:3px}}
+
+.hero{position:relative;border-bottom:2px solid var(--line);overflow:hidden;color:#F3EFE7;background:#0B0B0D url(img/hero.jpg) center 78%/cover no-repeat;isolation:isolate}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgb(11 11 13/.86) 0%,rgb(11 11 13/.7) 50%,rgb(11 11 13/.45) 100%),linear-gradient(0deg,rgb(11 11 13/.55),transparent 45%)}
+.hero .kick{color:#F3EFE7;opacity:.9}
+.hero h1,.hero p.lede{color:#F3EFE7;text-shadow:0 2px 18px rgb(0 0 0/.35)}
+.hero .btn:not(.solid){border-color:#F3EFE7;color:#F3EFE7}
+.hero .btn:not(.solid):hover{background:#F3EFE7;color:#0B0B0D}
+@media(max-width:700px){.hero{background-image:url(img/hero-sm.jpg);background-position:62% 85%}.hero::before{background:rgb(11 11 13/.68)}}
+.hero .wrap{position:relative;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:center}
+.kick{font:700 17px Archivo,sans-serif;color:var(--red2);margin:0 0 14px}
+.hero h1{font-size:clamp(38px,5.8vw,86px);line-height:.92;letter-spacing:-.02em}
+.hero p.lede{font-size:18px;max-width:34em;margin:22px 0 28px}
+.btns{display:flex;flex-wrap:wrap;gap:12px}
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 24px;border-radius:999px;font:700 16px Archivo,sans-serif;text-transform:uppercase;text-decoration:none;border:2px solid var(--line)}
+.btn.solid{background:var(--red);color:var(--cream);border-color:var(--red)}
+.btn.solid:hover{filter:brightness(1.12)}
+.btn:not(.solid):hover{background:var(--ink);color:var(--bg)}
+.btn svg{width:18px;height:18px;fill:currentColor}
+.stamp{position:relative;aspect-ratio:1;width:100%;max-width:480px;justify-self:center}
+.stamp svg{width:100%;height:100%;overflow:visible}
+.ring{transform-origin:250px 250px;animation:spin 40s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.ring,.marquee span{animation:none}}
+.latest{margin-top:clamp(28px,4vw,48px);display:flex;align-items:center;gap:16px;background:var(--ink);color:var(--bg);border-radius:18px;padding:14px 18px;flex-wrap:wrap}
+.latest .play{flex:none;width:52px;height:52px;border-radius:50%;background:var(--red);display:grid;place-items:center;text-decoration:none}
+.latest .play svg{width:20px;fill:var(--cream);margin-left:3px}
+.latest small{display:block;font-size:13px;opacity:.75}
+.latest strong{font:700 17px/1.25 Archivo,sans-serif}
+.latest .t{flex:1 1 260px}
+.latest .lthumb{flex:none;width:clamp(180px,26vw,300px);border-color:var(--bg)}
+.latest .lthumb .pb{width:52px;height:52px;margin:-26px 0 0 -26px}
+@media(max-width:600px){.latest .lthumb{width:100%}}
+
+/* marquee */
+.marquee{background:var(--red);color:var(--cream);overflow:hidden;white-space:nowrap;border-bottom:2px solid var(--line)}
+.marquee span{display:inline-block;font:900 clamp(22px,3vw,34px)/1 Archivo,sans-serif;text-transform:uppercase;padding:14px 0;animation:slide 30s linear infinite}
+@keyframes slide{to{transform:translateX(-50%)}}
+
+/* section heads */
+.sh{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px 24px;margin-bottom:clamp(24px,3vw,40px)}
+.sh h2{font-size:clamp(40px,6vw,76px);letter-spacing:-.015em}
+.sh p{margin:0;max-width:30em;color:var(--soft)}
+
+/* merch */
+.merch .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,4vw,64px);align-items:center}
+.hatbox{background:var(--red);border-radius:28px;aspect-ratio:5/4;display:grid;place-items:center;position:relative;border:2px solid var(--line)}
+.hatbox svg{width:78%}
+.price{position:absolute;top:18px;right:18px;background:var(--cream);color:#0B0B0D;border-radius:999px;padding:8px 16px;font:900 22px Archivo,sans-serif}
+.merch ul{padding-left:20px;margin:18px 0 26px}
+.merch li{margin:4px 0}
+
+/* shop */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:20px}
+.item{background:var(--card);border:2px solid var(--line);border-radius:22px;overflow:hidden;display:flex;flex-direction:column}
+.item .ph{aspect-ratio:5/4;display:grid;place-items:center;background:#E9E3D8;border-bottom:2px solid var(--line);position:relative}
+.item .ph img{width:100%;height:100%;object-fit:contain;background:#fff}
+.item .ph svg{width:82%}
+.item .so{position:absolute;top:12px;left:12px;background:var(--ink);color:var(--bg);border-radius:999px;padding:4px 12px;font-size:13px;font-weight:600}
+.item .bd{padding:16px 18px 18px;display:flex;flex-direction:column;gap:12px;flex:1}
+.item .row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 12px}
+.item h3{font-size:22px;flex:1 1 auto;min-width:0;overflow-wrap:anywhere}
+.item .pr{font:900 20px Archivo,sans-serif;white-space:nowrap;flex:none}
+.item small{color:var(--soft);font-size:14px}
+.add{margin-top:auto;width:100%;justify-content:center;cursor:pointer;background:var(--red);color:var(--cream);border-color:var(--red)}
+.add:hover{filter:brightness(1.12)}
+.add[disabled]{background:transparent;color:var(--soft);border-color:var(--soft);cursor:not-allowed;filter:none}
+.note{font-size:13px;color:var(--soft);margin:18px 0 0}
+.cartbtn{position:relative;display:grid;place-items:center;width:44px;height:44px;border-radius:8px;border:0;background:none;color:inherit;cursor:pointer}
+.cartbtn svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:2}
+.cartbtn b{position:absolute;top:-2px;right:-4px;min-width:22px;height:22px;border-radius:11px;background:var(--red);color:var(--cream);font:700 12px/22px "IBM Plex Sans",sans-serif;text-align:center;padding:0 5px}
+.cartbtn b:empty{display:none}
+.scrim{position:fixed;inset:0;background:rgb(0 0 0/.45);z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,100%);background:var(--bg);border-left:2px solid var(--line);z-index:41;transform:translateX(100%);transition:transform .25s;display:flex;flex-direction:column}
+body.cart-open .scrim{opacity:1;pointer-events:auto}body.cart-open .drawer{transform:none}
+.drawer .top{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:2px solid var(--line)}
+.drawer h2{font-size:30px}
+.x{width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:none;color:inherit;font-size:22px;cursor:pointer}
+.lines{flex:1;overflow:auto;padding:8px 20px}
+.line{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 20%,transparent)}
+.line .th{width:64px;height:52px;border-radius:10px;background:#E9E3D8;display:grid;place-items:center;overflow:hidden}
+.line .th svg,.line .th img{width:100%;height:100%;object-fit:cover}
+.line strong{display:block;font-size:15px}.line span{font-size:14px;color:var(--soft)}
+.qty{display:flex;align-items:center;gap:2px}
+.qty button{width:36px;height:36px;border-radius:50%;border:2px solid var(--line);background:none;color:inherit;font-size:18px;cursor:pointer}
+.qty output{min-width:24px;text-align:center;font-weight:600}
+.empty{color:var(--soft);padding:24px 0}
+.foot{padding:16px 20px 22px;border-top:2px solid var(--line)}
+.foot .row{display:flex;justify-content:space-between;font:900 22px Archivo,sans-serif;text-transform:uppercase;margin-bottom:4px}
+.foot small{display:block;color:var(--soft);font-size:13px;margin-bottom:14px}
+.foot .btn{width:100%;justify-content:center;cursor:pointer}
+.pending{display:none;margin-top:12px;font-size:14px;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:12px 14px}
+.pending.show{display:block}
+@media (prefers-reduced-motion:reduce){.drawer,.scrim{transition:none}}
+
+.ticker{overflow-x:auto;overflow-y:hidden;margin:0;padding:4px 0;scrollbar-width:none;cursor:grab;touch-action:pan-x pan-y;overscroll-behavior-x:contain}
+.ticker::-webkit-scrollbar{display:none}.ticker.drag{cursor:grabbing;user-select:none}.ticker.drag a,.ticker.drag img{pointer-events:none}
+.track{display:flex;gap:20px;width:max-content}
+.track img{-webkit-user-drag:none;user-select:none}
+.more{display:flex;justify-content:center;align-items:center;gap:12px}
+.track .item{width:clamp(240px,26vw,300px);flex:none}
+@keyframes tick{to{transform:translateX(calc(-50% - 10px))}}
+
+.back{display:inline-block;font-weight:600;text-decoration:none;padding:10px 0;margin-bottom:12px}
+.back:hover{text-decoration:underline}
+
+/* advertise + audience (one sales section) */
+.aud{background:var(--ink);color:var(--bg)}
+.aud p{margin:0}
+.sell .sgrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(28px,5vw,80px);align-items:center}
+.sell .kick{color:var(--bg)}
+.sell h2{font-size:clamp(42px,5.6vw,80px);letter-spacing:-.02em;color:var(--bg)}
+.sell .lede{font-size:18px;max-width:34em;margin:18px 0 24px;opacity:.85}
+.proof{display:flex;flex-wrap:wrap;gap:12px 28px;padding:16px 0;margin-bottom:20px;border-block:1px solid rgb(243 239 231/.18)}
+.proof div{display:flex;flex-direction:column}
+.proof b{font:900 clamp(28px,3vw,40px)/1 Archivo,sans-serif;color:var(--bg)}
+.proof span{font-size:14px;opacity:.7;margin-top:4px}
+.why{list-style:none;margin:0 0 26px;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 24px}
+.why li{display:flex;gap:12px;align-items:flex-start;font-size:15px;opacity:.9}
+.why b{color:var(--bg)}
+.why .ic{flex:none;width:34px;height:34px;border-radius:50%;background:rgb(243 239 231/.1);display:grid;place-items:center}
+.why .ic svg{width:18px;height:18px;fill:none;stroke:var(--bg);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sell .btn.ghost{border-color:var(--bg);color:var(--bg)}.sell .btn.ghost:hover{background:var(--bg);color:var(--ink)}
+.ratecard{background:var(--red);color:var(--cream);border:2px solid var(--cream);border-radius:28px;padding:clamp(22px,3vw,32px);box-shadow:12px 12px 0 #e9a9ad;transform:rotate(1.2deg)}
+.rch{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:6px 16px;margin-bottom:12px}
+.ratecard h3{font-size:clamp(22px,2.4vw,30px)}
+.nextep{font-size:14px;opacity:.9}
+.nextep b{background:var(--cream);color:#85272C;border-radius:999px;padding:2px 10px;margin-left:4px;white-space:nowrap}
+.rc-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:14px;padding:11px 8px;margin:0 -8px;border-top:1.5px dashed rgb(243 239 231/.45);text-decoration:none;color:inherit;border-radius:10px;transition:background .15s}
+.rc-row b{font:900 18px Archivo,sans-serif;text-transform:uppercase}
+.rc-row b small{display:block;font:500 13px "IBM Plex Sans",sans-serif;text-transform:none;opacity:.8;margin-top:2px}
+.rc-row span{font:900 22px Archivo,sans-serif;white-space:nowrap}
+.rc-row i{font-style:normal;font:700 13px Archivo,sans-serif;text-transform:uppercase;background:var(--cream);color:#85272C;border-radius:999px;padding:7px 12px;white-space:nowrap}
+.rc-row:hover,.rc-row:focus-visible{background:rgb(0 0 0/.18)}
+.rc-row.full i{background:transparent;color:var(--cream);border:1.5px solid rgb(243 239 231/.5)}
+.rcfoot{display:block;margin-top:12px;padding-top:14px;border-top:1.5px dashed rgb(243 239 231/.45);font-weight:600;text-decoration:none}
+.rcfoot:hover{text-decoration:underline}
+.sell .ntot{display:none}
+@media(max-width:600px){.hero .stamp{width:150px;max-width:150px;justify-self:start;margin:-6px 0 -10px;filter:drop-shadow(0 6px 14px rgb(0 0 0/.35))}.hero .stamp circle[cx="258"]{display:none}}
+@media(max-width:600px){.aud.sell .ratecard,.aud.sell .nums{display:none}.sell .sgrid{gap:0}}
+.mlabel2{font:700 13px Archivo,sans-serif;text-transform:uppercase;color:var(--bg);width:100%;margin:0 0 4px!important}
+@media(max-width:960px){.sell .sgrid{grid-template-columns:minmax(0,1fr)}.ratecard{transform:none;box-shadow:8px 8px 0 #e9a9ad}}
+@media(max-width:560px){.why{grid-template-columns:minmax(0,1fr)}.rc-row{grid-template-columns:minmax(0,1fr) auto}.rc-row i{grid-column:1/-1;justify-self:start}}
+.aud .nums{display:block;margin-top:clamp(36px,5vw,64px);padding-top:clamp(24px,3vw,36px);border-top:1px solid rgb(243 239 231/.18)}
+.nhead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px 24px;margin-bottom:20px}
+.aud .ntot{margin:0;font-size:18px;opacity:1}.ntot b{font:900 clamp(30px,3.4vw,44px) Archivo,sans-serif;color:var(--cream);margin-right:6px}
+.aud .asof{margin:0;font-size:13px;opacity:.55}
+.sts{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.st{position:relative;background:rgb(243 239 231/.06);border:1px solid rgb(243 239 231/.12);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:4px;text-decoration:none;color:inherit;transition:background .15s,border-color .15s,transform .15s}
+.st::after{content:"↗";position:absolute;top:14px;right:16px;font-size:15px;opacity:0;transition:opacity .15s}
+.st:hover,.st:focus-visible{background:rgb(133 39 44/.45);border-color:#e9a9ad;transform:translateY(-2px)}
+.st:hover::after,.st:focus-visible::after{opacity:.8}
+.st .pl{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;opacity:.75}
+.st .pl svg{width:16px;height:16px;fill:currentColor;flex:none}
+.st b{font:900 clamp(24px,2.4vw,32px)/1.1 Archivo,sans-serif;color:var(--bg);margin-top:6px;white-space:nowrap}
+.st small{font-size:13px;opacity:.7}
+@media(max-width:1100px){.sts{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:600px){.sts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* host */
+.host{background:var(--ink);color:var(--bg)}
+.host .wrap{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(24px,4vw,64px);align-items:center}
+.portrait{aspect-ratio:4/5;border-radius:28px;background:var(--red);position:relative;overflow:hidden;display:grid;place-items:end start;padding:24px}
+.portrait>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.portrait::after{content:"";position:absolute;inset:auto 0 0 0;height:45%;background:linear-gradient(transparent,rgb(11 11 13/.75))}
+.portrait .nm{position:relative;z-index:1;font:900 clamp(34px,4.2vw,56px)/.9 Archivo,sans-serif;text-transform:uppercase;color:var(--cream)}
+.host h2{font-size:clamp(40px,5.5vw,68px);margin-bottom:18px}
+.host p{font-size:17px;max-width:36em}
+.breeds{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;padding:0;list-style:none}
+.breeds li{border:2px solid currentColor;border-radius:999px;padding:6px 14px;font-weight:600;font-size:14px}
+.host .btn{border-color:var(--bg)}.host .btn:not(.solid):hover{background:var(--bg);color:var(--ink)}
+
+/* episodes */
+.eps{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:20px}
+.eps.rail{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:4px 2px 8px;margin:-4px -2px 0}
+.eps.rail::-webkit-scrollbar{display:none}
+.eps.rail .ep{flex:0 0 calc((100% - 40px)/3);scroll-snap-align:start}
+@media(max-width:1000px){.eps.rail .ep{flex-basis:calc((100% - 20px)/2)}}
+@media(max-width:640px){.eps.rail .ep{flex-basis:86%}}
+.shr{display:flex;align-items:end;justify-content:space-between;gap:20px;flex:1 1 100%}
+.arrows{display:flex;gap:8px}
+.arw{width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:none;color:inherit;display:grid;place-items:center;cursor:pointer}
+.arw svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.arw:hover:not([disabled]){background:var(--ink);color:var(--bg)}
+.arw[disabled]{opacity:.3;cursor:default}
+.arrows[hidden],.more [hidden]{display:none}
+.ep{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:12px;transition:transform .15s}
+.ep:hover{transform:translateY(-3px)}
+.ep .d{display:flex;justify-content:space-between;gap:8px;font-size:14px;color:var(--soft)}
+.ep .tag{background:var(--red);color:var(--cream);border-radius:999px;padding:2px 10px;font-weight:600;font-size:13px;white-space:nowrap}
+.ep h3{font-size:clamp(24px,2.4vw,30px);line-height:1}
+.ep h3 a{text-decoration:none}.ep h3 a:hover{text-decoration:underline}
+.thumb{display:block;position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;border:2px solid var(--line);background:#0B0B0D}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb img.yt{position:absolute;inset:0;opacity:0;transition:opacity .2s}
+.thumb.ok img.yt{opacity:1}
+.thumb iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.pb{position:absolute;left:50%;top:50%;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:50%;background:rgb(133 39 44/.92);border:3px solid #F3EFE7;display:grid;place-items:center;transition:transform .15s}
+.pb svg{width:24px;height:24px;fill:#F3EFE7;margin-left:4px}
+.vid:hover .pb{transform:scale(1.08)}
+.thumb .ph{display:grid;place-items:center;width:100%;height:100%;background:#85272C}
+.thumb .ph img{width:42%;height:auto;object-fit:contain}
+.ep.feature .thumb{border-color:var(--cream)}.ep.feature .thumb .ph{background:#0B0B0D}
+.ep .links{flex-wrap:wrap}
+.ep .links a.lis{width:auto;height:auto;border-radius:999px;padding:0 16px;font-size:14px;min-height:44px;flex:1 1 90px;display:inline-flex;justify-content:center;gap:8px}
+.ep .links a.lis svg{width:16px;height:16px;flex:none}
+.ep .links a.watch{background:var(--ink);color:var(--bg)}.ep .links a.watch:hover{background:var(--red);border-color:var(--red);color:var(--cream)}
+.ep.feature .links a.watch{background:var(--cream);color:#85272C}
+.ep h3 em{display:block;font-style:normal;color:var(--red2)}
+.ep p{margin:0;color:var(--soft);font-size:15px}
+.ep .links{margin-top:auto;display:flex;gap:8px;padding-top:6px}
+.ep .links a{width:44px;height:44px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center}
+.ep .links a:hover{background:var(--ink);color:var(--bg)}
+.ep .links svg{width:18px;height:18px;fill:currentColor}
+.ep.feature{background:var(--red);color:var(--cream);border-color:var(--red)}
+.ep.feature .d,.ep.feature p{color:#f1dcdc}.ep.feature h3 em{color:var(--cream);opacity:.8}
+.ep.feature .tag{background:var(--cream);color:#85272C}
+.ep.feature .links a{border-color:var(--cream)}
+.more{text-align:center;margin-top:36px}
+
+
+/* reviews */
+.revs{border-top:2px solid var(--line);overflow:hidden}
+.revs[hidden]{display:none}
+.revs .kick{color:var(--red2)}
+.revs .sh{display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap;margin-bottom:28px}
+.revs .avg{display:flex;align-items:center;gap:12px;font:900 18px Archivo,sans-serif;text-transform:uppercase}
+.revs .avg .rst{color:var(--red2);letter-spacing:2px;font-size:22px}
+.rtick{overflow:hidden;max-width:1240px;margin:0 auto}
+.rtrack{display:flex;gap:18px;width:max-content;animation:rtick 48s linear infinite}
+.rtick:hover .rtrack,.rtick:focus-within .rtrack{animation-play-state:paused}
+@keyframes rtick{to{transform:translateX(calc(-50% - 9px))}}
+.rvc{width:clamp(270px,30vw,360px);flex:none;background:var(--card);border:2px solid var(--line);border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:12px;margin:0}
+.rvc .rst{color:var(--red2);letter-spacing:2px;font-size:18px}
+.rvc blockquote{margin:0;font-size:17px;line-height:1.5;flex:1}
+.rvc figcaption{font-size:14px;color:var(--soft)}.rvc figcaption b{display:block;color:var(--ink);font:900 15px Archivo,sans-serif;text-transform:uppercase}
+.rvc .tag{display:inline-block;margin-left:6px;font:700 11px Archivo,sans-serif;text-transform:uppercase;border:1.5px solid currentColor;border-radius:999px;padding:1px 7px;vertical-align:middle}
+@media (prefers-reduced-motion:reduce){.rtrack{animation:none}.rtick{overflow-x:auto}}
+@media(max-width:600px){.rtrack{animation-duration:36s}.rvc{width:78vw;padding:18px}.rvc blockquote{font-size:16px}}
+/* closing */
+.closing{border-top:2px solid var(--line)}
+.big{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:2px solid var(--line)}
+.big a{display:flex;flex-direction:column;justify-content:space-between;gap:28px;min-height:220px;padding:28px max(3vw,16px);text-decoration:none;border-right:2px solid var(--line)}
+.big a:last-child{border-right:0}
+.big a:hover{background:var(--red);color:var(--cream)}
+.big b{font:900 clamp(34px,4.5vw,60px)/.95 Archivo,sans-serif;text-transform:uppercase}
+.big span{display:flex;justify-content:space-between;align-items:center;font-weight:500}
+.big svg{width:34px;height:34px;fill:none;stroke:currentColor;stroke-width:2.5}
+.signoff{font:900 clamp(56px,13vw,200px)/.85 Archivo,sans-serif;text-transform:uppercase;text-align:center;color:var(--red2);letter-spacing:-.03em;padding:clamp(36px,6vw,80px) 16px}
+
+footer{background:var(--ink);color:var(--bg)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:16px 32px;align-items:center;justify-content:space-between;padding:28px max(5vw,16px)}
+footer nav{display:flex;flex-wrap:wrap;gap:4px 20px;font-size:15px}
+footer nav a{text-decoration:none;padding:6px 0}footer nav a:hover{text-decoration:underline}
+footer small{opacity:.7}
+
+@media(max-width:860px){
+ .hero .wrap,.merch .wrap,.host .wrap{grid-template-columns:minmax(0,1fr)}
+ .stamp{max-width:340px;grid-row:1}
+ .big{grid-template-columns:minmax(0,1fr)}.big a{border-right:0;border-bottom:2px solid var(--line);min-height:150px}
+}
+@media(max-width:600px){
+ .socials{display:none}.logo b{font-size:18px}
+ .stamp{max-width:260px}
+ .hero p.lede{font-size:17px}
+}
+
+/* ---- phone polish ---- */
+@media(max-width:600px){
+ .util{display:none}
+ .band{padding:36px 18px}
+ .hero h1{font-size:40px}
+ .hero p.lede{margin:16px 0 22px}
+ .hero .btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+ .hero .btns .btn{justify-content:center;padding:0 8px;font-size:13px;gap:6px;white-space:nowrap}
+ .hero .btns .btn:first-child{grid-column:1/-1}
+ .sh{margin-bottom:18px}
+ .sh h2{font-size:38px}
+ .shr{display:block}
+ .arrows{display:none}
+ .eps.rail .ep{flex-basis:84%}
+ .ep{padding:16px;gap:10px}
+ .ep .links{flex-wrap:nowrap;gap:6px}
+ .ep .links a{width:40px;height:40px;flex:none}
+ .ep .links a.lis{flex:1 1 0;min-width:0;padding:0 8px;font-size:13px;min-height:40px}
+ .more{margin-top:24px}
+ .sell h2{font-size:38px}
+ .sell .lede{font-size:16px}
+ .proof{gap:10px 20px}
+ .why{gap:10px;margin-bottom:22px}
+ .sell .btns,.host .btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+ .sell .btns .btn,.host .btns .btn{justify-content:center;padding:0 10px;font-size:13px}
+ .shop .sh p{font-size:15px}
+ .host .wrap{gap:22px}
+ .portrait{aspect-ratio:1/1;max-height:360px}
+ .host h2{font-size:34px}
+ .host p{font-size:16px}
+ .host .breeds{display:none}
+ .portrait{place-items:start end}
+ .portrait .nm{text-align:right;font-size:30px}
+ .portrait::after{inset:0 0 auto 0;height:40%;background:linear-gradient(rgb(11 11 13/.7),transparent)}
+ .big a{min-height:0;padding:18px;gap:6px;flex-direction:row;align-items:center;justify-content:space-between}
+ .big b{font-size:24px}
+ .big span{font-size:14px;gap:12px}
+ .big span{display:none}
+ .big a::after{content:"→";font-size:24px}
+ .signoff{font-size:52px;padding:32px 16px}
+ footer .wrap{padding:24px 18px}
+}
+
+/* ===== V2: immersive scroll ===== */
+.v2bar{position:fixed;top:0;left:0;height:4px;width:100%;background:var(--red);transform-origin:0 50%;transform:scaleX(0);z-index:200}
+.v2tag{position:fixed;left:16px;bottom:16px;z-index:150;background:#0B0B0D;color:#F3EFE7;border-radius:999px;padding:8px 14px;font:700 12px Archivo,sans-serif;text-transform:uppercase;text-decoration:none;box-shadow:0 6px 20px rgb(0 0 0/.3);border:1.5px solid rgb(243 239 231/.35)}
+.v2tag b{color:#d9545c}
+/* hero: pinned, photo zooms and darkens, text lifts away */
+.hero{position:sticky;top:0;z-index:0;min-height:100svh;display:grid;align-items:center;background-image:none!important}
+.hero .bg{position:absolute;inset:0;z-index:-2;background:url(img/hero.jpg) center 78%/cover no-repeat;transform:scale(calc(1 + var(--p,0)*.18));will-change:transform}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:#0B0B0D;opacity:calc(var(--p,0)*.75);pointer-events:none}
+.hero .wrap{transform:translateY(calc(var(--p,0)*-90px));opacity:calc(1 - var(--p,0)*1.3);will-change:transform,opacity}
+.hero .stamp{transform:rotate(calc(var(--p,0)*90deg)) scale(calc(1 - var(--p,0)*.25))}
+html,body{overflow-x:clip}.v2-after{position:relative;z-index:1;background:var(--bg);overflow-x:clip}
+/* reveals */
+[data-rv]{opacity:0;transform:translateY(46px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1);transition-delay:var(--d,0s)}
+[data-rv].in{opacity:1;transform:none}
+[data-rv=left]{transform:translateX(-60px)}[data-rv=right]{transform:translateX(60px)}[data-rv=zoom]{transform:scale(.92)}
+/* episodes: pinned, vertical scroll moves the rail sideways */
+.v2pin{position:relative}
+@media(min-width:761px){.v2pin>#episodes{position:sticky;top:64px;min-height:calc(100svh - 64px);display:flex;flex-direction:column;justify-content:center;overflow:hidden}.v2pin>#episodes>.wrap{width:100%;min-width:0}}
+.v2pin .eps.rail{scroll-snap-type:none!important;scroll-behavior:auto!important}
+.v2hint{display:flex;align-items:center;gap:10px;font:700 13px Archivo,sans-serif;text-transform:uppercase;color:var(--soft);margin-top:14px}
+.v2hint i{flex:1;height:3px;background:var(--hair);border-radius:3px;overflow:hidden;position:relative}
+.v2hint i::after{content:"";position:absolute;inset:0;background:var(--red);transform-origin:0;transform:scaleX(var(--ep,0))}
+/* host photo parallax */
+.host .portrait{overflow:hidden}
+.host .portrait img{transform:translateY(calc(var(--hp,0)*-40px)) scale(1.12);will-change:transform}
+/* closing: giant sign-off grows in */
+.signoff{transform:scale(calc(.7 + var(--cp,0)*.3));opacity:calc(.2 + var(--cp,0)*.8);transform-origin:50% 100%}
+@media (prefers-reduced-motion:reduce){.hero{position:relative}.hero .bg,.hero .wrap,.hero .stamp,.host .portrait img,.signoff{transform:none!important;opacity:1!important}[data-rv]{opacity:1;transform:none;transition:none}.v2pin>#episodes{position:relative;min-height:0}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" defer></script>
+<script src="js/config.js" defer></script>
+<script src="js/app.js" defer></script>
+<script src="js/cart.js" defer></script>
+<script src="js/popups.js" defer></script>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <symbol id="i-sp" viewBox="0 0 24 24"><path d="M12 1a11 11 0 1 0 0 22 11 11 0 0 0 0-22Zm5 15.9a.7.7 0 0 1-1 .2c-2.7-1.6-6-2-10-1.1a.7.7 0 1 1-.3-1.4c4.3-1 8-.6 11 1.3.3.2.4.6.3 1Zm1.4-3.1a.9.9 0 0 1-1.2.3c-3-1.9-7.7-2.4-11.3-1.3a.9.9 0 1 1-.5-1.7c4.1-1.2 9.3-.6 12.7 1.5.4.3.5.8.3 1.2Zm.1-3.2C14.9 8.5 9 8.3 5.5 9.3a1 1 0 1 1-.6-2c4-1.2 10.5-1 14.6 1.5a1 1 0 0 1-1 1.8Z"/></symbol>
+ <symbol id="i-ap" viewBox="0 0 24 24"><path d="M12 2a9 9 0 0 0-4 17l.5-2a7 7 0 1 1 7 0l.5 2A9 9 0 0 0 12 2Zm0 4a5 5 0 0 0-2.7 9.2l.4-2.1a3 3 0 1 1 4.6 0l.4 2.1A5 5 0 0 0 12 6Zm0 4a1.6 1.6 0 1 0 0 3.2A1.6 1.6 0 0 0 12 10Zm-1.3 4.4-.9 6.1c-.1.8.5 1.5 1.3 1.5h1.8c.8 0 1.4-.7 1.3-1.5l-.9-6.1c-.4.2-.8.3-1.3.3s-.9-.1-1.3-.3Z"/></symbol>
+ <symbol id="i-fb" viewBox="0 0 24 24"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.5 1.6-1.5h1.6V4.4c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.4-4 4.1v2.4H7.6V14h2.7v8h3.2Z"/></symbol>
+ <symbol id="i-ig" viewBox="0 0 24 24"><path d="M12 7.3a4.7 4.7 0 1 0 0 9.4 4.7 4.7 0 0 0 0-9.4Zm0 7.7a3 3 0 1 1 0-6 3 3 0 0 1 0 6Zm6-7.9a1.1 1.1 0 1 1-2.2 0 1.1 1.1 0 0 1 2.2 0ZM21 8c0-1.6-.5-3-1.6-4.1A5.6 5.6 0 0 0 15.3 2.3C13.7 2.2 10.3 2.2 8.7 2.3 7.1 2.4 5.7 2.8 4.6 3.9S3 6.4 3 8c-.1 1.6-.1 6.4 0 8 .1 1.6.5 3 1.6 4.1s2.5 1.5 4.1 1.6c1.6.1 5 .1 6.6 0 1.6-.1 3-.5 4.1-1.6S21 17.6 21 16c.1-1.6.1-6.4 0-8Zm-2 9.8a3.1 3.1 0 0 1-1.8 1.8c-1.2.5-4.2.4-5.2.4s-4 .1-5.2-.4A3.1 3.1 0 0 1 5 17.8c-.5-1.2-.4-4.2-.4-5.8s-.1-4.6.4-5.8A3.1 3.1 0 0 1 6.8 4.4c1.2-.5 4.2-.4 5.2-.4s4-.1 5.2.4A3.1 3.1 0 0 1 19 6.2c.5 1.2.4 4.2.4 5.8s.1 4.6-.4 5.8Z"/></symbol>
+ <symbol id="i-tt" viewBox="0 0 24 24"><path d="M16.6 2h-3.3v13.4a2.9 2.9 0 1 1-2-2.7V9.3a6.2 6.2 0 1 0 5.3 6.1V8.6a7.6 7.6 0 0 0 4.4 1.4V6.7a4.4 4.4 0 0 1-4.4-4.4V2Z"/></symbol>
+ <symbol id="i-yt" viewBox="0 0 24 24"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8ZM9.8 15.1V8.9l5.7 3.1-5.7 3.1Z"/></symbol>
+ <symbol id="i-play" viewBox="0 0 24 24"><path d="M6 3.5v17l14-8.5Z"/></symbol>
+</svg>
+
+<div class="util"><div class="wrap">
+ <a href="#store">Shop</a>
+ <a href="advertise.html">Advertise with us</a>
+ <a href="guest.html">Be a guest</a>
+ <a href="#review" data-pop="review">Leave a review</a>
+</div></div>
+
+<header>
+ <div class="wrap">
+  <a class="logo" href="#top" aria-label="Herd Report home">
+   <img class="lt" src="mark.png" alt=""><img class="dk" src="mark-light.png" alt="">
+   <b>Herd Report</b>
+  </a>
+  <div class="socials">
+   <a href="https://www.youtube.com/@herdreportpodcast" aria-label="YouTube"><svg><use href="#i-yt"/></svg></a>
+   <a href="https://open.spotify.com/show/37IlQvHObaNPHxXoUcjEyz" aria-label="Spotify"><svg><use href="#i-sp"/></svg></a>
+   <a href="https://podcasts.apple.com/us/podcast/id1835474334?mt=2&amp;ls=1" aria-label="Apple Podcasts"><svg><use href="#i-ap"/></svg></a>
+   <a href="https://www.facebook.com/theherdreport" aria-label="Facebook"><svg><use href="#i-fb"/></svg></a>
+   <a href="https://www.instagram.com/herdreport/" aria-label="Instagram"><svg><use href="#i-ig"/></svg></a>
+   <a href="https://www.tiktok.com/@herd.report" aria-label="TikTok"><svg><use href="#i-tt"/></svg></a>
+  </div>
+  <span class="acct" id="acct" hidden><a href="account.html" id="acctLink">My dashboard</a><button type="button" class="so" id="signout">Sign out</button></span>
+  <button class="cartbtn" id="cartbtn" aria-label="Open cart"><svg viewBox="0 0 24 24"><path d="M3 4h2l2.4 11h11L21 8H6.2"/><circle cx="9" cy="19.5" r="1.5"/><circle cx="17" cy="19.5" r="1.5"/></svg><b id="count"></b></button>
+  <button class="menubtn" id="menubtn" aria-expanded="false" aria-controls="menu"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><span id="menulbl">Menu</span></button>
+ </div>
+ <nav class="menu" id="menu" aria-label="Main" tabindex="-1">
+  <div class="mlist">
+   <ul><li><a href="#episodes">Episodes</a></li><li><a href="#store">Shop</a></li><li><a href="advertise.html">Advertise</a></li><li><a href="guest.html">Be a guest</a></li><li><a href="#host">The host</a></li><li><a href="guests.html">Past guests</a></li><li><a href="blog.html">Blog</a></li><li><a href="account.html">Client login</a></li><li><a href="#review" data-pop="review">Leave a review</a></li><li><a href="contact.html">Contact</a></li></ul>
+   <p class="mlisten">Listen on <a href="https://www.youtube.com/@herdreportpodcast">YouTube</a> · <a href="https://open.spotify.com/show/37IlQvHObaNPHxXoUcjEyz">Spotify</a> · <a href="https://podcasts.apple.com/us/podcast/id1835474334?mt=2&amp;ls=1">Apple Podcasts</a></p>
+  </div>
+ </nav>
+</header>
+<div class="mscrim" id="mscrim"></div>
+
+<main id="top">
+<div class="v2bar" id="v2bar"></div><a class="v2tag" href="index.html"><b>V2 preview</b> · back to current site</a>
+<section class="hero band"><div class="bg" aria-hidden="true"></div>
+ <div class="wrap">
+  <div>
+   <p class="kick onair"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>The Herd Report Podcast with Scott Beck</p>
+   <h1>Deep Dives into Herd Management</h1>
+   <p class="lede">Deep dives into herd management with the breeders, producers and industry leaders raising America's best cattle. Genetics, breeding programs, marketing and sale previews, straight from the ranch.</p>
+   <div class="btns">
+    <a class="btn solid" href="https://www.youtube.com/@herdreportpodcast"><svg><use href="#i-yt"/></svg>Watch on YouTube</a>
+    <a class="btn" href="https://open.spotify.com/show/37IlQvHObaNPHxXoUcjEyz"><svg><use href="#i-sp"/></svg>Spotify</a>
+    <a class="btn" href="https://podcasts.apple.com/us/podcast/id1835474334?mt=2&amp;ls=1"><svg><use href="#i-ap"/></svg>Apple Podcasts</a>
+   </div>
+  </div>
+  <div class="stamp" aria-hidden="true">
+   <svg viewBox="0 0 500 500">
+    <defs><path id="circ" d="M250 250m-200 0a200 200 0 1 1 400 0a200 200 0 1 1-400 0"/></defs>
+    <circle cx="258" cy="262" r="238" fill="#0B0B0D" opacity=".9"/>
+    <circle cx="250" cy="250" r="238" fill="#85272C"/>
+    <circle cx="250" cy="250" r="238" fill="none" stroke="#0B0B0D" stroke-width="4"/>
+    <g class="ring"><text font-family="Archivo" font-weight="900" font-size="28" fill="#F3EFE7"><textPath href="#circ" textLength="1245" lengthAdjust="spacing">HERD REPORT ✦ INSIDE THE CATTLE INDUSTRY ✦ LET'S GET TO IT ✦</textPath></text></g>
+    <circle cx="250" cy="250" r="160" fill="#F3EFE7"/>
+    <circle cx="250" cy="250" r="146" fill="none" stroke="#85272C" stroke-width="3" stroke-dasharray="2 9" stroke-linecap="round"/>
+    <image href="logo.png" x="145" y="161" width="210" height="178"/>
+   </svg>
+  </div>
+ </div>
+</section>
+
+<div class="v2-after">
+<div class="marquee" aria-hidden="true"><span>Angus ✦ Simmental ✦ Charolais ✦ Hereford ✦ Gelbvieh ✦ Limousin ✦ Registered &amp; crossbred ✦ Angus ✦ Simmental ✦ Charolais ✦ Hereford ✦ Gelbvieh ✦ Limousin ✦ Registered &amp; crossbred ✦&nbsp;</span></div>
+
+<div class="v2pin" id="v2pin"><section class="band" id="episodes">
+ <div class="wrap">
+  <div class="sh">
+   <h2>Fresh from the barn</h2>
+   <div class="shr"><p>New conversations with the operations shaping the cattle business. Watch every episode on YouTube or listen wherever you get your podcasts.</p>
+    <div class="arrows" id="arrows"><button class="arw" id="prevEp" type="button" aria-label="Previous episodes"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><button class="arw" id="nextEp" type="button" aria-label="More episodes"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button></div></div>
+  </div>
+  <div class="eps rail" id="eps"></div>
+  <div class="more"><button class="btn" id="allEps" type="button" aria-controls="eps" aria-expanded="false">See all episodes</button><a class="btn" id="archive" href="https://www.herdreportpodcast.com/episodes/" hidden>Full episode archive</a></div>
+ </div>
+</section>
+
+</div>
+<section class="aud sell band" id="advertise">
+ <div class="wrap sgrid">
+  <div class="spitch">
+   <p class="kick">Reach the cattlemen who buy</p>
+   <h2>Advertise on Herd Report</h2>
+   <p class="lede">Put your brand in Scott's voice, in front of the breeders, producers and buyers who tune in every week. Pick a spot, add it to your cart and you're booked in minutes.</p>
+   <div class="proof">
+    <div><b id="pfTotal">42K+</b><span>followers</span></div>
+    <div><b id="pfViews">83K+</b><span>YouTube views</span></div>
+    <div><b id="pfRating">4.9★</b><span>on Apple Podcasts</span></div>
+   </div>
+   <ul class="why"><li><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span><span><b>Weekly</b> new episodes on YouTube and every podcast app</span></li><li><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span><span><b>Coast to coast</b> ranch visits and sale previews across the country</span></li><li><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></span><span><b>Every breed</b> Angus, Simmental, Charolais, Hereford, Gelbvieh, Limousin</span></li><li><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5M8 22h8"/></svg></span><span><b>Host-read</b> every spot in Scott Beck's own words</span></li></ul>
+   <div class="btns"><a class="btn solid" href="advertise.html#shop">Shop ad spots</a><a class="btn ghost" href="account.html">Client login</a></div>
+  </div>
+  <aside class="ratecard" aria-label="Episode ad rates">
+   <div class="rch"><h3>Episode ad rates</h3><span class="nextep" id="nextEpisode">Host-read, price per episode</span></div>
+   <div id="homeRates">
+    <a class="rc-row" href="advertise.html#shop"><b>Pre-roll<small>Open weeks available</small></b><span>$500</span><i>Book →</i></a><a class="rc-row" href="advertise.html#shop"><b>Mid-roll 1<small>Open weeks available</small></b><span>$350</span><i>Book →</i></a><a class="rc-row" href="advertise.html#shop"><b>Mid-roll 2<small>Open weeks available</small></b><span>$350</span><i>Book →</i></a><a class="rc-row" href="advertise.html#shop"><b>Mid-roll 3<small>Open weeks available</small></b><span>$350</span><i>Book →</i></a><a class="rc-row" href="advertise.html#shop"><b>Post-roll<small>Open weeks available</small></b><span>$250</span><i>Book →</i></a>
+   </div>
+   <a class="rcfoot" href="advertise.html#packages">Spotlight episodes &amp; sponsorships →</a>
+  </aside>
+ </div>
+ <div class="wrap nums"><div class="nhead"><p class="mlabel2">Live audience numbers</p><p class="ntot" id="ntot"><b>42K+</b> followers across Instagram, Facebook, YouTube and TikTok</p><p class="asof" id="asof">Public counts as of November 2026</p></div><div class="sts" id="sts"><a class="st" href="https://www.instagram.com/herdreport/" target="_blank" rel="noopener"><span class="pl"><svg><use href="#i-ig"/></svg>Instagram</span><b>24K</b><small>followers</small></a><a class="st" href="https://www.facebook.com/theherdreport" target="_blank" rel="noopener"><span class="pl"><svg><use href="#i-fb"/></svg>Facebook</span><b>9.1K</b><small>followers</small></a><a class="st" href="https://www.youtube.com/@herdreportpodcast" target="_blank" rel="noopener"><span class="pl"><svg><use href="#i-yt"/></svg>YouTube</span><b>5.78K</b><small>subscribers · 83K+ views</small></a><a class="st" href="https://www.tiktok.com/@herd.report" target="_blank" rel="noopener"><span class="pl"><svg><use href="#i-tt"/></svg>TikTok</span><b>3.9K</b><small>followers · 23.7K likes</small></a><a class="st" href="https://podcasts.apple.com/us/podcast/id1835474334" target="_blank" rel="noopener"><span class="pl"><svg><use href="#i-ap"/></svg>Apple Podcasts</span><b>4.9★</b><small>16 ratings</small></a><a class="st" href="https://open.spotify.com/show/37IlQvHObaNPHxXoUcjEyz" target="_blank" rel="noopener"><span class="pl"><svg><use href="#i-sp"/></svg>Spotify</span><b>5.0★</b><small>9 ratings</small></a></div></div>
+</section>
+
+<section class="shop band" id="shop">
+ <div class="wrap">
+  <div class="sh">
+   <div><p class="kick">Herd Report store</p><h2>The Signature Hat</h2></div>
+   <p>Flat bill, structured front, mesh back and an adjustable fit, with the HR logo up front. Built for sale barns, feed trucks, show days and road trips. Nine colorways, $30 each.</p>
+  </div>
+  <div class="ticker" id="ticker"><div class="track" id="track"></div></div>
+  <div class="more"><button class="arw" id="hatPrev" type="button" aria-label="Scroll hats left"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><a class="btn solid" href="#store">Shop all hats</a><button class="arw" id="hatNext" type="button" aria-label="Scroll hats right"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button></div>
+ </div>
+</section>
+
+<section class="host band" id="host">
+ <div class="wrap">
+  <div class="portrait">
+   <img src="img/host.jpg" alt="Scott Beck at the microphone in a Herd Report hat">
+   <span class="nm">Scott<br>Beck</span>
+  </div>
+  <div>
+   <p class="kick" style="color:#e9a9ad">Meet the host</p>
+   <h2>Real ranches. Real cattle. Real talk.</h2>
+   <p>Scott Beck sits down with cattle breeders, producers and industry leaders from across the U.S. to get inside their programs: the genetics they bet on, how they manage the herd, and how they market bulls and females that work.</p>
+   <p>From century-old Angus operations to this season's sale previews and summer tours, every episode ends the same way: <strong>Let's get to it!!</strong></p>
+   <ul class="breeds"><li>Angus</li><li>Simmental</li><li>Charolais</li><li>Hereford</li><li>Gelbvieh</li><li>Limousin</li></ul>
+   <div class="btns" style="margin-top:28px">
+    <a class="btn solid" href="guest.html">Come on the show</a>
+    <a class="btn" href="guests.html">Meet the guests</a>
+   </div>
+  </div>
+ </div>
+</section>
+
+
+
+<section class="revs band" id="reviews" hidden>
+ <div class="wrap">
+  <div class="sh"><div><p class="kick">Listener reviews</p><h2>Straight from the herd</h2></div>
+   <div class="btns" style="align-items:center"><span class="avg"><span class="rst" id="ravgS"></span><span id="ravg"></span></span><a class="btn" href="#review" data-pop="review">Leave a review</a></div></div>
+ </div>
+ <div class="rtick" aria-label="Listener reviews"><div class="rtrack" id="rtrack"></div></div>
+</section>
+
+<section class="closing">
+ <div class="big">
+  <a href="#store"><b>Shop</b><span>Hats and gear<svg viewBox="0 0 34 34"><path d="M6 17h22M19 8l9 9-9 9"/></svg></span></a>
+  <a href="advertise.html"><b>Partner with us</b><span>Sponsor an episode<svg viewBox="0 0 34 34"><path d="M6 17h22M19 8l9 9-9 9"/></svg></span></a>
+  <a href="guest.html"><b>Be a guest</b><span>Tell us about your program<svg viewBox="0 0 34 34"><path d="M6 17h22M19 8l9 9-9 9"/></svg></span></a>
+ </div>
+ <div class="signoff">Let's get to it!!</div>
+</section>
+</div>
+</main>
+
+<section class="band storeview" id="store" hidden>
+ <div class="wrap">
+  <a class="back" href="#top">← Back to home</a>
+  <div class="sh">
+   <div><p class="kick">Herd Report store</p><h2>All hats</h2></div>
+   <p>The Signature Hat: flat bill, structured front, mesh back and an adjustable fit, with the HR logo up front. Nine colorways, $30 each.</p>
+  </div>
+  <div class="grid" id="grid"></div>
+ </div>
+</section>
+
+
+
+<footer>
+ <div class="wrap">
+  <a class="flogo" href="#top" aria-label="Herd Report home"><img class="lt" src="logo-light.png" alt="Herd Report"><img class="dk" src="logo.png" alt="Herd Report"></a>
+  <nav aria-label="Footer">
+   <a href="#host">About</a>
+   <a href="#episodes">Episodes</a>
+   <a href="blog.html">Blog</a>
+   <a href="guests.html">Past guests</a>
+   <a href="advertise.html">Advertise</a>
+   <a href="contact.html">Contact</a>
+   <a href="admin.html">Admin login</a>
+  </nav>
+  <div class="socials" style="display:flex">
+   <a href="https://www.youtube.com/@herdreportpodcast" aria-label="YouTube"><svg><use href="#i-yt"/></svg></a>
+   <a href="https://www.facebook.com/theherdreport" aria-label="Facebook"><svg><use href="#i-fb"/></svg></a>
+   <a href="https://www.instagram.com/herdreport/" aria-label="Instagram"><svg><use href="#i-ig"/></svg></a>
+   <a href="https://www.tiktok.com/@herd.report" aria-label="TikTok"><svg><use href="#i-tt"/></svg></a>
+  </div>
+  <small>© 2026 Herd Report Podcast. All rights reserved.</small>
+ </div>
+</footer>
+
+<script>
+{
+const SP="https://open.spotify.com/show/37IlQvHObaNPHxXoUcjEyz";
+const AP="https://podcasts.apple.com/us/podcast/id1835474334?mt=2&ls=1";
+const YT="https://www.youtube.com/@herdreportpodcast",SITE="https://www.herdreportpodcast.com/",APE="https://podcasts.apple.com/us/podcast/id1835474334?i=";
+const eps=[
+ {d:"Nov 16, 2026",a:"Spring Cove Ranch",b:"107 years of Angus genetics",s:"Art Butler and Josh Mavencamp on more than a century of breeding Angus.",t:"New",yt:"a0lLocyi3Tk",u:"107-years-of-angus-genetics-spring-cove-ranch-with-art-butler-josh-mavencamp",ap:"1000802334169"},
+ {d:"Nov 6, 2026",a:"Ginger Hill Angus",b:"Cattle that work",s:"Dr. Brooke Miller on 65+ years of breeding practical, functional cattle.",t:"Breeding",yt:"AAPt6YjdDGQ",u:"ginger-hill-angus-65-years-of-breeding-cattle-that-work-dr-brooke-miller",ap:"1000800260668"},
+ {d:"Oct 30, 2026",a:"Star Creek Angus",b:"2026 sale preview",s:"A walk through this year's bull and female offering.",t:"Sale preview",yt:"_52yUDumnlA",u:"star-creek-angus-the-bulls-females-2026-sale-preview",ap:"1000798976617"},
+ {d:"Oct 23, 2026",a:"Birch Creek",b:"Bull & female offering",s:"What's on offer from Birch Creek for 2026.",t:"Sale preview",yt:"lVgffZXgFPI",u:"birch-creek-bull-female-offering-2026",ap:"1000797838160"},
+ {d:"Oct 13, 2026",a:"Zach Beutler",b:"Beutler Cattle Co.",s:"A conversation with Zach Beutler about his operation.",t:"Interview",yt:"tammuKJSFwE",u:"zach-beutler-of-beutler-cattle-co",ap:"1000796210562"},
+ {d:"Oct 5, 2026",a:"Vision Angus",b:"Female offering",s:"Spotlight Series: a look at the Vision Angus females.",t:"Spotlight",yt:"Qm-4ViL8MYg",u:"spotlight-series-vision-angus-female-offering",ap:"1000793292794"},
+ {d:"Sep 25, 2026",a:"Delaney Cattle",b:"Summer tour",s:"Riding along on the Delaney Cattle summer tour.",t:"Tour",u:"delaney-cattle-summer-tour",ap:"1000791675272"},
+ {d:"Sep 17, 2026",a:"Macholan Angus",b:"Summer tour",s:"Out on the place with Macholan Angus.",t:"Tour",yt:"IMqVt7-R47k",u:"macholan-angus-summer-tour",ap:"1000790405617"},
+ {d:"Sep 11, 2026",a:"B-Gee Angus",b:"Ranch tour",s:"A tour of the B-Gee Angus program.",t:"Tour",yt:"_ydMPG_jvYs",u:"b-gee-angus-tour",ap:"1000789075325"}
+];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+document.getElementById('eps').innerHTML=eps.map((e,i)=>`
+ <article class="ep${i===0?' feature':''}">
+  ${e.yt?`<a class="thumb vid" href="https://www.youtube.com/watch?v=${esc(e.yt)}" data-yt="${esc(e.yt)}" aria-label="Play the ${esc(e.a)} video">
+    <span class="ph"><img src="logo-light.png" alt=""></span>
+    <img class="yt" src="https://i.ytimg.com/vi/${esc(e.yt)}/hqdefault.jpg" alt="" loading="lazy">
+    <span class="pb" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-play"/></svg></span></a>`
+  :`<a class="thumb" href="${SITE+e.u}/" aria-label="Open the ${esc(e.a)} episode"><span class="ph"><img src="logo-light.png" alt=""></span></a>`}
+  <div class="d"><span>${esc(e.d)}</span><span class="tag">${esc(e.t)}</span></div>
+  <h3><a href="${SITE+e.u}/">${esc(e.a)}<em>${esc(e.b)}</em></a></h3>
+  <p>${esc(e.s)}</p>
+  <div class="links">
+   ${e.yt?`<a class="btn lis watch" href="https://www.youtube.com/watch?v=${esc(e.yt)}"><svg><use href="#i-yt"/></svg>Watch</a>`:''}
+   <a class="btn lis" href="${SITE+e.u}/"><svg><use href="#i-play"/></svg>Listen</a>
+   <a href="${APE+e.ap}" aria-label="${esc(e.a)} on Apple Podcasts"><svg><use href="#i-ap"/></svg></a>
+   <a href="${SP}" aria-label="Herd Report on Spotify"><svg><use href="#i-sp"/></svg></a>
+  </div>
+ </article>`).join('');
+
+const HATS=[
+ {id:44931246817369,n:"Gray",img:"hats/gray.jpg",c:"#8F8F8C",m:"#7c7c79"},
+ {id:44931246850137,n:"White",img:"hats/white.jpg",c:"#F7F6F2",m:"#e6e4de",out:true},
+ {id:44931246882905,n:"Carmel",img:"hats/carmel.jpg",c:"#B37A44",m:"#9c6837"},
+ {id:44931246915673,n:"Red",img:"hats/red.jpg",c:"#A4262C",m:"#8a1f24"},
+ {id:44931246948441,n:"Charcoal",img:"hats/charcoal.jpg",c:"#3B3B3D",m:"#2f2f31"},
+ {id:44931246981209,n:"Camouflage",img:"hats/camo.jpg",c:"url(#camo)",m:"#6b6a4c"},
+ {id:44931247013977,n:"Orange",img:"hats/orange.jpg",c:"#E2661C",m:"#c55514"},
+ {id:44931330768985,n:"Black/Gray",img:"hats/black-gray.jpg",c:"#141414",m:"#8F8F8C"},
+ {id:44931330801753,n:"Charcoal/White",img:"hats/charcoal-white.jpg",c:"#3B3B3D",m:"#F2F1ED"}
+];
+const PRICE=30;
+const hatSVG=h=>`<svg viewBox="0 0 300 200" role="img" aria-label="${esc(h.n)} Signature Hat"><defs><pattern id="camo" width="60" height="60" patternUnits="userSpaceOnUse"><rect width="60" height="60" fill="#7b7656"/><path d="M5 10q12-8 22 2t-4 18q-14 4-18-8z" fill="#4e4a33"/><path d="M34 30q14-6 20 6t-10 16q-12 0-10-22z" fill="#a39b74"/><path d="M8 40q8-4 14 4t-8 10q-8-2-6-14z" fill="#3a3626"/></pattern></defs>
+ <ellipse cx="150" cy="180" rx="118" ry="9" fill="#000" opacity=".18"/>
+ <path d="M40 132Q38 42 150 38Q262 42 258 132Z" fill="${h.m}" stroke="#0B0B0D" stroke-width="4"/>
+ <path d="M40 132Q38 42 150 38Q200 40 214 132Z" fill="${h.c}" stroke="#0B0B0D" stroke-width="3"/>
+ <path d="M214 132Q232 80 230 56M238 132Q250 96 246 70" stroke="#0B0B0D" stroke-width="1.5" fill="none" opacity=".3" stroke-dasharray="3 4"/>
+ <path d="M34 130Q150 118 266 130Q296 140 286 158Q150 172 46 152Q22 146 34 130Z" fill="${h.c}" stroke="#0B0B0D" stroke-width="3"/>
+ <rect x="94" y="66" width="96" height="50" rx="8" fill="#F3EFE7" stroke="#0B0B0D" stroke-width="3"/>
+ <image href="mark.png" x="114" y="72" width="56" height="39"/>
+ <circle cx="150" cy="40" r="6" fill="#0B0B0D"/></svg>`;
+const pic=h=>h.img?`<img src="${esc(h.img)}" alt="${esc(h.n)} Signature Hat">`:hatSVG(h);
+const money=v=>"$"+v.toFixed(2);
+const card=(h,dup)=>`
+ <article class="item"${dup?' aria-hidden="true"':''}>
+  <div class="ph">${pic(h)}${h.out?'<span class="so">Sold out</span>':''}</div>
+  <div class="bd">
+   <div class="row"><h3>${esc(h.n).replace("/","/<wbr>")}</h3><span class="pr">${money(PRICE)}</span></div>
+   <small>Signature Hat · adjustable · one size</small>
+   <button class="btn add" data-id="${h.id}" ${h.out?'disabled':''}${dup?' tabindex="-1"':''}>${h.out?'Sold out':'Add to cart'}</button>
+  </div>
+ </article>`;
+document.getElementById('grid').innerHTML=HATS.map(h=>card(h)).join('');
+const four=HATS.slice(0,4);
+document.getElementById('track').innerHTML=four.map(h=>card(h)).join('')+four.map(h=>card(h,true)).join('');
+const badge=()=>{const n=window.Cart?Cart.count():0;document.getElementById('count').textContent=n||'';document.getElementById('cartbtn').setAttribute('aria-label',`Open cart, ${n} item${n===1?'':'s'}`)};
+window.addEventListener('hr-cart',badge);
+const onAdd=e=>{const b=e.target.closest('.add');if(!b||b.disabled||!window.Cart)return;const h=HATS.find(x=>String(x.id)===b.dataset.id);
+ Cart.addHat({id:h.id,n:h.n,price:PRICE,img:h.img||''});b.textContent='Added ✓';setTimeout(()=>b.textContent='Add to cart',1200);Cart.open()};
+document.getElementById('grid').addEventListener('click',onAdd);
+document.getElementById('ticker').addEventListener('click',onAdd);
+/* hat ticker: auto-scrolls, stops when touched/hovered/dragged, scrolls either way, then resumes */
+{const tk=document.getElementById('ticker'),tr=document.getElementById('track');
+ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ let hold=false,hover=false,idleUntil=0,pos=0,last=0;
+ const half=()=>tr.scrollWidth/2;
+ const wrap=()=>{const h=half();if(h<=0)return;if(tk.scrollLeft>=h)tk.scrollLeft-=h;else if(tk.scrollLeft<=0)tk.scrollLeft+=h};
+ const pause=(ms=2500)=>{idleUntil=performance.now()+ms};
+ function tick(t){const dt=last?Math.min(64,t-last):16;last=t;
+  if(!reduce&&!hold&&!hover&&t>idleUntil&&!document.hidden){pos=(pos||tk.scrollLeft)+dt*0.035;tk.scrollLeft=pos;wrap();pos=tk.scrollLeft}else pos=tk.scrollLeft;
+  requestAnimationFrame(tick)}
+ requestAnimationFrame(tick);
+ tk.addEventListener('scroll',()=>{if(hold||hover||performance.now()<idleUntil)wrap()},{passive:true});
+ tk.addEventListener('mouseenter',()=>hover=true);tk.addEventListener('mouseleave',()=>{hover=false;pause(800)});
+ tk.addEventListener('touchstart',()=>{hold=true},{passive:true});tk.addEventListener('touchend',()=>{hold=false;pause()},{passive:true});
+ tk.addEventListener('wheel',()=>pause(),{passive:true});tk.addEventListener('focusin',()=>pause(6000));
+ let sx=0,sl=0,moved=false,down=false;
+ tk.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button!==0||e.target.closest('button'))return;down=true;moved=false;sx=e.clientX;sl=tk.scrollLeft;hold=true});
+ addEventListener('pointermove',e=>{if(!down)return;const dx=e.clientX-sx;if(Math.abs(dx)>4){moved=true;tk.classList.add('drag')}tk.scrollLeft=sl-dx;wrap();if(tk.scrollLeft!==sl-dx){sl=tk.scrollLeft+dx}});
+ addEventListener('pointerup',()=>{if(!down)return;down=false;hold=false;pause();setTimeout(()=>tk.classList.remove('drag'),0)});
+ tk.addEventListener('click',e=>{if(moved){e.preventDefault();e.stopPropagation();moved=false}},true);
+ const step=d=>{pause(5000);const w=(tr.firstElementChild?.offsetWidth||280)+20;if(d<0&&tk.scrollLeft<w)tk.scrollLeft+=half();tk.scrollBy({left:d*w,behavior:'smooth'})};
+ document.getElementById('hatPrev').onclick=()=>step(-1);document.getElementById('hatNext').onclick=()=>step(1);
+ requestAnimationFrame(()=>{tk.scrollLeft=1})}
+document.getElementById('cartbtn').addEventListener('click',()=>window.Cart&&Cart.open());
+const mainEl=document.querySelector('main'),storeEl=document.getElementById('store');
+const route=()=>{const st=location.hash==='#store';mainEl.hidden=st;storeEl.hidden=!st;
+ if(st){window.scrollTo(0,0)}else if(location.hash&&location.hash!=='#top'){const t=document.getElementById(location.hash.slice(1));if(t)t.scrollIntoView()}else{window.scrollTo(0,0)}};
+window.addEventListener('hashchange',route);route();
+document.querySelectorAll('.vid').forEach(a=>{const im=a.querySelector('img.yt');const ok=()=>{if(im.naturalWidth>0)a.classList.add('ok')};
+ if(im.complete)ok();im.addEventListener('load',ok);
+ a.addEventListener('click',e=>{if(!a.classList.contains('ok')||location.protocol==='file:')return;e.preventDefault();
+  const f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(a.dataset.yt)+'?autoplay=1&rel=0';
+  f.title='Herd Report video';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;
+  const d=document.createElement('div');d.className=a.classList.contains('lthumb')?'thumb lthumb':'thumb';d.appendChild(f);a.replaceWith(d);});});
+{const rail=document.getElementById('eps'),pv=document.getElementById('prevEp'),nx=document.getElementById('nextEp');
+ const step=()=>{const c=rail.querySelector('.ep');return c?c.getBoundingClientRect().width+20:300};
+ const upd=()=>{pv.disabled=rail.scrollLeft<=4;nx.disabled=rail.scrollLeft+rail.clientWidth>=rail.scrollWidth-4};
+ pv.addEventListener('click',()=>rail.scrollBy({left:-step(),behavior:'smooth'}));
+ nx.addEventListener('click',()=>rail.scrollBy({left:step(),behavior:'smooth'}));
+ rail.addEventListener('scroll',upd,{passive:true});window.addEventListener('resize',upd);upd();
+ document.getElementById('allEps').addEventListener('click',e=>{rail.classList.remove('rail');rail.scrollLeft=0;document.getElementById('arrows').hidden=true;
+  e.currentTarget.hidden=true;e.currentTarget.setAttribute('aria-expanded','true');document.getElementById('archive').hidden=false});}
+window.addEventListener('load',()=>{if(!window.HR)return;
+ Promise.all([HR.API.settings(),HR.API.usage()]).then(([st,use])=>{
+  const weeks=HR.upcoming(st.weeksAhead||16,st.releaseDay??1);const left=(d,k)=>(st.capacity[k]??1)-(use[d+'|'+k]||0);
+  const short=d=>new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  document.getElementById('homeRates').innerHTML=HR.SLOTS.map(k=>{const nx=weeks.find(w=>left(w,k)>0);
+   return `<a class="rc-row${nx?'':' full'}" href="advertise.html#shop"><b>${HR.PLACE[k]}<small>${nx?'Next open: '+short(nx):'Booked for the next '+weeks.length+' weeks'}</small></b><span>${HR.money(st.rates[k])}</span><i>${nx?'Book →':'Waitlist'}</i></a>`}).join('');
+  const first=weeks[0],open=HR.SLOTS.filter(k=>left(first,k)>0).length;
+  document.getElementById('nextEpisode').innerHTML=`Next episode ${short(first)} <b>${open} of ${HR.SLOTS.length} spots open</b>`;
+ }).catch(()=>{});
+});
+fetch('data/stats.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(d=>{if(!d||!d.platforms)return;const p=d.platforms;
+ const c=n=>n>=1e6?(n/1e6).toFixed(1).replace(/\.0$/,'')+'M':n>=1e4?Math.round(n/1e3)+'K':n>=1e3?(n/1e3).toFixed(1).replace(/\.0$/,'')+'K':String(n);
+ const r=v=>Number(v).toFixed(1)+'★';
+ const t=[['i-ig','Instagram',p.instagram?.followers,'followers'],['i-fb','Facebook',p.facebook?.followers,'followers'],
+  ['i-yt','YouTube',p.youtube?.subscribers,'subscribers'+(p.youtube?.views?' · '+c(p.youtube.views)+' views':'')],
+  ['i-tt','TikTok',p.tiktok?.followers,'followers'+(p.tiktok?.likes?' · '+c(p.tiktok.likes)+' likes':'')],
+  ['i-ap','Apple Podcasts',p.apple?.rating,p.apple?.ratings?p.apple.ratings+' ratings':'',1],['i-sp','Spotify',p.spotify?.rating,p.spotify?.ratings?p.spotify.ratings+' ratings':'',1]].filter(x=>x[2]!=null);
+ const U={"Instagram": "https://www.instagram.com/herdreport/", "Facebook": "https://www.facebook.com/theherdreport", "YouTube": "https://www.youtube.com/@herdreportpodcast", "TikTok": "https://www.tiktok.com/@herd.report", "Apple Podcasts": "https://podcasts.apple.com/us/podcast/id1835474334", "Spotify": "https://open.spotify.com/show/37IlQvHObaNPHxXoUcjEyz"};
+ if(t.length)document.getElementById('sts').innerHTML=t.map(([i,n,v,l,star])=>`<a class="st" href="${U[n]}" target="_blank" rel="noopener"><span class="pl"><svg><use href="#${i}"/></svg>${n}</span><b>${star?r(v):c(v)}</b><small>${l}</small></a>`).join('');
+ if(d.totalFollowers)document.querySelector('#ntot b').textContent=(Math.floor(d.totalFollowers/1000))+'K+';
+ if(d.totalFollowers)document.getElementById('pfTotal').textContent=(Math.floor(d.totalFollowers/1000))+'K+';
+ if(p.youtube?.views)document.getElementById('pfViews').textContent=(Math.floor(p.youtube.views/1000))+'K+';
+ if(p.apple?.rating)document.getElementById('pfRating').textContent=Number(p.apple.rating).toFixed(1)+'★';
+ if(d.updated)document.getElementById('asof').textContent='Updated '+new Date(d.updated).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+}).catch(()=>{});
+const btn=document.getElementById('menubtn'),menu=document.getElementById('menu');
+const ms=document.getElementById('mscrim'),lbl=document.getElementById('menulbl');
+const setMenu=o=>{menu.classList.toggle('open',o);ms.classList.toggle('open',o);btn.setAttribute('aria-expanded',o);lbl.textContent=o?'Close':'Menu';if(o)setTimeout(()=>menu.focus({preventScroll:true}),60)};
+btn.addEventListener('click',()=>setMenu(!menu.classList.contains('open')));
+menu.addEventListener('click',e=>{if(e.target.closest('a'))setMenu(false)});
+ms.addEventListener('click',()=>setMenu(false));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&menu.classList.contains('open')){setMenu(false);btn.focus()}});
+}
+</script>
+<script>
+addEventListener('DOMContentLoaded',()=>{if(!window.HR)return;const {esc}=HR;
+ HR.API.publicReviews().then(rs=>{if(!rs.length)return;const el=document.getElementById('reviews'),tr=document.getElementById('rtrack');
+  const avg=rs.reduce((a,r)=>a+r.rating,0)/rs.length;
+  document.getElementById('ravgS').textContent='★'.repeat(Math.round(avg));document.getElementById('ravg').textContent=avg.toFixed(1)+' from '+rs.length+' review'+(rs.length>1?'s':'');
+  const card=(r,dup)=>`<figure class="rvc"${dup?' aria-hidden="true"':''}><span class="rst" aria-label="${r.rating} out of 5 stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span>
+   <blockquote>${esc(r.text)}</blockquote><figcaption>${r.sample?`<b>${esc(r.place||'Listener')}<span class="tag">Sample</span></b>`:`<b>${esc(r.name)}</b>${esc(r.place||'')}`}</figcaption></figure>`;
+  let list=rs;while(list.length<6)list=list.concat(rs);
+  tr.innerHTML=list.map(r=>card(r)).join('')+list.map(r=>card(r,1)).join('');el.hidden=false}).catch(()=>{});
+});
+</script>
+<script>
+addEventListener('DOMContentLoaded',()=>{if(!window.HR)return;HR.API.current().then(u=>{if(!u)return;
+ const box=document.getElementById('acct'),lnk=document.getElementById('acctLink');box.hidden=false;
+ if(u.role==='admin'){lnk.textContent='Admin';lnk.href='admin.html'}
+ document.querySelectorAll('#menu a[href="account.html"]').forEach(a=>{if(u.role!=='admin')a.textContent='My dashboard';
+  a.parentElement.insertAdjacentHTML('afterend','<li><a href="#" id="menuSignout">Sign out</a></li>')});
+ const out=async e=>{e.preventDefault();await HR.API.signOut();location.reload()};
+ document.getElementById('signout').onclick=out;document.getElementById('menuSignout')?.addEventListener('click',out);
+}).catch(()=>{})});
+</script>
+<script>
+/* V2 immersive scroll */
+addEventListener('DOMContentLoaded',()=>{
+ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches,desk=()=>innerWidth>760;
+ const R=document.documentElement,hero=document.querySelector('.hero'),bar=document.getElementById('v2bar');
+ // reveals
+ const mark=(sel,type,stagger)=>document.querySelectorAll(sel).forEach((el,i)=>{el.dataset.rv=type||'';if(stagger)el.style.setProperty('--d',(i%6)*.08+'s')});
+ mark('.sh h2, .sh .kick, .sh p','');mark('.aud .why li','left',1);mark('.nums .st','zoom',1);mark('.ticker','right');mark('.host .portrait','left');mark('.host .wrap > div:last-child','right');
+ mark('.revs .sh','');mark('.big a','',1);mark('#episodes .more, .shop .more','');
+ const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{rootMargin:'0px 0px -12% 0px'});
+ const watch=()=>document.querySelectorAll('[data-rv]:not(.in)').forEach(el=>io.observe(el));watch();
+ new MutationObserver(watch).observe(document.body,{childList:true,subtree:true});
+ // episodes pin
+ const pin=document.getElementById('v2pin'),sec=document.getElementById('episodes'),rail=document.getElementById('eps');
+ const hint=document.createElement('div');hint.className='v2hint wrap';hint.innerHTML='<span>Keep scrolling</span><i></i><span id="v2n"></span>';sec.querySelector('.wrap').appendChild(hint);
+ let extra=0;
+ const size=()=>{if(reduce||!desk()||rail.classList.contains('grid')||!rail.classList.contains('rail')){pin.style.height='';hint.hidden=true;extra=0;return}
+  extra=Math.max(0,rail.scrollWidth-rail.clientWidth);hint.hidden=!extra;pin.style.height=(sec.offsetHeight+extra+64)+'px'};
+ const clamp=v=>Math.max(0,Math.min(1,v));
+ function frame(){
+  const y=scrollY,vh=innerHeight;
+  bar.style.transform=`scaleX(${clamp(y/(R.scrollHeight-vh))})`;
+  if(!reduce){hero.style.setProperty('--p',clamp(y/(hero.offsetHeight||vh)).toFixed(3));
+   if(extra){const top=pin.getBoundingClientRect().top;const p=clamp(-top/extra);rail.scrollLeft=p*extra;sec.style.setProperty('--ep',p.toFixed(3))}
+   const hp=document.querySelector('.host .portrait');if(hp){const r=hp.getBoundingClientRect();hp.style.setProperty('--hp',clamp((vh-r.top)/(vh+r.height)).toFixed(3))}
+   const so=document.querySelector('.signoff');if(so){const r=so.getBoundingClientRect();so.style.setProperty('--cp',clamp((vh-r.top)/(vh*.6)).toFixed(3))}}
+ }
+ let tick=false;addEventListener('scroll',()=>{if(!tick){tick=true;requestAnimationFrame(()=>{frame();tick=false})}},{passive:true});
+ addEventListener('resize',()=>{size();frame()});
+ document.getElementById('allEps')?.addEventListener('click',()=>setTimeout(()=>{size();frame()},60));
+ new MutationObserver(()=>{size();frame()}).observe(rail,{childList:true,attributes:true,attributeFilter:['class']});
+ setTimeout(()=>{size();frame()},300);size();frame();
+});
+</script>
+</body>
+</html>

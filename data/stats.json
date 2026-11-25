@@ -1,0 +1,12 @@
+{
+  "updated": "2026-11-25T19:40:00.000Z",
+  "platforms": {
+    "instagram": { "followers": 24000, "posts": 940, "updated": "2026-11-25T19:40:00.000Z" },
+    "facebook": { "followers": 9159, "updated": "2026-11-25T19:40:00.000Z" },
+    "youtube": { "subscribers": 5780, "views": 83228, "updated": "2026-11-25T19:40:00.000Z" },
+    "tiktok": { "followers": 3898, "likes": 23700, "updated": "2026-11-25T19:40:00.000Z" },
+    "apple": { "rating": 4.9, "ratings": 16, "updated": "2026-11-25T19:40:00.000Z" },
+    "spotify": { "rating": 5, "ratings": 9, "updated": "2026-11-25T19:40:00.000Z" }
+  },
+  "totalFollowers": 42837
+}

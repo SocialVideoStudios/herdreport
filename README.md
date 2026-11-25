@@ -44,3 +44,10 @@ The anon key is designed to be public. The row-level security rules in `schema.s
 - Card payments: the "Pay invoice" button is disabled until Stripe is connected. For now Scott invoices outside the site and marks bookings paid in the dashboard.
 - Email notifications for new requests and approvals (Supabase can send these with a database webhook or an Edge Function).
 - File uploads: clients share a link to their logo or files instead.
+
+## Audience numbers (updated automatically)
+The homepage stats (Instagram, Facebook, YouTube, TikTok, Apple Podcasts, Spotify) come from `data/stats.json`.
+A GitHub Action (`.github/workflows/update-stats.yml`) runs `scripts/update-stats.mjs` every day, reads each platform's public page and commits new numbers when they change. The site then redeploys on its own.
+- Run it any time: GitHub → **Actions** → **Update audience stats** → **Run workflow**.
+- If a platform blocks the lookup, the last known number stays on the site; the job log shows `keep` for that platform.
+- For exact YouTube numbers, add a free YouTube Data API key as a repository secret named `YT_API_KEY`.

@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Herd Report Podcast</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: loud, friendly, ranch-radio poster, like a show that's having fun
+   IDEA: a cattle brand burned into a sale-barn poster; the HR brand is the show's "ring"
+   PICTURE: a big rotating brand stamp in the hero, a drawn Signature Hat in merch
+   COLOUR and TYPE: Herd Report red, ink, cream; Archivo 900 shouting, IBM Plex Sans talking
+   LAYOUT: utility bar, header, hero, merch, host, episodes, closing links, footer (New Heights order) */
+:root{color-scheme:light dark;
+--bg:light-dark(#F3EFE7,#141012);--ink:light-dark(#0B0B0D,#F3EFE7);--red:#85272C;--red2:light-dark(#85272C,#B8414A);
+--card:light-dark(#FFFFFF,#1E181A);--line:light-dark(#0B0B0D,#F3EFE7);--soft:light-dark(#5a5450,#bdb4ab);--cream:#F3EFE7}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "IBM Plex Sans",system-ui,sans-serif;overflow-x:clip}
+a{color:inherit}
+h1,h2,h3,.disp{font-family:Archivo,Impact,sans-serif;font-weight:900;line-height:1.02;text-transform:uppercase;margin:0;text-wrap:balance}
+.wrap{max-width:1240px;margin:0 auto}
+.band{padding:clamp(40px,6vw,88px) max(5vw,16px)}
+:focus-visible{outline:3px solid var(--red2);outline-offset:3px}
+
+/* utility bar */
+.util{background:var(--red);color:var(--cream);font-size:14px;font-weight:500}
+.util .wrap{display:flex;flex-wrap:wrap;gap:4px 22px;justify-content:center;padding:8px 16px}
+.util a{text-decoration:none;padding:4px 0}.util a:hover{text-decoration:underline}
+
+/* header */
+header{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:2px solid var(--line)}
+header .wrap{display:flex;align-items:center;gap:16px;padding:10px max(5vw,16px)}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;margin-right:auto}
+.logo img{height:40px;width:auto;flex:none}
+.dk{display:none}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .lt{display:none}:root:not([data-theme=light]) .dk{display:block}}
+:root[data-theme=dark] .lt{display:none}:root[data-theme=dark] .dk{display:block}
+.flogo img{height:64px;width:auto}
+.logo b{font:900 22px/1 Archivo,sans-serif;text-transform:uppercase;letter-spacing:-.01em}
+.socials{display:flex;gap:4px}
+.socials a{display:grid;place-items:center;width:44px;height:44px;border-radius:50%}
+.socials a:hover{background:color-mix(in srgb,var(--red) 14%,transparent)}
+.socials svg{width:20px;height:20px;fill:currentColor}
+.menubtn{font:700 15px Archivo,sans-serif;text-transform:uppercase;background:var(--ink);color:var(--bg);border:0;border-radius:999px;padding:0 20px;height:44px;cursor:pointer}
+nav.menu{display:none;border-top:2px solid var(--line);background:var(--bg)}
+nav.menu.open{display:block}
+nav.menu ul{list-style:none;margin:0 auto;padding:16px max(5vw,16px) 28px;max-width:1240px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:4px 24px}
+nav.menu a{display:block;font:900 clamp(26px,4vw,38px)/1.25 Archivo,sans-serif;text-transform:uppercase;text-decoration:none;padding:4px 0}
+nav.menu a:hover{color:var(--red2)}
+
+/* hero */
+.hero{position:relative;border-bottom:2px solid var(--line);overflow:hidden}
+.hero .wrap{position:relative;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:center}
+.kick{font:700 17px Archivo,sans-serif;color:var(--red2);margin:0 0 14px}
+.hero h1{font-size:clamp(46px,7.6vw,108px);line-height:.92;letter-spacing:-.02em}
+.hero p.lede{font-size:18px;max-width:34em;margin:22px 0 28px}
+.btns{display:flex;flex-wrap:wrap;gap:12px}
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 24px;border-radius:999px;font:700 16px Archivo,sans-serif;text-transform:uppercase;text-decoration:none;border:2px solid var(--line)}
+.btn.solid{background:var(--red);color:var(--cream);border-color:var(--red)}
+.btn.solid:hover{filter:brightness(1.12)}
+.btn:not(.solid):hover{background:var(--ink);color:var(--bg)}
+.btn svg{width:18px;height:18px;fill:currentColor}
+.stamp{position:relative;aspect-ratio:1;width:100%;max-width:480px;justify-self:center}
+.stamp svg{width:100%;height:100%;overflow:visible}
+.ring{transform-origin:250px 250px;animation:spin 40s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.ring,.marquee span{animation:none}}
+.latest{margin-top:clamp(28px,4vw,48px);display:flex;align-items:center;gap:16px;background:var(--ink);color:var(--bg);border-radius:18px;padding:14px 18px;flex-wrap:wrap}
+.latest .play{flex:none;width:52px;height:52px;border-radius:50%;background:var(--red);display:grid;place-items:center;text-decoration:none}
+.latest .play svg{width:20px;fill:var(--cream);margin-left:3px}
+.latest small{display:block;font-size:13px;opacity:.75}
+.latest strong{font:700 17px/1.25 Archivo,sans-serif}
+.latest .t{flex:1 1 260px}
+
+/* marquee */
+.marquee{background:var(--red);color:var(--cream);overflow:hidden;white-space:nowrap;border-bottom:2px solid var(--line)}
+.marquee span{display:inline-block;font:900 clamp(22px,3vw,34px)/1 Archivo,sans-serif;text-transform:uppercase;padding:14px 0;animation:slide 30s linear infinite}
+@keyframes slide{to{transform:translateX(-50%)}}
+
+/* section heads */
+.sh{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px 24px;margin-bottom:clamp(24px,3vw,40px)}
+.sh h2{font-size:clamp(40px,6vw,76px);letter-spacing:-.015em}
+.sh p{margin:0;max-width:30em;color:var(--soft)}
+
+/* merch */
+.merch .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,4vw,64px);align-items:center}
+.hatbox{background:var(--red);border-radius:28px;aspect-ratio:5/4;display:grid;place-items:center;position:relative;border:2px solid var(--line)}
+.hatbox svg{width:78%}
+.price{position:absolute;top:18px;right:18px;background:var(--cream);color:#0B0B0D;border-radius:999px;padding:8px 16px;font:900 22px Archivo,sans-serif}
+.merch ul{padding-left:20px;margin:18px 0 26px}
+.merch li{margin:4px 0}
+
+/* shop */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:20px}
+.item{background:var(--card);border:2px solid var(--line);border-radius:22px;overflow:hidden;display:flex;flex-direction:column}
+.item .ph{aspect-ratio:5/4;display:grid;place-items:center;background:light-dark(#E9E3D8,#2a2325);border-bottom:2px solid var(--line);position:relative}
+.item .ph img{width:100%;height:100%;object-fit:contain;background:#fff}
+.item .ph svg{width:82%}
+.item .so{position:absolute;top:12px;left:12px;background:var(--ink);color:var(--bg);border-radius:999px;padding:4px 12px;font-size:13px;font-weight:600}
+.item .bd{padding:16px 18px 18px;display:flex;flex-direction:column;gap:12px;flex:1}
+.item .row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 12px}
+.item h3{font-size:22px;flex:1 1 auto;min-width:0;overflow-wrap:anywhere}
+.item .pr{font:900 20px Archivo,sans-serif;white-space:nowrap;flex:none}
+.item small{color:var(--soft);font-size:14px}
+.add{margin-top:auto;width:100%;justify-content:center;cursor:pointer;background:var(--red);color:var(--cream);border-color:var(--red)}
+.add:hover{filter:brightness(1.12)}
+.add[disabled]{background:transparent;color:var(--soft);border-color:var(--soft);cursor:not-allowed;filter:none}
+.note{font-size:13px;color:var(--soft);margin:18px 0 0}
+.cartbtn{position:relative;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:none;color:inherit;cursor:pointer}
+.cartbtn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2}
+.cartbtn b{position:absolute;top:-6px;right:-6px;min-width:22px;height:22px;border-radius:11px;background:var(--red);color:var(--cream);font:700 12px/22px "IBM Plex Sans",sans-serif;text-align:center;padding:0 5px}
+.cartbtn b:empty{display:none}
+.scrim{position:fixed;inset:0;background:rgb(0 0 0/.45);z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,100%);background:var(--bg);border-left:2px solid var(--line);z-index:41;transform:translateX(100%);transition:transform .25s;display:flex;flex-direction:column}
+body.cart-open .scrim{opacity:1;pointer-events:auto}body.cart-open .drawer{transform:none}
+.drawer .top{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:2px solid var(--line)}
+.drawer h2{font-size:30px}
+.x{width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:none;color:inherit;font-size:22px;cursor:pointer}
+.lines{flex:1;overflow:auto;padding:8px 20px}
+.line{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 20%,transparent)}
+.line .th{width:64px;height:52px;border-radius:10px;background:light-dark(#E9E3D8,#2a2325);display:grid;place-items:center;overflow:hidden}
+.line .th svg,.line .th img{width:100%;height:100%;object-fit:cover}
+.line strong{display:block;font-size:15px}.line span{font-size:14px;color:var(--soft)}
+.qty{display:flex;align-items:center;gap:2px}
+.qty button{width:36px;height:36px;border-radius:50%;border:2px solid var(--line);background:none;color:inherit;font-size:18px;cursor:pointer}
+.qty output{min-width:24px;text-align:center;font-weight:600}
+.empty{color:var(--soft);padding:24px 0}
+.foot{padding:16px 20px 22px;border-top:2px solid var(--line)}
+.foot .row{display:flex;justify-content:space-between;font:900 22px Archivo,sans-serif;text-transform:uppercase;margin-bottom:4px}
+.foot small{display:block;color:var(--soft);font-size:13px;margin-bottom:14px}
+.foot .btn{width:100%;justify-content:center;cursor:pointer}
+.pending{display:none;margin-top:12px;font-size:14px;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:12px 14px}
+.pending.show{display:block}
+@media (prefers-reduced-motion:reduce){.drawer,.scrim{transition:none}}
+
+.ticker{overflow:hidden;margin:0 calc(-1*max(5vw,16px));padding:4px 0;-webkit-mask:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent);mask:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent)}
+.track{display:flex;gap:20px;width:max-content;animation:tick 32s linear infinite}
+.ticker:hover .track,.ticker:focus-within .track{animation-play-state:paused}
+.track .item{width:clamp(240px,26vw,300px);flex:none}
+@keyframes tick{to{transform:translateX(calc(-50% - 10px))}}
+@media (prefers-reduced-motion:reduce){.track{animation:none}.ticker{overflow-x:auto;-webkit-mask:none;mask:none}}
+.back{display:inline-block;font-weight:600;text-decoration:none;padding:10px 0;margin-bottom:12px}
+.back:hover{text-decoration:underline}
+
+/* host */
+.host{background:var(--ink);color:var(--bg)}
+.host .wrap{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(24px,4vw,64px);align-items:center}
+.portrait{aspect-ratio:4/5;border-radius:28px;background:var(--red);position:relative;overflow:hidden;display:grid;place-items:end start;padding:24px}
+.portrait svg{position:absolute;inset:0;width:100%;height:100%}
+.portrait .nm{position:relative;font:900 clamp(44px,6vw,80px)/.9 Archivo,sans-serif;text-transform:uppercase;color:var(--cream)}
+.host h2{font-size:clamp(40px,5.5vw,68px);margin-bottom:18px}
+.host p{font-size:17px;max-width:36em}
+.breeds{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;padding:0;list-style:none}
+.breeds li{border:2px solid currentColor;border-radius:999px;padding:6px 14px;font-weight:600;font-size:14px}
+.host .btn{border-color:var(--bg)}.host .btn:not(.solid):hover{background:var(--bg);color:var(--ink)}
+
+/* episodes */
+.eps{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:20px}
+.ep{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:12px;transition:transform .15s}
+.ep:hover{transform:translateY(-3px)}
+.ep .d{display:flex;justify-content:space-between;gap:8px;font-size:14px;color:var(--soft)}
+.ep .tag{background:var(--red);color:var(--cream);border-radius:999px;padding:2px 10px;font-weight:600;font-size:13px;white-space:nowrap}
+.ep h3{font-size:clamp(24px,2.4vw,30px);line-height:1}
+.ep h3 a{text-decoration:none}.ep h3 a:hover{text-decoration:underline}
+.thumb{display:block;position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;border:2px solid var(--line);background:#0B0B0D}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb img.yt{position:absolute;inset:0;opacity:0;transition:opacity .2s}
+.thumb.ok img.yt{opacity:1}
+.thumb iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.pb{position:absolute;left:50%;top:50%;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:50%;background:rgb(133 39 44/.92);border:3px solid #F3EFE7;display:grid;place-items:center;transition:transform .15s}
+.pb svg{width:24px;height:24px;fill:#F3EFE7;margin-left:4px}
+.vid:hover .pb{transform:scale(1.08)}
+.thumb .ph{display:grid;place-items:center;width:100%;height:100%;background:#85272C}
+.thumb .ph img{width:42%;height:auto;object-fit:contain}
+.ep.feature .thumb{border-color:var(--cream)}.ep.feature .thumb .ph{background:#0B0B0D}
+.ep .links{flex-wrap:wrap}
+.ep .links a.lis{width:auto;height:auto;border-radius:999px;padding:0 16px;font-size:14px;min-height:44px;flex:1 1 90px;display:inline-flex;justify-content:center;gap:8px}
+.ep .links a.lis svg{width:16px;height:16px;flex:none}
+.ep .links a.watch{background:var(--ink);color:var(--bg)}.ep .links a.watch:hover{background:var(--red);border-color:var(--red);color:var(--cream)}
+.ep.feature .links a.watch{background:var(--cream);color:#85272C}
+.ep h3 em{display:block;font-style:normal;color:var(--red2)}
+.ep p{margin:0;color:var(--soft);font-size:15px}
+.ep .links{margin-top:auto;display:flex;gap:8px;padding-top:6px}
+.ep .links a{width:44px;height:44px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center}
+.ep .links a:hover{background:var(--ink);color:var(--bg)}
+.ep .links svg{width:18px;height:18px;fill:currentColor}
+.ep.feature{background:var(--red);color:var(--cream);border-color:var(--red)}
+.ep.feature .d,.ep.feature p{color:#f1dcdc}.ep.feature h3 em{color:var(--cream);opacity:.8}
+.ep.feature .tag{background:var(--cream);color:#85272C}
+.ep.feature .links a{border-color:var(--cream)}
+.more{text-align:center;margin-top:36px}
+
+/* closing */
+.closing{border-top:2px solid var(--line)}
+.big{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:2px solid var(--line)}
+.big a{display:flex;flex-direction:column;justify-content:space-between;gap:28px;min-height:220px;padding:28px max(3vw,16px);text-decoration:none;border-right:2px solid var(--line)}
+.big a:last-child{border-right:0}
+.big a:hover{background:var(--red);color:var(--cream)}
+.big b{font:900 clamp(34px,4.5vw,60px)/.95 Archivo,sans-serif;text-transform:uppercase}
+.big span{display:flex;justify-content:space-between;align-items:center;font-weight:500}
+.big svg{width:34px;height:34px;fill:none;stroke:currentColor;stroke-width:2.5}
+.signoff{font:900 clamp(56px,13vw,200px)/.85 Archivo,sans-serif;text-transform:uppercase;text-align:center;color:var(--red2);letter-spacing:-.03em;padding:clamp(36px,6vw,80px) 16px}
+
+footer{background:var(--ink);color:var(--bg)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:16px 32px;align-items:center;justify-content:space-between;padding:28px max(5vw,16px)}
+footer nav{display:flex;flex-wrap:wrap;gap:4px 20px;font-size:15px}
+footer nav a{text-decoration:none;padding:6px 0}footer nav a:hover{text-decoration:underline}
+footer small{opacity:.7}
+
+@media(max-width:860px){
+ .hero .wrap,.merch .wrap,.host .wrap{grid-template-columns:minmax(0,1fr)}
+ .stamp{max-width:340px;grid-row:1}
+ .big{grid-template-columns:minmax(0,1fr)}.big a{border-right:0;border-bottom:2px solid var(--line);min-height:150px}
+}
+@media(max-width:600px){
+ .socials{display:none}.logo b{font-size:18px}
+ .stamp{max-width:260px}
+ .hero p.lede{font-size:17px}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <symbol id="i-sp" viewBox="0 0 24 24"><path d="M12 1a11 11 0 1 0 0 22 11 11 0 0 0 0-22Zm5 15.9a.7.7 0 0 1-1 .2c-2.7-1.6-6-2-10-1.1a.7.7 0 1 1-.3-1.4c4.3-1 8-.6 11 1.3.3.2.4.6.3 1Zm1.4-3.1a.9.9 0 0 1-1.2.3c-3-1.9-7.7-2.4-11.3-1.3a.9.9 0 1 1-.5-1.7c4.1-1.2 9.3-.6 12.7 1.5.4.3.5.8.3 1.2Zm.1-3.2C14.9 8.5 9 8.3 5.5 9.3a1 1 0 1 1-.6-2c4-1.2 10.5-1 14.6 1.5a1 1 0 0 1-1 1.8Z"/></symbol>
+ <symbol id="i-ap" viewBox="0 0 24 24"><path d="M12 2a9 9 0 0 0-4 17l.5-2a7 7 0 1 1 7 0l.5 2A9 9 0 0 0 12 2Zm0 4a5 5 0 0 0-2.7 9.2l.4-2.1a3 3 0 1 1 4.6 0l.4 2.1A5 5 0 0 0 12 6Zm0 4a1.6 1.6 0 1 0 0 3.2A1.6 1.6 0 0 0 12 10Zm-1.3 4.4-.9 6.1c-.1.8.5 1.5 1.3 1.5h1.8c.8 0 1.4-.7 1.3-1.5l-.9-6.1c-.4.2-.8.3-1.3.3s-.9-.1-1.3-.3Z"/></symbol>
+ <symbol id="i-fb" viewBox="0 0 24 24"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.5 1.6-1.5h1.6V4.4c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.4-4 4.1v2.4H7.6V14h2.7v8h3.2Z"/></symbol>
+ <symbol id="i-ig" viewBox="0 0 24 24"><path d="M12 7.3a4.7 4.7 0 1 0 0 9.4 4.7 4.7 0 0 0 0-9.4Zm0 7.7a3 3 0 1 1 0-6 3 3 0 0 1 0 6Zm6-7.9a1.1 1.1 0 1 1-2.2 0 1.1 1.1 0 0 1 2.2 0ZM21 8c0-1.6-.5-3-1.6-4.1A5.6 5.6 0 0 0 15.3 2.3C13.7 2.2 10.3 2.2 8.7 2.3 7.1 2.4 5.7 2.8 4.6 3.9S3 6.4 3 8c-.1 1.6-.1 6.4 0 8 .1 1.6.5 3 1.6 4.1s2.5 1.5 4.1 1.6c1.6.1 5 .1 6.6 0 1.6-.1 3-.5 4.1-1.6S21 17.6 21 16c.1-1.6.1-6.4 0-8Zm-2 9.8a3.1 3.1 0 0 1-1.8 1.8c-1.2.5-4.2.4-5.2.4s-4 .1-5.2-.4A3.1 3.1 0 0 1 5 17.8c-.5-1.2-.4-4.2-.4-5.8s-.1-4.6.4-5.8A3.1 3.1 0 0 1 6.8 4.4c1.2-.5 4.2-.4 5.2-.4s4-.1 5.2.4A3.1 3.1 0 0 1 19 6.2c.5 1.2.4 4.2.4 5.8s.1 4.6-.4 5.8Z"/></symbol>
+ <symbol id="i-tt" viewBox="0 0 24 24"><path d="M16.6 2h-3.3v13.4a2.9 2.9 0 1 1-2-2.7V9.3a6.2 6.2 0 1 0 5.3 6.1V8.6a7.6 7.6 0 0 0 4.4 1.4V6.7a4.4 4.4 0 0 1-4.4-4.4V2Z"/></symbol>
+ <symbol id="i-yt" viewBox="0 0 24 24"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8ZM9.8 15.1V8.9l5.7 3.1-5.7 3.1Z"/></symbol>
+ <symbol id="i-play" viewBox="0 0 24 24"><path d="M6 3.5v17l14-8.5Z"/></symbol>
+</svg>
+
+<div class="util"><div class="wrap">
+ <a href="#store">Shop</a>
+ <a href="https://www.herdreportpodcast.com/contact/">Partner with us</a>
+ <a href="https://www.herdreportpodcast.com/guests/intake/">Be a guest</a>
+ <a href="https://www.herdreportpodcast.com/reviews/new/">Leave a review</a>
+</div></div>
+
+<header>
+ <div class="wrap">
+  <a class="logo" href="#top" aria-label="Herd Report home">
+   <img class="lt" src="mark.png" alt=""><img class="dk" src="mark-light.png" alt="">
+   <b>Herd Report</b>
+  </a>
+  <div class="socials">
+   <a href="https://www.youtube.com/@herdreportpodcast" aria-label="YouTube"><svg><use href="#i-yt"/></svg></a>
+   <a href="https://open.spotify.com/show/37IlQvHObaNPHxXoUcjEyz" aria-label="Spotify"><svg><use href="#i-sp"/></svg></a>
+   <a href="https://podcasts.apple.com/us/podcast/id1835474334?mt=2&amp;ls=1" aria-label="Apple Podcasts"><svg><use href="#i-ap"/></svg></a>
+   <a href="https://www.facebook.com/theherdreport" aria-label="Facebook"><svg><use href="#i-fb"/></svg></a>
+   <a href="https://www.instagram.com/herdreport/" aria-label="Instagram"><svg><use href="#i-ig"/></svg></a>
+   <a href="https://www.tiktok.com/@herd.report" aria-label="TikTok"><svg><use href="#i-tt"/></svg></a>
+  </div>
+  <button class="cartbtn" id="cartbtn" aria-label="Open cart"><svg viewBox="0 0 24 24"><path d="M3 4h2l2.4 11h11L21 8H6.2"/><circle cx="9" cy="19.5" r="1.5"/><circle cx="17" cy="19.5" r="1.5"/></svg><b id="count"></b></button>
+  <button class="menubtn" id="menubtn" aria-expanded="false" aria-controls="menu">Menu</button>
+ </div>
+ <nav class="menu" id="menu" aria-label="Main">
+  <ul>
+   <li><a href="#episodes">Episodes</a></li>
+   <li><a href="#host">The host</a></li>
+   <li><a href="#store">Shop</a></li>
+   <li><a href="https://www.herdreportpodcast.com/guests/">Guests</a></li>
+   <li><a href="https://www.herdreportpodcast.com/blog/">Blog</a></li>
+   <li><a href="https://www.herdreportpodcast.com/contact/">Contact</a></li>
+  </ul>
+ </nav>
+</header>
+
+<main id="top">
+<section class="hero band">
+ <div class="wrap">
+  <div>
+   <p class="kick">The Herd Report Podcast with Scott Beck</p>
+   <h1>Deep Dives into Herd Management</h1>
+   <p class="lede">Deep dives into herd management with the breeders, producers and industry leaders raising America's best cattle. Genetics, breeding programs, marketing and sale previews, straight from the ranch.</p>
+   <div class="btns">
+    <a class="btn solid" href="https://www.youtube.com/@herdreportpodcast"><svg><use href="#i-yt"/></svg>Watch on YouTube</a>
+    <a class="btn" href="https://open.spotify.com/show/37IlQvHObaNPHxXoUcjEyz"><svg><use href="#i-sp"/></svg>Spotify</a>
+    <a class="btn" href="https://podcasts.apple.com/us/podcast/id1835474334?mt=2&amp;ls=1"><svg><use href="#i-ap"/></svg>Apple Podcasts</a>
+   </div>
+  </div>
+  <div class="stamp" aria-hidden="true">
+   <svg viewBox="0 0 500 500">
+    <defs><path id="circ" d="M250 250m-200 0a200 200 0 1 1 400 0a200 200 0 1 1-400 0"/></defs>
+    <circle cx="258" cy="262" r="238" fill="#0B0B0D" opacity=".9"/>
+    <circle cx="250" cy="250" r="238" fill="#85272C"/>
+    <circle cx="250" cy="250" r="238" fill="none" stroke="#0B0B0D" stroke-width="4"/>
+    <g class="ring"><text font-family="Archivo" font-weight="900" font-size="31" fill="#F3EFE7" letter-spacing="3"><textPath href="#circ">HERD REPORT ✦ INSIDE THE CATTLE INDUSTRY ✦ LET'S GET TO IT ✦</textPath></text></g>
+    <circle cx="250" cy="250" r="160" fill="#F3EFE7"/>
+    <circle cx="250" cy="250" r="146" fill="none" stroke="#85272C" stroke-width="3" stroke-dasharray="2 9" stroke-linecap="round"/>
+    <image href="logo.png" x="145" y="161" width="210" height="178"/>
+   </svg>
+  </div>
+ </div>
+ <div class="wrap">
+  <div class="latest">
+   <a class="play" href="https://www.herdreportpodcast.com/107-years-of-angus-genetics-spring-cove-ranch-with-art-butler-josh-mavencamp/" aria-label="Play the latest episode"><svg viewBox="0 0 24 24"><use href="#i-play"/></svg></a>
+   <div class="t"><small>Latest episode · Nov 16, 2026</small><strong>107 Years of Angus Genetics | Spring Cove Ranch with Art Butler &amp; Josh Mavencamp</strong></div>
+   <a class="btn solid" href="https://www.youtube.com/watch?v=a0lLocyi3Tk"><svg><use href="#i-yt"/></svg>Watch</a>
+   <a class="btn" style="border-color:var(--bg)" href="#episodes">All episodes</a>
+  </div>
+ </div>
+</section>
+
+<div class="marquee" aria-hidden="true"><span>Angus ✦ Simmental ✦ Charolais ✦ Hereford ✦ Gelbvieh ✦ Limousin ✦ Registered &amp; crossbred ✦ Angus ✦ Simmental ✦ Charolais ✦ Hereford ✦ Gelbvieh ✦ Limousin ✦ Registered &amp; crossbred ✦&nbsp;</span></div>
+
+<section class="shop band" id="shop">
+ <div class="wrap">
+  <div class="sh">
+   <div><p class="kick">Herd Report store</p><h2>The Signature Hat</h2></div>
+   <p>Flat bill, structured front, mesh back and an adjustable fit, with the HR logo up front. Built for sale barns, feed trucks, show days and road trips. Nine colorways, $30 each.</p>
+  </div>
+  <div class="ticker" id="ticker"><div class="track" id="track"></div></div>
+  <div class="more"><a class="btn solid" href="#store">Shop all hats</a></div>
+ </div>
+</section>
+
+<section class="host band" id="host">
+ <div class="wrap">
+  <div class="portrait" aria-hidden="true">
+   <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice">
+    <g fill="none" stroke="#F3EFE7" stroke-width="2" opacity=".18">
+     <circle cx="300" cy="140" r="60"/><circle cx="300" cy="140" r="100"/><circle cx="300" cy="140" r="140"/><circle cx="300" cy="140" r="180"/><circle cx="300" cy="140" r="220"/>
+    </g>
+    <path d="M0 360Q120 320 220 350T400 330V500H0Z" fill="#0B0B0D" opacity=".35"/>
+    <path d="M0 400Q140 370 260 395T400 385V500H0Z" fill="#0B0B0D" opacity=".45"/>
+   </svg>
+   <span class="nm">Scott<br>Beck</span>
+  </div>
+  <div>
+   <p class="kick" style="color:#e9a9ad">Meet the host</p>
+   <h2>Real ranches. Real cattle. Real talk.</h2>
+   <p>Scott Beck sits down with cattle breeders, producers and industry leaders from across the U.S. to get inside their programs: the genetics they bet on, how they manage the herd, and how they market bulls and females that work.</p>
+   <p>From century-old Angus operations to this season's sale previews and summer tours, every episode ends the same way: <strong>Let's get to it!!</strong></p>
+   <ul class="breeds"><li>Angus</li><li>Simmental</li><li>Charolais</li><li>Hereford</li><li>Gelbvieh</li><li>Limousin</li></ul>
+   <div class="btns" style="margin-top:28px">
+    <a class="btn solid" href="https://www.herdreportpodcast.com/guests/intake/">Come on the show</a>
+    <a class="btn" href="https://www.herdreportpodcast.com/guests/">Meet the guests</a>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section class="band" id="episodes">
+ <div class="wrap">
+  <div class="sh">
+   <h2>Fresh from the barn</h2>
+   <p>New conversations with the operations shaping the cattle business. Watch every episode on YouTube or listen wherever you get your podcasts.</p>
+  </div>
+  <div class="eps" id="eps"></div>
+  <div class="more"><a class="btn" href="https://www.herdreportpodcast.com/episodes/">Full episode archive</a></div>
+ </div>
+</section>
+
+<section class="closing">
+ <div class="big">
+  <a href="#store"><b>Shop</b><span>Hats and gear<svg viewBox="0 0 34 34"><path d="M6 17h22M19 8l9 9-9 9"/></svg></span></a>
+  <a href="https://www.herdreportpodcast.com/contact/"><b>Partner with us</b><span>Sponsor an episode<svg viewBox="0 0 34 34"><path d="M6 17h22M19 8l9 9-9 9"/></svg></span></a>
+  <a href="https://www.herdreportpodcast.com/guests/intake/"><b>Be a guest</b><span>Tell us about your program<svg viewBox="0 0 34 34"><path d="M6 17h22M19 8l9 9-9 9"/></svg></span></a>
+ </div>
+ <div class="signoff">Let's get to it!!</div>
+</section>
+</main>
+
+<section class="band storeview" id="store" hidden>
+ <div class="wrap">
+  <a class="back" href="#top">← Back to home</a>
+  <div class="sh">
+   <div><p class="kick">Herd Report store</p><h2>All hats</h2></div>
+   <p>The Signature Hat: flat bill, structured front, mesh back and an adjustable fit, with the HR logo up front. Nine colorways, $30 each.</p>
+  </div>
+  <div class="grid" id="grid"></div>
+ </div>
+</section>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Cart" aria-hidden="true">
+ <div class="top"><h2>Your cart</h2><button class="x" id="close" aria-label="Close cart">×</button></div>
+ <div class="lines" id="lines"></div>
+ <div class="foot">
+  <div class="row"><span>Subtotal</span><span id="sub">$0.00</span></div>
+  <small>Shipping and tax are calculated at checkout.</small>
+  <button class="btn solid" id="checkout">Checkout</button>
+  <div class="pending" id="pending">Card checkout is being set up and opens soon. Until then you can <a id="shopify" href="https://herdreport.myshopify.com">finish this order on our Shopify store</a>.</div>
+ </div>
+</aside>
+
+<footer>
+ <div class="wrap">
+  <a class="flogo" href="#top" aria-label="Herd Report home"><img class="lt" src="logo-light.png" alt="Herd Report"><img class="dk" src="logo.png" alt="Herd Report"></a>
+  <nav aria-label="Footer">
+   <a href="https://www.herdreportpodcast.com/about/">About</a>
+   <a href="https://www.herdreportpodcast.com/episodes/">Episodes</a>
+   <a href="https://www.herdreportpodcast.com/blog/">Blog</a>
+   <a href="https://www.herdreportpodcast.com/follow/">Follow</a>
+   <a href="https://www.herdreportpodcast.com/contact/">Contact</a>
+  </nav>
+  <div class="socials" style="display:flex">
+   <a href="https://www.youtube.com/@herdreportpodcast" aria-label="YouTube"><svg><use href="#i-yt"/></svg></a>
+   <a href="https://www.facebook.com/theherdreport" aria-label="Facebook"><svg><use href="#i-fb"/></svg></a>
+   <a href="https://www.instagram.com/herdreport/" aria-label="Instagram"><svg><use href="#i-ig"/></svg></a>
+   <a href="https://www.tiktok.com/@herd.report" aria-label="TikTok"><svg><use href="#i-tt"/></svg></a>
+  </div>
+  <small>© 2026 Herd Report Podcast. All rights reserved.</small>
+ </div>
+</footer>
+
+<script>
+{
+const SP="https://open.spotify.com/show/37IlQvHObaNPHxXoUcjEyz";
+const AP="https://podcasts.apple.com/us/podcast/id1835474334?mt=2&ls=1";
+const YT="https://www.youtube.com/@herdreportpodcast",SITE="https://www.herdreportpodcast.com/",APE="https://podcasts.apple.com/us/podcast/id1835474334?i=";
+const eps=[
+ {d:"Nov 16, 2026",a:"Spring Cove Ranch",b:"107 years of Angus genetics",s:"Art Butler and Josh Mavencamp on more than a century of breeding Angus.",t:"New",yt:"a0lLocyi3Tk",u:"107-years-of-angus-genetics-spring-cove-ranch-with-art-butler-josh-mavencamp",ap:"1000802334169"},
+ {d:"Nov 6, 2026",a:"Ginger Hill Angus",b:"Cattle that work",s:"Dr. Brooke Miller on 65+ years of breeding practical, functional cattle.",t:"Breeding",yt:"AAPt6YjdDGQ",u:"ginger-hill-angus-65-years-of-breeding-cattle-that-work-dr-brooke-miller",ap:"1000800260668"},
+ {d:"Oct 30, 2026",a:"Star Creek Angus",b:"2026 sale preview",s:"A walk through this year's bull and female offering.",t:"Sale preview",yt:"_52yUDumnlA",u:"star-creek-angus-the-bulls-females-2026-sale-preview",ap:"1000798976617"},
+ {d:"Oct 23, 2026",a:"Birch Creek",b:"Bull & female offering",s:"What's on offer from Birch Creek for 2026.",t:"Sale preview",yt:"lVgffZXgFPI",u:"birch-creek-bull-female-offering-2026",ap:"1000797838160"},
+ {d:"Oct 13, 2026",a:"Zach Beutler",b:"Beutler Cattle Co.",s:"A conversation with Zach Beutler about his operation.",t:"Interview",yt:"tammuKJSFwE",u:"zach-beutler-of-beutler-cattle-co",ap:"1000796210562"},
+ {d:"Oct 5, 2026",a:"Vision Angus",b:"Female offering",s:"Spotlight Series: a look at the Vision Angus females.",t:"Spotlight",yt:"Qm-4ViL8MYg",u:"spotlight-series-vision-angus-female-offering",ap:"1000793292794"},
+ {d:"Sep 25, 2026",a:"Delaney Cattle",b:"Summer tour",s:"Riding along on the Delaney Cattle summer tour.",t:"Tour",u:"delaney-cattle-summer-tour",ap:"1000791675272"},
+ {d:"Sep 17, 2026",a:"Macholan Angus",b:"Summer tour",s:"Out on the place with Macholan Angus.",t:"Tour",yt:"IMqVt7-R47k",u:"macholan-angus-summer-tour",ap:"1000790405617"},
+ {d:"Sep 11, 2026",a:"B-Gee Angus",b:"Ranch tour",s:"A tour of the B-Gee Angus program.",t:"Tour",yt:"_ydMPG_jvYs",u:"b-gee-angus-tour",ap:"1000789075325"}
+];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+document.getElementById('eps').innerHTML=eps.map((e,i)=>`
+ <article class="ep${i===0?' feature':''}">
+  ${e.yt?`<a class="thumb vid" href="https://www.youtube.com/watch?v=${esc(e.yt)}" data-yt="${esc(e.yt)}" aria-label="Play the ${esc(e.a)} video">
+    <span class="ph"><img src="logo-light.png" alt=""></span>
+    <img class="yt" src="https://i.ytimg.com/vi/${esc(e.yt)}/hqdefault.jpg" alt="" loading="lazy">
+    <span class="pb" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-play"/></svg></span></a>`
+  :`<a class="thumb" href="${SITE+e.u}/" aria-label="Open the ${esc(e.a)} episode"><span class="ph"><img src="logo-light.png" alt=""></span></a>`}
+  <div class="d"><span>${esc(e.d)}</span><span class="tag">${esc(e.t)}</span></div>
+  <h3><a href="${SITE+e.u}/">${esc(e.a)}<em>${esc(e.b)}</em></a></h3>
+  <p>${esc(e.s)}</p>
+  <div class="links">
+   ${e.yt?`<a class="btn lis watch" href="https://www.youtube.com/watch?v=${esc(e.yt)}"><svg><use href="#i-yt"/></svg>Watch</a>`:''}
+   <a class="btn lis" href="${SITE+e.u}/"><svg><use href="#i-play"/></svg>Listen</a>
+   <a href="${APE+e.ap}" aria-label="${esc(e.a)} on Apple Podcasts"><svg><use href="#i-ap"/></svg></a>
+   <a href="${SP}" aria-label="Herd Report on Spotify"><svg><use href="#i-sp"/></svg></a>
+  </div>
+ </article>`).join('');
+
+const HATS=[
+ {id:44931246817369,n:"Gray",img:"hats/gray.jpg",c:"#8F8F8C",m:"#7c7c79"},
+ {id:44931246850137,n:"White",img:"hats/white.jpg",c:"#F7F6F2",m:"#e6e4de",out:true},
+ {id:44931246882905,n:"Carmel",img:"hats/carmel.jpg",c:"#B37A44",m:"#9c6837"},
+ {id:44931246915673,n:"Red",img:"hats/red.jpg",c:"#A4262C",m:"#8a1f24"},
+ {id:44931246948441,n:"Charcoal",img:"hats/charcoal.jpg",c:"#3B3B3D",m:"#2f2f31"},
+ {id:44931246981209,n:"Camouflage",img:"hats/camo.jpg",c:"url(#camo)",m:"#6b6a4c"},
+ {id:44931247013977,n:"Orange",img:"hats/orange.jpg",c:"#E2661C",m:"#c55514"},
+ {id:44931330768985,n:"Black/Gray",img:"hats/black-gray.jpg",c:"#141414",m:"#8F8F8C"},
+ {id:44931330801753,n:"Charcoal/White",img:"hats/charcoal-white.jpg",c:"#3B3B3D",m:"#F2F1ED"}
+];
+const PRICE=30;
+const hatSVG=h=>`<svg viewBox="0 0 300 200" role="img" aria-label="${esc(h.n)} Signature Hat"><defs><pattern id="camo" width="60" height="60" patternUnits="userSpaceOnUse"><rect width="60" height="60" fill="#7b7656"/><path d="M5 10q12-8 22 2t-4 18q-14 4-18-8z" fill="#4e4a33"/><path d="M34 30q14-6 20 6t-10 16q-12 0-10-22z" fill="#a39b74"/><path d="M8 40q8-4 14 4t-8 10q-8-2-6-14z" fill="#3a3626"/></pattern></defs>
+ <ellipse cx="150" cy="180" rx="118" ry="9" fill="#000" opacity=".18"/>
+ <path d="M40 132Q38 42 150 38Q262 42 258 132Z" fill="${h.m}" stroke="#0B0B0D" stroke-width="4"/>
+ <path d="M40 132Q38 42 150 38Q200 40 214 132Z" fill="${h.c}" stroke="#0B0B0D" stroke-width="3"/>
+ <path d="M214 132Q232 80 230 56M238 132Q250 96 246 70" stroke="#0B0B0D" stroke-width="1.5" fill="none" opacity=".3" stroke-dasharray="3 4"/>
+ <path d="M34 130Q150 118 266 130Q296 140 286 158Q150 172 46 152Q22 146 34 130Z" fill="${h.c}" stroke="#0B0B0D" stroke-width="3"/>
+ <rect x="94" y="66" width="96" height="50" rx="8" fill="#F3EFE7" stroke="#0B0B0D" stroke-width="3"/>
+ <image href="mark.png" x="114" y="72" width="56" height="39"/>
+ <circle cx="150" cy="40" r="6" fill="#0B0B0D"/></svg>`;
+const pic=h=>h.img?`<img src="${esc(h.img)}" alt="${esc(h.n)} Signature Hat">`:hatSVG(h);
+const money=v=>"$"+v.toFixed(2);
+const card=(h,dup)=>`
+ <article class="item"${dup?' aria-hidden="true"':''}>
+  <div class="ph">${pic(h)}${h.out?'<span class="so">Sold out</span>':''}</div>
+  <div class="bd">
+   <div class="row"><h3>${esc(h.n).replace("/","/<wbr>")}</h3><span class="pr">${money(PRICE)}</span></div>
+   <small>Signature Hat · adjustable · one size</small>
+   <button class="btn add" data-id="${h.id}" ${h.out?'disabled':''}${dup?' tabindex="-1"':''}>${h.out?'Sold out':'Add to cart'}</button>
+  </div>
+ </article>`;
+document.getElementById('grid').innerHTML=HATS.map(h=>card(h)).join('');
+const four=HATS.slice(0,4);
+document.getElementById('track').innerHTML=four.map(h=>card(h)).join('')+four.map(h=>card(h,true)).join('');
+let cart={};
+try{cart=JSON.parse(localStorage.getItem('hr-cart')||'{}')||{}}catch(e){cart={}}
+const save=()=>{try{localStorage.setItem('hr-cart',JSON.stringify(cart))}catch(e){}};
+const drawer=document.getElementById('drawer');
+const openCart=()=>{document.body.classList.add('cart-open');drawer.setAttribute('aria-hidden','false');document.getElementById('close').focus()};
+const closeCart=()=>{document.body.classList.remove('cart-open');drawer.setAttribute('aria-hidden','true');document.getElementById('pending').classList.remove('show')};
+const render=()=>{
+ const ids=Object.keys(cart).filter(k=>cart[k]>0&&HATS.some(h=>String(h.id)===k));
+ const n=ids.reduce((t,k)=>t+cart[k],0);
+ document.getElementById('count').textContent=n||'';
+ document.getElementById('cartbtn').setAttribute('aria-label',`Open cart, ${n} item${n===1?'':'s'}`);
+ document.getElementById('lines').innerHTML=ids.length?ids.map(k=>{const h=HATS.find(x=>String(x.id)===k);return `
+  <div class="line"><div class="th">${pic(h)}</div>
+   <div><strong>${esc(h.n)}</strong><span>Signature Hat · ${money(PRICE)}</span></div>
+   <div class="qty"><button data-d="-1" data-k="${k}" aria-label="Remove one ${esc(h.n)}">−</button><output>${cart[k]}</output><button data-d="1" data-k="${k}" aria-label="Add one ${esc(h.n)}">+</button></div></div>`}).join(''):'<p class="empty">Your cart is empty. Pick a colorway to get started.</p>';
+ document.getElementById('sub').textContent=money(n*PRICE);
+ const co=document.getElementById('checkout');co.disabled=!n;co.style.opacity=n?1:.5;
+ document.getElementById('shopify').href=n?'https://herdreport.myshopify.com/cart/'+ids.map(k=>k+':'+cart[k]).join(','):'https://herdreport.myshopify.com';
+};
+const onAdd=e=>{const b=e.target.closest('.add');if(!b||b.disabled)return;const k=b.dataset.id;cart[k]=(cart[k]||0)+1;save();render();b.textContent='Added ✓';setTimeout(()=>b.textContent='Add to cart',1200);openCart()};
+document.getElementById('grid').addEventListener('click',onAdd);
+document.getElementById('ticker').addEventListener('click',onAdd);
+document.getElementById('lines').addEventListener('click',e=>{const b=e.target.closest('button[data-k]');if(!b)return;const k=b.dataset.k;cart[k]=Math.max(0,(cart[k]||0)+Number(b.dataset.d));if(!cart[k])delete cart[k];save();render()});
+document.getElementById('cartbtn').addEventListener('click',openCart);
+document.getElementById('close').addEventListener('click',closeCart);
+document.getElementById('scrim').addEventListener('click',closeCart);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeCart()});
+document.getElementById('checkout').addEventListener('click',()=>document.getElementById('pending').classList.add('show'));
+render();
+const mainEl=document.querySelector('main'),storeEl=document.getElementById('store');
+const route=()=>{const st=location.hash==='#store';mainEl.hidden=st;storeEl.hidden=!st;
+ if(st){window.scrollTo(0,0)}else if(location.hash&&location.hash!=='#top'){const t=document.getElementById(location.hash.slice(1));if(t)t.scrollIntoView()}else{window.scrollTo(0,0)}};
+window.addEventListener('hashchange',route);route();
+document.querySelectorAll('.vid').forEach(a=>{const im=a.querySelector('img.yt');const ok=()=>{if(im.naturalWidth>0)a.classList.add('ok')};
+ if(im.complete)ok();im.addEventListener('load',ok);
+ a.addEventListener('click',e=>{if(!a.classList.contains('ok')||location.protocol==='file:')return;e.preventDefault();
+  const f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(a.dataset.yt)+'?autoplay=1&rel=0';
+  f.title='Herd Report video';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;
+  const d=document.createElement('div');d.className='thumb';d.appendChild(f);a.replaceWith(d);});});
+const btn=document.getElementById('menubtn'),menu=document.getElementById('menu');
+btn.addEventListener('click',()=>{const o=menu.classList.toggle('open');btn.setAttribute('aria-expanded',o);btn.textContent=o?'Close':'Menu'});
+menu.addEventListener('click',e=>{if(e.target.closest('a')){menu.classList.remove('open');btn.setAttribute('aria-expanded','false');btn.textContent='Menu'}});
+}
+</script>
+</body>
+</html>

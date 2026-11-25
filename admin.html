@@ -101,7 +101,6 @@ td .who{font-weight:600}td .sub{color:var(--soft);font-size:12.5px}
  .anav button{width:auto;flex:none;gap:6px}.amain{padding:16px 14px 32px}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
  .q{grid-template-columns:minmax(0,1fr)}.q .t{justify-self:start}.q .a{justify-content:flex-start}.atop b{font-size:14px}}
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="js/config.js"></script>
 <script src="js/app.js"></script>
 <script src="js/popups.js"></script>
@@ -128,7 +127,7 @@ async function start(){
 async function load(){[pkgs,st,all,guests]=await Promise.all([API.packages(),API.settings(),API.allBookings(),API.guests()]);msgs=await API.messages();revs=await API.reviews()}
 
 function login(){
- app.innerHTML=`<div class="alogin" style="text-align:center"><p><img src="logo.png" alt="Herd Report" style="height:64px" class="lt"><img src="logo-light.png" alt="Herd Report" style="height:64px" class="dk"></p>
+ app.innerHTML=`<div class="alogin" style="text-align:center"><p><img src="logo.png" alt="Herd Report" style="height:64px" class="lt"></p>
   <h2 style="margin:12px 0 6px">Herd Report admin</h2><p class="soft">Sign in to manage orders, ads, guests and reviews.</p>
   <div class="btns" style="justify-content:center;margin-top:16px"><button class="btn solid" data-pop="admin">Sign in</button><a class="btn" href="index.html">Back to the site</a></div></div>`;
  HRPop.adminLogin();

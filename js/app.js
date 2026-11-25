@@ -166,7 +166,7 @@ function chrome(active){
  const h=document.getElementById('hdr'),f=document.getElementById('ftr');
  if(h)h.innerHTML=`
  <header class="top"><div class="wrap">
-  <a class="logo" href="index.html" aria-label="Herd Report home"><img class="lt" src="mark.png" alt=""><img class="dk" src="mark-light.png" alt=""><b>Herd Report</b></a>
+  <a class="logo" href="index.html" aria-label="Herd Report home"><img class="lt" src="mark.png" alt=""><b>Herd Report</b></a>
   <nav class="nav" aria-label="Main"><a href="index.html#episodes">Episodes</a><a href="index.html#store">Shop</a><a href="advertise.html" class="${active==='advertise'?'on':''}">Advertise</a><a href="guest.html" class="${active==='guest'?'on':''}">Be a guest</a></nav>
   <span style="display:flex;gap:8px;align-items:center"><a class="btn sm ${active==='account'?'solid':''}" href="account.html" id="acctbtn">Client login</a><button class="btn sm" id="soBtn" hidden>Sign out</button></span>
  </div></header>`;

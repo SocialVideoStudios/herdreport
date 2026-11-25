@@ -68,7 +68,7 @@ function login(msg){
   <div class="field"><label for="le">Email</label><input id="le" type="email" autocomplete="email"></div>
   <div class="field"><label for="lp">Password</label><input id="lp" type="password" autocomplete="current-password"></div>
   <button class="btn solid" type="submit">Sign in</button><p class="err" id="lerr">${msg?esc(msg):''}</p>
-  ${LIVE?'':'<p class="hint">Demo admin: admin@herdreport.com / herdadmin2026</p>'}</form>`;
+</form>`;
  document.getElementById('lf').addEventListener('submit',async e=>{e.preventDefault();
   try{await API.signIn(document.getElementById('le').value,document.getElementById('lp').value);HR.chrome('admin');start()}
   catch(x){document.getElementById('lerr').textContent=x.message}});
@@ -263,7 +263,7 @@ function settings(){
    <div class="field"><label for="sv">YouTube views</label><input id="sv" value="${esc(s.stats?.views||'')}"></div>
    <div class="field"><label for="sfw">Social followers</label><input id="sfw" value="${esc(s.stats?.followers||'')}"></div></div></div>
   <div class="btns" style="margin-top:20px;align-items:center"><button class="btn solid" type="submit">Save settings</button><span class="okmsg" id="sok"></span>
-   ${LIVE?'':'<button class="btn" type="button" id="reset">Reset demo data</button>'}</div></form>`;
+</div></form>`;
  const n=id=>Number(document.getElementById(id).value)||0;
  document.getElementById('sf').addEventListener('submit',async e=>{e.preventDefault();
   const ns={...s,rates:Object.fromEntries(SLOTS.map(k=>[k,n('r-'+k)])),capacity:Object.fromEntries(SLOTS.map(k=>[k,n('c-'+k)])),releaseDay:n('rd'),weeksAhead:Math.min(52,Math.max(4,n('wa'))),

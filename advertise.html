@@ -111,8 +111,8 @@ body.open .scrim{opacity:1;pointer-events:auto}body.open .drawer{transform:none}
   <div class="sh"><h2>How it works</h2></div>
   <div class="steps">
    <div class="card"><h3>Pick your spots</h3><p class="soft">Choose ad spots and weeks, or a sponsorship, and add them to your cart.</p></div>
-   <div class="card"><h3>Check out</h3><p class="soft">Review your cart, add talking points and create your account in one step.</p></div>
-   <div class="card"><h3>Scott approves</h3><p class="soft">Scott reviews your request, confirms the details and sends your invoice.</p></div>
+   <div class="card"><h3>Check out and pay</h3><p class="soft">Review your cart, add talking points, create your account and pay in one go.</p></div>
+   <div class="card"><h3>Scott preps your read</h3><p class="soft">Scott gets your talking points and reaches out if he has questions.</p></div>
    <div class="card"><h3>You go live</h3><p class="soft">Your spots air on the weeks you booked. Track everything from your account.</p></div>
   </div>
  </div>
@@ -260,15 +260,25 @@ function drawCart(){
     <div class="field"><label for="cf">Link to logos or files (optional)</label><input id="cf" type="url" placeholder="https://" value="${esc(files)}"></div>`
    :'<p class="empty">Your cart is empty. Pick an ad spot or a sponsorship to get started.</p>';
   $('dFoot').innerHTML=`<div class="tot"><span>Total</span><span>${money(sum)}${quotes?' + quote':''}</span></div>
-   <small style="margin:0 0 12px">${quotes?'Items marked Quote are priced by Scott after he reviews them. ':''}Nothing is charged now.</small>
+   <small style="margin:0 0 12px">${quotes?'Items marked Quote are priced by Scott, and you pay for them once he sends your quote. ':''}Secure card payment at checkout.</small>
    <button class="btn solid" id="toCheckout" ${cart.length?'':'disabled'}>Checkout</button>`;
   $('dBody').oninput=e=>{if(e.target.id==='cn')notes=e.target.value;if(e.target.id==='cf')files=e.target.value};
   $('dBody').onclick=e=>{const r=e.target.closest('[data-rm]');if(r){cart.splice(+r.dataset.rm,1);renderAll();drawCart();return}
    const ed=e.target.closest('[data-edit]');if(ed){const it=cart[+ed.dataset.edit];it.type==='slot'?pickSlot(it.slot):pickPkg(it.type)}};
-  $('toCheckout').onclick=async()=>{me=await API.current();if(me){submit();return}step='account';drawCart()};
+  $('toCheckout').onclick=async()=>{me=await API.current();step=me?'pay':'account';drawCart()};
   return;
  }
  $('dBody').onclick=null;$('dBody').oninput=null;
+ if(step==='pay'){
+  $('dTitle').textContent='Payment';
+  $('dBody').innerHTML=`<p class="soft" style="margin:0 0 12px">Review and pay for your booking.</p>`+cart.map(it=>`<div class="line"><b>${esc(label(it))}</b><span class="p">${price(it)==null?'Quote':money(price(it))}</span><span class="d">${esc(desc(it))}</span></div>`).join('')+
+   (quotes?`<p class="hint" style="margin-top:14px">${quotes===1?'One item is':quotes+' items are'} priced by quote. Scott will send the quote, and you'll pay for ${quotes===1?'it':'them'} from your account.</p>`:'')+
+   `<div class="card" style="margin-top:18px;border-radius:16px;padding:16px"><b>Card payment</b><p class="hint" style="margin:6px 0 0">Secure checkout by Stripe. Your card details go straight to Stripe and are never stored by Herd Report.</p></div>`;
+  $('dFoot').innerHTML=`<div class="tot"><span>Due today</span><span>${money(sum)}</span></div><small style="margin:0 0 12px">${quotes?'Plus quoted items, billed later. ':''}Cancellations are refunded minus a $50 fee.</small>
+   <div class="btns" style="flex-wrap:nowrap"><button class="btn" id="back" style="width:auto">Back</button><button class="btn solid" id="go">${sum?'Pay '+money(sum):'Send request'}</button></div>`;
+  $('back').onclick=()=>{step='cart';drawCart()};$('go').onclick=()=>submit();
+  return;
+ }
  $('dBody').innerHTML=`<p class="soft" style="margin:0 0 16px">${authMode==='new'?'Create your free account so Scott can confirm your booking and you can track it.':'Sign in to send this request from your account.'}</p>
   <form id="af" novalidate>
    ${authMode==='new'?`<div class="field"><label for="ac">Ranch or company</label><input id="ac" autocomplete="organization"></div>
@@ -278,9 +288,9 @@ function drawCart(){
    <p class="err" id="aerr"></p><button type="submit" hidden></button>
   </form>
   <p class="switch">${authMode==='new'?'Already have an account? <button class="link" id="sw" type="button">Sign in</button>':'New to Herd Report? <button class="link" id="sw" type="button">Create an account</button>'}</p>
-  ${LIVE||authMode==='new'?'':'<p class="hint">Demo client: demo@prairieline.co / sponsor2026</p>'}`;
- $('dFoot').innerHTML=`<div class="tot"><span>Total</span><span>${money(sum)}${quotes?' + quote':''}</span></div><small style="margin:0 0 12px">Nothing is charged now.</small>
-  <div class="btns" style="flex-wrap:nowrap"><button class="btn" id="back" style="width:auto">Back</button><button class="btn solid" id="go">${authMode==='new'?'Create account & send':'Sign in & send'}</button></div>`;
+`;
+ $('dFoot').innerHTML=`<div class="tot"><span>Total</span><span>${money(sum)}${quotes?' + quote':''}</span></div><small style="margin:0 0 12px">Next: payment.</small>
+  <div class="btns" style="flex-wrap:nowrap"><button class="btn" id="back" style="width:auto">Back</button><button class="btn solid" id="go">${authMode==='new'?'Create account':'Sign in'}</button></div>`;
  $('sw').onclick=()=>{authMode=authMode==='new'?'in':'new';drawCart()};
  $('back').onclick=()=>{step='cart';drawCart()};
  const go=async()=>{const er=$('aerr');er.textContent='';const btn=$('go');
@@ -292,15 +302,15 @@ function drawCart(){
     const r=await API.signUp({company:$('ac').value.trim(),contact_name:$('an').value.trim(),phone:$('aph').value.trim(),email:$('ae').value,password:$('ap').value});
     if(r.confirm){step='done';$('dTitle').textContent='Almost there';$('dBody').innerHTML=`<div class="done"><h3>Check your email</h3><p>Confirm your email address, then sign in here to send your request. Your cart is saved.</p></div>`;$('dFoot').innerHTML=`<button class="btn solid" id="again">Sign in</button>`;$('again').onclick=()=>{authMode='in';step='account';drawCart()};return}
    }else{btn.disabled=true;btn.textContent='Signing in…';await API.signIn($('ae').value,$('ap').value)}
-   HR.chrome('advertise');submit();
-  }catch(x){er.textContent=x.message;btn.disabled=false;btn.textContent=authMode==='new'?'Create account & send':'Sign in & send'}};
+   HR.chrome('advertise');step='pay';drawCart();
+  }catch(x){er.textContent=x.message;btn.disabled=false;btn.textContent=authMode==='new'?'Create account':'Sign in'}};
  $('go').onclick=go;$('af').onsubmit=e=>{e.preventDefault();go()};
 }
 async function submit(){
  const b=$('go')||$('toCheckout');if(b){b.disabled=true;b.textContent='Sending…'}
  try{
   for(const it of cart){
-   const base={notes:notes.trim(),creative_url:files.trim(),amount:price(it),placement:null,episode_dates:[]};
+   const base={notes:notes.trim(),creative_url:files.trim(),amount:price(it),placement:null,episode_dates:[],status:price(it)==null?'pending':'paid'};
    if(it.type==='slot')Object.assign(base,{package_id:'ads',kind:'ad',placement:it.slot,episode_dates:it.dates});
    else{const p=pkg(it.type);Object.assign(base,{package_id:p.id,kind:p.kind});
     if(p.kind==='presenting')Object.assign(base,{placement:'pre',episode_dates:presentDates(it.start)});
@@ -308,9 +318,9 @@ async function submit(){
     if(p.kind==='merch'){base.sale_date=it.event||null;if(it.qty)base.notes=`Estimated hats: ${it.qty}\n`+base.notes}}
    await API.createBooking(base);
   }
-  const n=cart.length;cart=[];notes='';files='';renderAll();step='done';
-  $('dTitle').textContent='Request sent';
-  $('dBody').innerHTML=`<div class="done"><h3>Thanks, you're all set</h3><p>We sent ${n} request${n===1?'':'s'} to Scott. He'll review ${n===1?'it':'them'} and send your invoice. You can track the status anytime in your account.</p></div>`;
+  const {sum:paid,quotes:q}=totals();cart=[];notes='';files='';renderAll();step='done';
+  $('dTitle').textContent='You\'re booked';
+  $('dBody').innerHTML=`<div class="done"><h3>Thanks, you're booked</h3><p>${paid?`Payment of ${money(paid)} received. `:''}${q?`Scott will send a quote for ${q===1?'your sponsorship':'your sponsorships'}. `:''}Scott has your talking points and will reach out if he needs anything. Track everything in your account.</p></div>`;
   $('dFoot').innerHTML=`<a class="btn solid" href="account.html">View my bookings</a>`;
   usage=await API.usage();renderSlots();
  }catch(x){$('dBody').insertAdjacentHTML('beforeend',`<p class="err">${esc(x.message)}</p>`);if(b){b.disabled=false;b.textContent='Try again'}}

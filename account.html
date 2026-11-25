@@ -73,7 +73,6 @@ function authView(msg){
    <div class="field"><label for="ip">Password</label><input id="ip" type="password" autocomplete="current-password" required></div>
    <button class="btn solid" type="submit">Sign in</button>
    <p class="err" id="ierr">${msg?esc(msg):''}</p>
-   ${LIVE?'':`<p class="hint">Demo client: demo@prairieline.co / sponsor2026<br>Demo admin: admin@herdreport.com / herdadmin2026</p>`}
   </form>
   <form class="card alt" id="fup" novalidate>
    <h3 style="margin-bottom:18px">Create an account</h3>
@@ -135,8 +134,9 @@ async function listView(){
   <div class="amt">${money(b.amount)}</div>
   ${b.admin_note?`<div class="note"><b>Note from Scott:</b> ${esc(b.admin_note)}</div>`:''}
   <div class="acts">${b.status==='pending'?`<button class="btn sm" data-cancel="${esc(b.id)}">Cancel request</button>`:''}
-   ${b.status==='approved'?`<button class="btn sm solid" disabled title="Online payment is coming soon">Pay invoice</button><span class="soft" style="font-size:14px">Online payment coming soon. Scott will send your invoice.</span>`:''}</div>
+   ${b.status==='approved'?`<button class="btn sm solid" data-pay="${esc(b.id)}">Pay ${money(b.amount)}</button><span class="soft" style="font-size:14px">Your quote is ready.</span>`:''}</div>
  </article>`).join('')}</div>`;
+ pane.querySelectorAll('[data-pay]').forEach(btn=>btn.addEventListener('click',async()=>{btn.disabled=true;try{await API.payBooking(btn.dataset.pay);listView()}catch(x){btn.disabled=false;btn.insertAdjacentHTML('afterend',`<span class="err">${esc(x.message)}</span>`)}}));
  pane.querySelectorAll('[data-cancel]').forEach(btn=>btn.addEventListener('click',async()=>{btn.disabled=true;try{await API.cancelBooking(btn.dataset.cancel);listView()}catch(x){btn.disabled=false;btn.insertAdjacentHTML('afterend',`<span class="err">${esc(x.message)}</span>`)}}));
 }
 

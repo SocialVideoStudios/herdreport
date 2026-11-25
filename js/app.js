@@ -12,7 +12,7 @@ const iso=d=>d.toISOString().slice(0,10);
 const SLOTS=['pre','mid1','mid2','mid3','post'];
 const PLACE={pre:'Pre-roll',mid1:'Mid-roll 1',mid2:'Mid-roll 2',mid3:'Mid-roll 3',post:'Post-roll'};
 const SLOT_INFO={pre:'Opens the episode, before the conversation starts.',mid1:'First break in the conversation.',mid2:'Second break, in the heart of the episode.',mid3:'Third break, later in the episode.',post:'Closes the episode as listeners wrap up.'};
-const STATUS={pending:'Pending review',approved:'Approved, awaiting payment',paid:'Paid',live:'Live',completed:'Completed',declined:'Declined',cancelled:'Cancelled'};
+const STATUS={pending:'Pending review',approved:'Quote ready, awaiting payment',paid:'Paid',live:'Live',completed:'Completed',declined:'Declined',cancelled:'Cancelled'};
 const TAKEN=['approved','paid','live'];
 
 const DEF_SETTINGS={rates:{pre:500,mid1:350,mid2:350,mid3:350,post:250},capacity:{pre:1,mid1:1,mid2:1,mid3:1,post:1},annualDiscount:10,weeksAhead:16,releaseDay:1,
@@ -68,8 +68,9 @@ const Demo={
  async saveSettings(s){db().settings=s;put();return wait(s)},
  async myBookings(){const d=db();return wait(structuredClone(d.bookings.filter(b=>b.client_id===d.session)).reverse())},
  async allBookings(){const d=db();return wait(d.bookings.map(b=>({...structuredClone(b),client:strip(d.users.find(u=>u.id===b.client_id))||{}})).reverse())},
- async createBooking(b){const d=db();const nb={...b,id:'b-'+uid(),client_id:d.session,status:'pending',admin_note:'',created_at:new Date().toISOString()};d.bookings.push(nb);put();return wait(nb)},
+ async createBooking(b){const d=db();const nb={...b,id:'b-'+uid(),client_id:d.session,status:b.status==='paid'?'paid':'pending',admin_note:'',created_at:new Date().toISOString()};d.bookings.push(nb);put();return wait(nb)},
  async updateBooking(id,patch){const d=db();const b=d.bookings.find(b=>b.id===id);Object.assign(b,patch);put();return wait(b)},
+ async payBooking(id){const d=db();const b=d.bookings.find(b=>b.id===id&&b.client_id===d.session);if(!b)return fail('Booking not found.');b.status='paid';put();return wait(b)},
  async cancelBooking(id){const d=db();const b=d.bookings.find(b=>b.id===id&&b.client_id===d.session);if(!b||b.status!=='pending')return fail('Only pending requests can be cancelled.');b.status='cancelled';put();return wait(b)},
  async usage(){const m={};db().bookings.filter(b=>TAKEN.includes(b.status)&&b.placement).forEach(b=>b.episode_dates.forEach(dt=>{const k=dt+'|'+b.placement;m[k]=(m[k]||0)+1}));return wait(m)},
  async clients(){return wait(db().users.filter(u=>u.role==='client').map(strip))},
@@ -95,9 +96,10 @@ const Live={
  async saveSettings(s){ok(await sb.from('settings').upsert({key:'main',value:s}));return s},
  async myBookings(){const me=await Live.current();return ok(await sb.from('bookings').select('*').eq('client_id',me.id).order('created_at',{ascending:false}))},
  async allBookings(){const r=ok(await sb.from('bookings').select('*, client:profiles(id,email,company,contact_name,phone)').order('created_at',{ascending:false}));return r.map(b=>({...b,client:b.client||{}}))},
- async createBooking(b){const me=await Live.current();return ok(await sb.from('bookings').insert({...b,client_id:me.id,status:'pending'}).select().single())},
+ async createBooking(b){const me=await Live.current();const{status,...rest}=b;return ok(await sb.from('bookings').insert({...rest,client_id:me.id,status:'pending'}).select().single())},
  async updateBooking(id,patch){return ok(await sb.from('bookings').update(patch).eq('id',id).select().single())},
  async cancelBooking(id){return ok(await sb.rpc('cancel_booking',{bid:id}))},
+ async payBooking(){throw new Error('Card payment opens here once Stripe is connected.')},
  async usage(){const r=ok(await sb.rpc('slot_usage'));const m={};(r||[]).forEach(x=>{m[x.episode_date+'|'+x.placement]=Number(x.n)});return m},
  async clients(){return ok(await sb.from('profiles').select('*').eq('role','client').order('created_at',{ascending:false}))},
  async submitGuest(g){ok(await sb.from('guest_requests').insert({...g,status:'new'}));return g},
@@ -110,7 +112,7 @@ const API=LIVE?Live:Demo;
 /* ---------- page chrome ---------- */
 function chrome(active){
  const h=document.getElementById('hdr'),f=document.getElementById('ftr');
- if(h)h.innerHTML=`${LIVE?'':`<div class="demo"><b>Demo mode.</b> Accounts and bookings are saved only in this browser until the database is connected.</div>`}
+ if(h)h.innerHTML=`
  <header class="top"><div class="wrap">
   <a class="logo" href="index.html" aria-label="Herd Report home"><img class="lt" src="mark.png" alt=""><img class="dk" src="mark-light.png" alt=""><b>Herd Report</b></a>
   <nav class="nav" aria-label="Main"><a href="index.html#episodes">Episodes</a><a href="index.html#store">Shop</a><a href="advertise.html" class="${active==='advertise'?'on':''}">Advertise</a><a href="guest.html" class="${active==='guest'?'on':''}">Be a guest</a></nav>

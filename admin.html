@@ -9,49 +9,91 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/app.css">
 <style>
-.top2{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:16px;margin-bottom:26px}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:16px;margin-bottom:28px}
-.stat{border-radius:18px}
-.stat .v{font:900 clamp(32px,3.6vw,46px)/1 Archivo,sans-serif;margin:8px 0 4px}
-.stat .l{font-size:14px;color:var(--soft)}
-.stat.hot{background:var(--red);color:var(--cream);border-color:var(--red)}.stat.hot .l{color:#f1dcdc}
-.rev{display:grid;gap:12px}
-.rv{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 16px;align-items:center;border-radius:16px;padding:16px 18px}
-.rv .meta{color:var(--soft);font-size:14px}
-.rv .acts{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-.cal td{min-width:130px}
-.cal .open{color:var(--soft)}
-.cal .slot{display:block;font-weight:600}
-.cal .slot.pend{font-weight:400;font-style:italic;color:var(--warn)}
-.cal .full{background:color-mix(in srgb,var(--red) 8%,transparent)}
-.filters{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px}
+body.adm{background:light-dark(#f5f4f1,#0f0d0e);font:14px/1.45 "IBM Plex Sans",system-ui,sans-serif}
+.adm h1,.adm h2,.adm h3,.adm h4{font-family:"IBM Plex Sans",system-ui,sans-serif;text-transform:none;letter-spacing:0;font-weight:600;line-height:1.25}
+.adm h2{font-size:16px}.adm h3{font-size:16px}
+.adm .card{background:var(--card);border:1px solid var(--hair);border-radius:10px;padding:16px}
+.adm .btn{min-height:32px;padding:0 12px;border-width:1px;border-radius:8px;font:600 13px "IBM Plex Sans",sans-serif;text-transform:none;gap:6px}
+.adm .btn.sm{min-height:28px;padding:0 9px;font-size:12.5px}
+.adm .btn.solid{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.adm .btn.go{background:#2f6b3a;border-color:#2f6b3a;color:#fff}
+.adm input,.adm select,.adm textarea{font-size:14px;border-width:1px;border-color:color-mix(in srgb,var(--ink) 25%,transparent);border-radius:8px;padding:7px 10px;min-height:36px;background:var(--card)}
+.adm textarea{min-height:80px}
+.adm label{font-size:13px;margin-bottom:4px}
+.adm .field{margin-bottom:12px}
+.adm .pill{font-size:12px;padding:1px 8px;border-width:1px}
+.adm .kick{font:600 12px "IBM Plex Sans",sans-serif;text-transform:uppercase;letter-spacing:.06em;color:var(--soft);margin:0 0 4px}
+.adm table{font-size:13.5px}.adm th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--soft);font-weight:600;text-align:left;padding:8px 10px;border-bottom:1px solid var(--hair)}
+.adm td{padding:8px 10px;border-bottom:1px solid var(--hair);vertical-align:top}.adm tr:last-child td{border-bottom:0}
+.adm .modal .card{width:min(620px,100%)}
+/* frame */
+.atop{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;padding:10px 20px;background:var(--ink);color:var(--bg)}
+.atop img{height:26px}.atop b{font-weight:600;font-size:15px;margin-right:auto}
+.atop a,.atop button{color:var(--bg);background:none;border:1px solid rgb(243 239 231/.3);border-radius:8px;padding:5px 10px;font:500 13px "IBM Plex Sans",sans-serif;text-decoration:none;cursor:pointer}
+.aframe{display:grid;grid-template-columns:200px minmax(0,1fr);min-height:calc(100vh - 47px)}
+.anav{border-right:1px solid var(--hair);padding:14px 10px;display:flex;flex-direction:column;gap:2px;position:sticky;top:47px;align-self:start;height:calc(100vh - 47px);overflow:auto}
+.anav button{display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;border:0;background:none;color:inherit;font:500 14px "IBM Plex Sans",sans-serif;padding:8px 10px;border-radius:8px;cursor:pointer}
+.anav button:hover{background:color-mix(in srgb,var(--ink) 6%,transparent)}
+.anav button[aria-current=page]{background:var(--ink);color:var(--bg)}
+.anav .c{background:var(--red);color:#fff;border-radius:999px;font-size:11.5px;font-weight:600;min-width:20px;text-align:center;padding:0 6px}
+.amain{padding:20px 24px 40px;min-width:0}
+.ah{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.ah h1{font-size:22px}
+/* home */
+.kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-bottom:16px}
+.kpi{background:var(--card);border:1px solid var(--hair);border-radius:10px;padding:10px 12px;cursor:pointer;text-align:left;font:inherit;color:inherit}
+.kpi:hover{border-color:var(--ink)}
+.kpi .v{font-size:22px;font-weight:600;line-height:1.2}.kpi .l{font-size:12px;color:var(--soft)}
+.kpi.hot{border-color:var(--red);box-shadow:inset 3px 0 0 var(--red)}
+.hgrid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:16px;align-items:start}
+.panel h2{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.panel h2 a,.panel h2 button{font:500 13px "IBM Plex Sans",sans-serif;color:var(--red2);background:none;border:0;cursor:pointer;text-decoration:underline}
+.q{display:grid;grid-template-columns:86px minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--hair)}
+.q:last-child{border-bottom:0}
+.q .t{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;border-radius:6px;padding:3px 6px;text-align:center;background:color-mix(in srgb,var(--ink) 7%,transparent)}
+.q .t.order{background:#fff1d6;color:#7a5200}.q .t.refund{background:#fde2e2;color:#8a1c1c}.q .t.ship{background:#e3f0e6;color:#2f6b3a}
+.q .t.guest{background:#e5ecf7;color:#2a4a7a}.q .t.msg{background:#efe6f7;color:#5b2a7a}.q .t.review{background:#f7f0dc;color:#6b5513}
+.q .w{min-width:0}.q .w b{font-weight:600}.q .w .s{color:var(--soft);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.q .a{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.done{color:var(--soft);padding:14px 0}
+.grid5{width:100%;border-collapse:collapse;font-size:12.5px}
+.grid5 th{padding:6px;font-size:11px}.grid5 td{padding:5px 6px;border:1px solid var(--hair)}
+.grid5 td.o{color:var(--soft)}.grid5 td.b{background:color-mix(in srgb,#2f6b3a 12%,transparent);font-weight:600}.grid5 td.p{background:#fff6e0;font-style:italic;color:#7a5200}
+.grid5 td span{display:block;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* lists */
+.rev{display:grid;gap:8px}
+.rv{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 16px;align-items:center;padding:12px 14px}
+.rv .meta{color:var(--soft);font-size:13px}
+.rv .acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.cal td{min-width:120px}.cal .open{color:var(--soft)}.cal .slot{display:block;font-weight:600}
+.cal .slot.pend{font-weight:400;font-style:italic;color:var(--warn)}.cal .full{background:color-mix(in srgb,#2f6b3a 8%,transparent)}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
 .filters select,.filters input{width:auto;min-width:180px;flex:1 1 180px}
-.pk{display:grid;gap:16px}
-.chk{display:flex;align-items:center;gap:10px;font-weight:600}
-.chk input{width:22px;height:22px;min-height:0;accent-color:var(--red)}
-.set h3{margin:4px 0 14px;font-size:20px}
-.set .card+.card{margin-top:20px}
-td .who{font-weight:600}td .sub{color:var(--soft);font-size:14px}
-.afiles{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
-.afile{display:flex;align-items:center;gap:8px;border:2px solid var(--line);border-radius:12px;padding:5px 10px 5px 5px;color:inherit;text-decoration:none;font-size:14px;font-weight:600;max-width:100%}
-.afile img,.afile span{width:36px;height:36px;object-fit:contain;background:#fff;border-radius:8px;display:grid;place-items:center;font:900 10px Archivo,sans-serif;color:#85272C;flex:none}
+.pk{display:grid;gap:12px}
+.chk{display:flex;align-items:center;gap:8px;font-weight:600}.chk input{width:18px;height:18px;min-height:0;accent-color:var(--red)}
+.set h3{margin:0 0 12px}.set .card+.card{margin-top:12px}
+td .who{font-weight:600}td .sub{color:var(--soft);font-size:12.5px}
+.afiles{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.afile{display:flex;align-items:center;gap:8px;border:1px solid var(--hair);border-radius:8px;padding:4px 10px 4px 4px;color:inherit;text-decoration:none;font-size:13px;font-weight:600;max-width:100%}
+.afile img,.afile span{width:32px;height:32px;object-fit:contain;background:#fff;border-radius:6px;display:grid;place-items:center;font:700 10px "IBM Plex Sans",sans-serif;color:#85272C;flex:none}
+.alogin{max-width:400px;margin:10vh auto;padding:0 16px}
+@media(max-width:1100px){.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.hgrid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:760px){.aframe{grid-template-columns:minmax(0,1fr)}.anav{position:sticky;top:47px;z-index:10;height:auto;flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--hair);background:var(--bg);padding:8px}
+ .anav button{width:auto;flex:none;gap:6px}.amain{padding:16px 14px 32px}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .q{grid-template-columns:minmax(0,1fr)}.q .t{justify-self:start}.q .a{justify-content:flex-start}.atop b{font-size:14px}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="js/config.js"></script>
 <script src="js/app.js"></script>
 </head>
-<body>
-<div id="hdr"></div>
-<main class="band"><div class="wrap" id="app"><p class="soft">Loading…</p></div></main>
+<body class="adm">
+<div id="app"><p class="soft" style="padding:20px">Loading…</p></div>
 <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mt"><div class="card" id="mbody"></div></div>
-<div id="ftr"></div>
 <script>
 {
 const {API,LIVE,esc,money,fmtDate,shortDate,upcoming,SLOTS,PLACE,STATUS,TAKEN}=HR;
-HR.chrome('admin');
 const app=document.getElementById('app');
-let me=null,pkgs=[],st=null,all=[],guests=[],msgs=[],revs=[],tab=location.hash.slice(1)||'overview';
-const TABS=[['overview','Overview'],['bookings','Bookings'],['calendar','Calendar'],['guests','Guests'],['messages','Messages'],['reviews','Reviews'],['clients','Clients'],['packages','Packages'],['settings','Settings']];
+let me=null,pkgs=[],st=null,all=[],guests=[],msgs=[],revs=[],tab=location.hash.slice(1)||'home';
 const pkgName=id=>(pkgs.find(p=>p.id===id)||{}).name||id;
 const title=b=>b.kind==='store'?'Hat order':b.kind==='ad'?(PLACE[b.placement]||'Episode ad')+' ad':pkgName(b.package_id);
 const co=b=>b.client?.company||b.client?.email||'Unknown client';
@@ -59,43 +101,46 @@ const co=b=>b.client?.company||b.client?.email||'Unknown client';
 async function start(){
  me=await API.current();
  if(!me)return login();
- if(me.role!=='admin'){app.innerHTML=`<div class="card" style="max-width:560px"><h2 style="font-size:32px;margin-bottom:12px">Admins only</h2><p>This dashboard is for the Herd Report team. You're signed in as ${esc(me.email)}.</p><div class="btns"><a class="btn solid" href="account.html">Go to my account</a><button class="btn" id="out">Sign out</button></div></div>`;
+ if(me.role!=='admin'){app.innerHTML=`<div class="alogin"><div class="card"><h2 style="margin-bottom:8px">Admins only</h2><p>This dashboard is for the Herd Report team. You're signed in as ${esc(me.email)}.</p><div class="btns"><a class="btn solid" href="account.html">Go to my account</a><button class="btn" id="out">Sign out</button></div></div></div>`;
   document.getElementById('out').onclick=async()=>{await API.signOut();location.reload()};return}
  await load();shell();
 }
 async function load(){[pkgs,st,all,guests]=await Promise.all([API.packages(),API.settings(),API.allBookings(),API.guests()]);msgs=await API.messages();revs=await API.reviews()}
 
 function login(msg){
- app.innerHTML=`<form class="card" id="lf" style="max-width:460px;margin:0 auto" novalidate>
-  <p class="kick">Herd Report admin</p><h2 style="font-size:36px;margin-bottom:20px">Sign in</h2>
+ app.innerHTML=`<div class="alogin"><p style="text-align:center;margin-bottom:16px"><img src="logo.png" alt="Herd Report" style="height:64px" class="lt"><img src="logo-light.png" alt="Herd Report" style="height:64px" class="dk"></p><form class="card" id="lf" novalidate>
+  <p class="kick">Herd Report admin</p><h2 style="font-size:20px;margin-bottom:16px">Sign in</h2>
   <div class="field"><label for="le">Email</label><input id="le" type="email" autocomplete="email"></div>
   <div class="field"><label for="lp">Password</label><input id="lp" type="password" autocomplete="current-password"></div>
   <div class="btns"><button class="btn solid" type="submit">Sign in</button>${HR.LIVE?'':'<button class="btn" type="button" id="prev">Preview sign in</button>'}</div><p class="err" id="lerr">${msg?esc(msg):''}</p>
-</form>`;
+</form><p style="text-align:center;margin-top:14px"><a href="index.html">Back to the site</a> · <a href="account.html">Client login</a></p></div>`;
  const pv=document.getElementById('prev');
- if(pv)pv.onclick=async()=>{try{await API.signIn('admin@herdreport.com','herdadmin2026');HR.chrome('admin');start()}catch(x){document.getElementById('lerr').textContent=x.message}};
+ if(pv)pv.onclick=async()=>{try{await API.signIn('admin@herdreport.com','herdadmin2026');start()}catch(x){document.getElementById('lerr').textContent=x.message}};
  document.getElementById('lf').addEventListener('submit',async e=>{e.preventDefault();
-  try{await API.signIn(document.getElementById('le').value,document.getElementById('lp').value);HR.chrome('admin');start()}
+  try{await API.signIn(document.getElementById('le').value,document.getElementById('lp').value);start()}
   catch(x){document.getElementById('lerr').textContent=x.message}});
 }
 
+const TABS=[['home','Home'],['bookings','Orders'],['calendar','Ad calendar'],['guests','Guest applications'],['messages','Messages'],['reviews','Reviews'],['clients','Clients'],['packages','Packages'],['settings','Settings']];
+function counts(){return{bookings:all.filter(b=>['pending','refund_requested'].includes(b.status)).length+all.filter(b=>b.kind==='store'&&b.status==='paid').length,
+ guests:guests.filter(g=>g.status==='new').length,messages:msgs.filter(m=>m.status==='new').length,reviews:revs.filter(r=>r.status==='pending').length}}
 function shell(){
- const pend=all.filter(b=>['pending','refund_requested'].includes(b.status)).length,gnew=guests.filter(g=>g.status==='new').length,mnew=msgs.filter(m=>m.status==='new').length,rnew=revs.filter(r=>r.status==='pending').length;
- app.innerHTML=`<div class="top2"><div><p class="kick">Admin dashboard</p><h1 style="font-size:clamp(36px,5vw,64px)">Sponsors &amp; ads</h1></div>
-  <div class="btns"><a class="btn" href="advertise.html">View Advertise page</a><button class="btn" id="out">Sign out</button></div></div>
-  <div class="tabs" role="tablist">${TABS.map(([k,n])=>`<button role="tab" data-t="${k}">${n}${k==='bookings'&&pend?`<span class="n">${pend}</span>`:''}${k==='guests'&&gnew?`<span class="n">${gnew}</span>`:''}${k==='messages'&&mnew?`<span class="n">${mnew}</span>`:''}${k==='reviews'&&rnew?`<span class="n">${rnew}</span>`:''}</button>`).join('')}</div>
-  <div id="pane"></div>`;
- document.getElementById('out').onclick=async()=>{await API.signOut();HR.chrome('admin');login()};
- app.querySelector('.tabs').addEventListener('click',e=>{const b=e.target.closest('button[data-t]');if(b){tab=b.dataset.t;history.replaceState(null,'','#'+tab);show()}});
+ const c=counts();
+ app.innerHTML=`<div class="atop"><img src="mark-light.png" alt=""><b>Herd Report admin</b><a href="index.html" target="_blank">View site</a><button id="out">Sign out</button></div>
+ <div class="aframe"><nav class="anav" aria-label="Admin">${TABS.map(([k,n])=>`<button data-t="${k}">${n}${c[k]?`<span class="c">${c[k]}</span>`:''}</button>`).join('')}</nav><main class="amain" id="pane"></main></div>`;
+ document.getElementById('out').onclick=async()=>{await API.signOut();login()};
+ app.querySelector('.anav').addEventListener('click',e=>{const b=e.target.closest('button[data-t]');if(b)go(b.dataset.t)});
  show();
 }
+function go(t,opts){tab=t;if(opts?.status)fStatus=opts.status;history.replaceState(null,'','#'+t);show();scrollTo(0,0)}
 function show(){
- if(!TABS.some(t=>t[0]===tab))tab='overview';
- app.querySelectorAll('.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===tab));
- ({overview,bookings,calendar,guests:guestsView,messages:messagesView,reviews:reviewsView,clients,packages,settings})[tab]();
+ if(!TABS.some(t=>t[0]===tab))tab='home';
+ app.querySelectorAll('.anav button').forEach(b=>b.setAttribute('aria-current',b.dataset.t===tab?'page':'false'));
+ const titles=Object.fromEntries(TABS);const pane=document.getElementById('pane');
+ if(tab!=='home'){pane.innerHTML=`<div class="ah"><h1>${titles[tab]}</h1></div><div id="sub"></div>`}
+ ({home,bookings,calendar,guests:guestsView,messages:messagesView,reviews:reviewsView,clients,packages,settings})[tab]();
 }
-async function refresh(){await load();shell()}
-
+async function refresh(){await load();const y=scrollY;shell();scrollTo(0,y)}
 function detail(b){
  if(b.kind==='ad')return `${PLACE[b.placement]||''}: ${b.episode_dates.map(shortDate).join(', ')}`;
  if(b.kind==='presenting')return `Pre-roll × 52, from ${fmtDate(b.episode_dates[0])}`;
@@ -105,28 +150,48 @@ function detail(b){
 }
 async function setStatus(id,status){await API.updateBooking(id,{status});await refresh()}
 
-/* ---------- overview ---------- */
-function overview(){
+/* ---------- home: everything at a glance ---------- */
+function home(){
  const pane=document.getElementById('pane');
- const sumOf=s=>all.filter(b=>s.includes(b.status)).reduce((t,b)=>t+(Number(b.amount)||0),0);
- const next4=upcoming(4,st.releaseDay??1);
- const liveSpots=all.filter(b=>TAKEN.includes(b.status)).reduce((t,b)=>t+b.episode_dates.filter(d=>next4.includes(d)).length,0);
- const pend=all.filter(b=>b.status==='pending'),refs=all.filter(b=>b.status==='refund_requested');
- pane.innerHTML=`<div class="stats">
-  <div class="card stat ${pend.length+refs.length?'hot':''}"><div class="l">Waiting for review</div><div class="v">${pend.length+refs.length}</div></div>
-  <div class="card stat"><div class="l">Approved, awaiting payment</div><div class="v">${money(sumOf(['approved']))}</div></div>
-  <div class="card stat"><div class="l">Paid and booked</div><div class="v">${money(sumOf(['paid','live','completed']))}</div></div>
-  <div class="card stat"><div class="l">Ad spots in the next 4 episodes</div><div class="v">${liveSpots}</div></div>
-  <div class="card stat"><div class="l">New guest applications</div><div class="v">${guests.filter(g=>g.status==='new').length}</div></div></div>
- <div class="sh" style="margin-bottom:16px"><h2 style="font-size:32px">Needs your review</h2></div>
- <div class="rev">${pend.length?pend.map(b=>`<div class="card rv"><div><b>${esc(co(b))}</b> · ${esc(title(b))} · ${money(b.amount)}<div class="meta">${esc(detail(b))}</div>${b.notes?`<div class="meta">“${esc(b.notes)}”</div>`:''}</div>
-   <div class="acts"><button class="btn sm solid" data-ap="${esc(b.id)}">Approve</button><button class="btn sm" data-de="${esc(b.id)}">Decline</button><button class="btn sm" data-ed="${esc(b.id)}">Details</button></div></div>`).join(''):'<p class="empty">Nothing waiting. New requests will show up here.</p>'}</div>
- ${refs.length?`<div class="sh" style="margin:28px 0 16px"><h2 style="font-size:32px">Refund requests</h2></div><div class="rev">${refs.map(b=>`<div class="card rv"><div><b>${esc(co(b))}</b> · ${esc(title(b))} · paid ${money(b.amount)}
-   <div class="meta">Refund ${money(b.refund?.amount??Math.max(0,(b.amount||0)-HR.REFUND_FEE))} (after the ${money(HR.REFUND_FEE)} fee)${b.refund?.requested_at?' · asked '+fmtDate(String(b.refund.requested_at).slice(0,10)):''}</div>${b.refund?.reason?`<div class="meta">“${esc(b.refund.reason)}”</div>`:''}</div>
-   <div class="acts"><button class="btn sm solid" data-rfd="${esc(b.id)}">Mark refunded</button><button class="btn sm" data-rfn="${esc(b.id)}">Deny, keep booking</button></div></div>`).join('')}</div>`:''}`;
+ const sumOf=ss=>all.filter(b=>ss.includes(b.status)).reduce((t,b)=>t+(Number(b.amount)||0),0);
+ const weeks=upcoming(6,st.releaseDay??1),next4=weeks.slice(0,4);
+ const booked4=all.filter(b=>TAKEN.includes(b.status)&&b.placement).reduce((t,b)=>t+b.episode_dates.filter(d=>next4.includes(d)).length,0);
+ const ship=all.filter(b=>b.kind==='store'&&b.status==='paid');
+ const Q=[];
+ all.filter(b=>b.status==='pending').forEach(b=>Q.push({t:'order',l:'New order',who:co(b),s:`${title(b)} · ${detail(b)} · ${money(b.amount)}`,a:`<button class="btn sm go" data-ap="${esc(b.id)}">Approve</button><button class="btn sm" data-de="${esc(b.id)}">Decline</button><button class="btn sm" data-ed="${esc(b.id)}">Open</button>`}));
+ all.filter(b=>b.status==='refund_requested').forEach(b=>Q.push({t:'refund',l:'Refund',who:co(b),s:`${title(b)} · refund ${money(b.refund?.amount??Math.max(0,(b.amount||0)-HR.REFUND_FEE))} of ${money(b.amount)}${b.refund?.reason?' · “'+b.refund.reason+'”':''}`,a:`<button class="btn sm go" data-st="${esc(b.id)}" data-v="refunded">Mark refunded</button><button class="btn sm" data-st="${esc(b.id)}" data-v="paid">Deny</button>`}));
+ ship.forEach(b=>{const ln=String(b.notes||'').split('\n');Q.push({t:'ship',l:'Ship',who:co(b),s:`${ln.filter(l=>!l.startsWith('Ship to')).join(', ')} · ${(ln.find(l=>l.startsWith('Ship to'))||'').replace('Ship to: ','')}`,a:`<button class="btn sm go" data-st="${esc(b.id)}" data-v="completed">Mark shipped</button><button class="btn sm" data-ed="${esc(b.id)}">Open</button>`})});
+ revs.filter(r=>r.status==='pending').forEach(r=>Q.push({t:'review',l:'Review',who:`${'★'.repeat(r.rating)} ${r.name}`,s:r.text,a:`<button class="btn sm go" data-rv="${esc(r.id)}" data-s="approved">Approve</button><button class="btn sm" data-rv="${esc(r.id)}" data-s="hidden">Hide</button>`}));
+ guests.filter(g=>g.status==='new').forEach(g=>Q.push({t:'guest',l:'Guest app',who:g.name,s:[g.operation,g.location].filter(Boolean).join(' · '),a:`<button class="btn sm" data-g="${esc(g.id)}">Open</button><button class="btn sm" data-gs="${esc(g.id)}">Mark contacted</button>`}));
+ msgs.filter(m=>m.status==='new').forEach(m=>Q.push({t:'msg',l:'Message',who:m.name,s:`${m.topic||'General'} · ${m.message}`,a:`<a class="btn sm" href="mailto:${esc(m.email)}?subject=${encodeURIComponent('Re: Herd Report')}">Reply</a><button class="btn sm" data-ms="${esc(m.id)}">Mark replied</button>`}));
+ const SHORT={approved:'Awaiting payment',pending:'New',refund_requested:'Refund asked'};
+ const short=b=>esc((co(b)).split(' ').slice(0,2).join(' '));
+ const cell=(d,p)=>{const hit=all.find(b=>b.placement===p&&b.episode_dates.includes(d)&&TAKEN.includes(b.status)),pen=all.find(b=>b.placement===p&&b.episode_dates.includes(d)&&b.status==='pending');
+  return hit?`<td class="b" title="${esc(co(hit))}"><span>${short(hit)}</span></td>`:pen?`<td class="p" title="Pending: ${esc(co(pen))}"><span>${short(pen)}?</span></td>`:'<td class="o">open</td>'};
+ const recent=[...all].sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at))).slice(0,8);
+ pane.innerHTML=`<div class="ah"><h1>Good ${new Date().getHours()<12?'morning':new Date().getHours()<17?'afternoon':'evening'}, ${esc((me.contact_name||'Scott').split(' ')[0])}</h1><span class="soft">${new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}</span></div>
+ <div class="kpis">
+  <button class="kpi ${Q.length?'hot':''}" data-go="home"><div class="v">${Q.length}</div><div class="l">To do</div></button>
+  <button class="kpi" data-go="bookings" data-f="approved"><div class="v">${money(sumOf(['approved']))}</div><div class="l">Awaiting payment</div></button>
+  <button class="kpi" data-go="bookings" data-f="paid"><div class="v">${money(sumOf(['paid','live','completed']))}</div><div class="l">Paid to date</div></button>
+  <button class="kpi" data-go="calendar"><div class="v">${booked4}/${next4.length*SLOTS.length}</div><div class="l">Spots sold, next 4 episodes</div></button>
+  <button class="kpi" data-go="bookings" data-f="paid"><div class="v">${ship.length}</div><div class="l">Hat orders to ship</div></button>
+  <button class="kpi" data-go="clients"><div class="v">${new Set(all.map(b=>b.client_id)).size}</div><div class="l">Clients</div></button></div>
+ <div class="hgrid">
+  <div class="card panel"><h2>To do <span class="soft" style="font-weight:400;font-size:13px">${Q.length} item${Q.length===1?'':'s'}</span></h2>
+   ${Q.length?Q.map(q=>`<div class="q"><span class="t ${q.t}">${q.l}</span><div class="w"><b>${esc(q.who)}</b><div class="s" title="${esc(q.s)}">${esc(q.s)}</div></div><div class="a">${q.a}</div></div>`).join(''):'<p class="done">All caught up. New orders, refunds, reviews and messages show up here.</p>'}</div>
+  <div style="display:grid;gap:16px">
+   <div class="card panel"><h2>Next 6 episodes <button data-go="calendar">Full calendar</button></h2><div class="scroll"><table class="grid5"><thead><tr><th>Episode</th>${SLOTS.map(k=>`<th>${PLACE[k].replace('Mid-roll ','Mid ').replace('-roll','')}</th>`).join('')}</tr></thead>
+    <tbody>${weeks.map(d=>`<tr><td><b>${shortDate(d)}</b></td>${SLOTS.map(k=>cell(d,k)).join('')}</tr>`).join('')}</tbody></table></div></div>
+   <div class="card panel"><h2>Recent orders <button data-go="bookings">All orders</button></h2><div class="scroll"><table><tbody>${recent.map(b=>`<tr><td><div class="who">${esc(co(b))}</div><div class="sub">${esc(title(b))}</div></td><td class="num">${money(b.amount)}</td><td><span class="pill st-${esc(b.status)}" style="white-space:nowrap">${esc(SHORT[b.status]||STATUS[b.status]||b.status)}</span></td><td style="text-align:right"><button class="btn sm" data-ed="${esc(b.id)}">Open</button></td></tr>`).join('')||'<tr><td class="soft">No orders yet.</td></tr>'}</tbody></table></div></div>
+  </div></div>`;
  wire(pane);
- pane.querySelectorAll('[data-rfd]').forEach(b=>b.onclick=()=>setStatus(b.dataset.rfd,'refunded'));
- pane.querySelectorAll('[data-rfn]').forEach(b=>b.onclick=()=>setStatus(b.dataset.rfn,'paid'));
+ pane.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{if(b.dataset.go!=='home')go(b.dataset.go,{status:b.dataset.f||'all'})});
+ pane.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>{b.disabled=true;setStatus(b.dataset.st,b.dataset.v)});
+ pane.querySelectorAll('[data-rv]').forEach(b=>b.onclick=async()=>{b.disabled=true;await API.updateReview(b.dataset.rv,{status:b.dataset.s});await refresh()});
+ pane.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>openGuest(b.dataset.g));
+ pane.querySelectorAll('[data-gs]').forEach(b=>b.onclick=async()=>{b.disabled=true;await API.updateGuest(b.dataset.gs,{status:'contacted'});await refresh()});
+ pane.querySelectorAll('[data-ms]').forEach(b=>b.onclick=async()=>{b.disabled=true;await API.updateMessage(b.dataset.ms,{status:'replied'});await refresh()});
 }
 function wire(el){
  el.querySelectorAll('[data-ap]').forEach(b=>b.onclick=()=>{const bk=all.find(x=>x.id===b.dataset.ap);if(bk.amount==null)return edit(bk.id,'approved');setStatus(bk.id,'approved')});
@@ -171,7 +236,7 @@ function edit(id,nextStatus){
 /* ---------- bookings ---------- */
 let fStatus='all',fText='';
 function bookings(){
- const pane=document.getElementById('pane');
+ const pane=document.getElementById('sub');
  pane.innerHTML=`<div class="filters"><select id="fs" aria-label="Filter by status"><option value="all">All statuses</option>${Object.keys(STATUS).map(s=>`<option value="${s}">${STATUS[s]}</option>`).join('')}</select>
   <input id="ft" type="search" placeholder="Search client or package" aria-label="Search bookings" value="${esc(fText)}"></div><div id="bt"></div>`;
  const fs=document.getElementById('fs');fs.value=fStatus;
@@ -189,7 +254,7 @@ function bookings(){
 
 /* ---------- calendar ---------- */
 function calendar(){
- const pane=document.getElementById('pane');const weeks=upcoming(st.weeksAhead||16,st.releaseDay??1);
+ const pane=document.getElementById('sub');const weeks=upcoming(st.weeksAhead||16,st.releaseDay??1);
  const cell=(d,p)=>{const hits=all.filter(b=>b.placement===p&&b.episode_dates.includes(d)&&[...TAKEN,'pending'].includes(b.status));
   const taken=hits.filter(b=>TAKEN.includes(b.status)).length,cap=st.capacity[p]||0;
   return `<td data-l="${PLACE[p]}" class="${taken>=cap?'full':''}">${hits.map(b=>`<span class="slot ${b.status==='pending'?'pend':''}">${esc(co(b))}${b.status==='pending'?' (pending)':''}</span>`).join('')}${taken<cap?`<span class="open">${cap-taken} open</span>`:''}</td>`};
@@ -203,7 +268,7 @@ const GST={new:'New',contacted:'Contacted',scheduled:'Scheduled',recorded:'Recor
 const gcls={new:'pending',contacted:'approved',scheduled:'paid',recorded:'completed',declined:'declined'};
 let gFilter='open';
 function guestsView(){
- const pane=document.getElementById('pane');
+ const pane=document.getElementById('sub');
  pane.innerHTML=`<div class="filters"><select id="gfs" aria-label="Filter guest applications"><option value="open">Open (not recorded or declined)</option><option value="all">All applications</option>${Object.keys(GST).map(k=>`<option value="${k}">${GST[k]}</option>`).join('')}</select>
   <a class="btn" href="guest.html" style="flex:none">View guest page</a></div><div id="gt"></div>`;
  const fs=document.getElementById('gfs');fs.value=gFilter;fs.onchange=()=>{gFilter=fs.value;draw()};
@@ -243,7 +308,7 @@ function openGuest(id){
 /* ---------- messages ---------- */
 const MST={new:'New',replied:'Replied',closed:'Closed'},mcls={new:'pending',replied:'paid',closed:'completed'};
 function messagesView(){
- const pane=document.getElementById('pane');
+ const pane=document.getElementById('sub');
  pane.innerHTML=msgs.length?`<div class="rev">${msgs.map(m=>`<div class="card rv"><div><b>${esc(m.name)}</b>${m.company?' · '+esc(m.company):''} · <span class="soft">${esc(m.topic||'General')}</span>${m.rating?` <span style="color:var(--red2);letter-spacing:1px">${'★'.repeat(m.rating)}${'☆'.repeat(5-m.rating)}</span>`:''}
    <div class="meta">${esc(m.email)}${m.phone?' · '+esc(m.phone):''} · ${fmtDate(String(m.created_at).slice(0,10))}</div>
    <p style="margin:10px 0 0;white-space:pre-wrap">${esc(m.message)}</p></div>
@@ -257,7 +322,7 @@ function messagesView(){
 /* ---------- reviews ---------- */
 const RST={pending:'Waiting for approval',approved:'Showing on site',hidden:'Hidden'},rcls={pending:'pending',approved:'paid',hidden:'completed'};
 function reviewsView(){
- const pane=document.getElementById('pane'),order={pending:0,approved:1,hidden:2};
+ const pane=document.getElementById('sub'),order={pending:0,approved:1,hidden:2};
  const rs=[...revs].sort((a,b)=>order[a.status]-order[b.status]||b.created_at.localeCompare(a.created_at));
  pane.innerHTML=`<p class="soft" style="margin-bottom:16px">Reviews from the Leave a review pop-up land here. Approved reviews scroll on the homepage under Meet the host.</p>`+(rs.length?`<div class="rev">${rs.map(r=>`<div class="card rv"><div>
    <span style="color:var(--red2);letter-spacing:2px;font-size:18px">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span>${r.sample?' <span class="pill">Sample</span>':''}
@@ -273,7 +338,7 @@ function reviewsView(){
 
 /* ---------- clients ---------- */
 async function clients(){
- const pane=document.getElementById('pane');pane.innerHTML='<p class="soft">Loading…</p>';
+ const pane=document.getElementById('sub');pane.innerHTML='<p class="soft">Loading…</p>';
  const cs=await API.clients();
  pane.innerHTML=cs.length?`<div class="card" style="padding:8px 16px"><table class="stack"><thead><tr><th>Company</th><th>Contact</th><th>Phone</th><th class="num">Bookings</th><th class="num">Booked</th></tr></thead><tbody>
   ${cs.map(c=>{const mine=all.filter(b=>b.client_id===c.id);const tot=mine.filter(b=>['approved','paid','live','completed'].includes(b.status)).reduce((t,b)=>t+(Number(b.amount)||0),0);
@@ -283,7 +348,7 @@ async function clients(){
 
 /* ---------- packages ---------- */
 function packages(){
- const pane=document.getElementById('pane');
+ const pane=document.getElementById('sub');
  const plist=pkgs.filter(p=>p.kind!=='store');pane.innerHTML=`<p class="soft" style="margin-bottom:16px">Edit what appears on the Advertise page. Leave the price blank to show "Custom quote". Prices for the five episode ad spots are set in Settings.</p><div class="pk">${plist.map(p=>`<form class="card" data-id="${esc(p.id)}" novalidate>
   <div class="row2"><div class="field"><label>Name</label><input name="name" value="${esc(p.name)}"></div>
   ${p.kind==='ad'?'<div class="field"><label>Price</label><input disabled value="Set per position in Settings"></div>':`<div class="field"><label>Price ($)</label><input name="price" type="number" min="0" inputmode="numeric" value="${p.price??''}" placeholder="Custom quote"></div>`}
@@ -299,7 +364,7 @@ function packages(){
 
 /* ---------- settings ---------- */
 function settings(){
- const pane=document.getElementById('pane');const s=st;const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+ const pane=document.getElementById('sub');const s=st;const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
  pane.innerHTML=`<form class="set" id="sf" novalidate style="max-width:860px">
   <div class="card"><h3>Episode ad prices</h3><div class="row2">
    ${SLOTS.map(k=>`<div class="field"><label for="r-${k}">${PLACE[k]} ($ per episode)</label><input id="r-${k}" type="number" min="0" inputmode="numeric" value="${s.rates[k]}"></div>`).join('')}</div></div>

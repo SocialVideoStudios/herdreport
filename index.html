@@ -195,9 +195,18 @@ body.cart-open .scrim{opacity:1;pointer-events:auto}body.cart-open .drawer{trans
 @media(max-width:860px){.adv .wrap{grid-template-columns:minmax(0,1fr)}.ratecard{transform:none;box-shadow:6px 6px 0 var(--ink)}}
 
 .aud{background:var(--ink);color:var(--bg)}
-.aud .wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:28px}
-.aud .big{font:900 clamp(34px,4vw,52px)/1 Archivo,sans-serif;text-transform:uppercase;color:#e9a9ad;margin-bottom:8px}
-.aud p{margin:0;opacity:.85}
+.aud .wrap{display:grid;grid-template-columns:minmax(0,.7fr) minmax(0,2fr);gap:clamp(28px,5vw,80px);align-items:center}
+.aud .lead .kick{color:#e9a9ad}
+.aud .lead h2{font-size:clamp(30px,3.4vw,46px);color:var(--bg)}
+.aud .lead p{margin:16px 0 0;opacity:.75;max-width:22em}
+.aud .facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px clamp(24px,3vw,48px)}
+.aud .it{display:grid;grid-template-columns:48px minmax(0,1fr);grid-template-rows:auto 1fr;gap:6px 18px;padding-top:24px;border-top:1px solid rgb(243 239 231/.18)}
+.aud .ic{grid-row:span 2;width:48px;height:48px;border-radius:50%;background:rgb(233 169 173/.14);display:grid;place-items:center}
+.aud .ic svg{width:24px;height:24px;fill:none;stroke:#e9a9ad;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.aud .ah{font:900 clamp(22px,2.2vw,30px)/1.05 Archivo,sans-serif;text-transform:uppercase;color:#e9a9ad;padding-top:12px;text-wrap:balance}
+.aud p{margin:0;opacity:.8;font-size:16px}
+@media(max-width:900px){.aud .wrap{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:600px){.aud .facts{grid-template-columns:minmax(0,1fr);gap:24px}}
 
 /* host */
 .host{background:var(--ink);color:var(--bg)}
@@ -408,7 +417,7 @@ footer small{opacity:.7}
  </div>
 </section>
 
-<section class="aud band" aria-label="Why advertise on Herd Report"><div class="wrap" id="homeAud"><div><div class="big">Weekly</div><p>New episodes every week, on YouTube and every podcast app</p></div><div><div class="big">Coast to coast</div><p>Ranch visits and sale previews from operations across the country</p></div><div><div class="big">Every breed</div><p>Angus, Simmental, Charolais, Hereford, Gelbvieh and Limousin, registered or crossbred</p></div><div><div class="big">Host-read</div><p>Every spot is read by Scott Beck, in his own words</p></div></div></section>
+<section class="aud band" aria-label="Why advertise on Herd Report"><div class="wrap"><div class="lead"><p class="kick">Why Herd Report</p><h2>An audience that raises cattle</h2><p>Every week, breeders, producers and buyers tune in to hear how the best operations run.</p></div><div class="facts" id="homeAud"><div class="it"><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span><div class="ah">Weekly</div><p>New episodes every week, on YouTube and every podcast app</p></div><div class="it"><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span><div class="ah">Coast to coast</div><p>Ranch visits and sale previews from operations across the country</p></div><div class="it"><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></span><div class="ah">Every breed</div><p>Angus, Simmental, Charolais, Hereford, Gelbvieh and Limousin, registered or crossbred</p></div><div class="it"><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5M8 22h8"/></svg></span><div class="ah">Host-read</div><p>Every spot is read by Scott Beck, in his own words</p></div></div></div></section>
 
 <section class="shop band" id="shop">
  <div class="wrap">
@@ -616,7 +625,7 @@ document.querySelectorAll('.vid').forEach(a=>{const im=a.querySelector('img.yt')
   e.currentTarget.hidden=true;e.currentTarget.setAttribute('aria-expanded','true');document.getElementById('archive').hidden=false});}
 window.addEventListener('load',()=>{if(!window.HR)return;HR.API.settings().then(st=>{const s=st.stats||{};
  const f=[s.downloads?[s.downloads,'Average downloads per episode']:null,s.views?[s.views,'YouTube views']:null,s.followers?[s.followers,'Followers across social']:null];
- if(f.some(Boolean)){const el=document.getElementById('homeAud');[...el.children].forEach((c,i)=>{if(f[i]){c.querySelector('.big').textContent=f[i][0];c.querySelector('p').textContent=f[i][1]}})}
+ if(f.some(Boolean)){const el=document.getElementById('homeAud');[...el.children].forEach((c,i)=>{if(f[i]){c.querySelector('.ah').textContent=f[i][0];c.querySelector('p').textContent=f[i][1]}})}
  document.getElementById('homeRates').innerHTML=HR.SLOTS.map(k=>`<div class="rc-row"><b>${HR.PLACE[k]}</b><span>${HR.money(st.rates[k])}</span></div>`).join('')}).catch(()=>{})});
 const btn=document.getElementById('menubtn'),menu=document.getElementById('menu');
 const ms=document.getElementById('mscrim'),lbl=document.getElementById('menulbl');

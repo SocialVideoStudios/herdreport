@@ -23,7 +23,12 @@ function num(s) {
   return Math.round(parseFloat(m[1]) * mult);
 }
 function save(key, data) {
-  const clean = Object.fromEntries(Object.entries(data).filter(([, v]) => v != null && !Number.isNaN(v)));
+  const old = out.platforms[key] || {};
+  const clean = Object.fromEntries(Object.entries(data).filter(([k, v]) => {
+    if (v == null || Number.isNaN(v) || v === 0) return false;
+    if (typeof old[k] === 'number' && old[k] > 20 && v < old[k] * 0.5) { console.log('skip', key, k, v, '(was', old[k] + ')'); return false; }
+    return true;
+  }));
   if (!Object.keys(clean).length) throw new Error('no numbers found');
   out.platforms[key] = { ...(out.platforms[key] || {}), ...clean, updated: now };
   console.log('ok  ', key, JSON.stringify(clean));
@@ -38,7 +43,9 @@ const sources = {
     }
     const h = await get('https://www.youtube.com/@herdreportpodcast/about', { cookie: 'CONSENT=YES+1; SOCS=CAI' });
     const subs = h.match(/"([\d.,]+[KMB]?) subscribers"/)?.[1];
-    const views = h.match(/"([\d,]+) views"/)?.[1];
+    // The channel total is in "viewCountText"; individual videos also have "N views", so prefer that field, else take the largest.
+    const views = h.match(/"viewCountText"\s*:\s*\{?[^}]*?"?([\d,]+) views/)?.[1]
+      ?? [...h.matchAll(/"([\d,]+) views"/g)].map(m => num(m[1])).sort((a, b) => b - a)[0];
     save('youtube', { subscribers: num(subs), views: num(views) });
   },
   async instagram() {
@@ -65,8 +72,9 @@ const sources = {
   async apple() {
     const h = await get('https://podcasts.apple.com/us/podcast/herd-report/id1835474334');
     const avg = h.match(/"ratingAverage":([\d.]+)/)?.[1] || h.match(/([\d.]+)\s*out of 5/)?.[1];
-    const cnt = h.match(/"totalNumberOfReviews":(\d+)/)?.[1] || h.match(/"ratingCount":(\d+)/)?.[1] || h.match(/([\d,]+)\s*Ratings?/)?.[1];
-    save('apple', { rating: avg ? +avg : null, ratings: num(cnt) });
+    const counts = [h.match(/([\d,]+)\s*Ratings?\b/)?.[1], h.match(/"ratingCount":(\d+)/)?.[1], h.match(/"totalNumberOfReviews":(\d+)/)?.[1]]
+      .map(num).filter(n => n > 0);
+    save('apple', { rating: avg ? +avg : null, ratings: counts.length ? Math.max(...counts) : null });
   },
   async spotify() {
     const h = await get('https://open.spotify.com/show/37IlQvHObaNPHxXoUcjEyz');

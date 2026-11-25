@@ -271,8 +271,7 @@ function settings(){
  pane.innerHTML=`<form class="set" id="sf" novalidate style="max-width:860px">
   <div class="card"><h3>Episode ad prices</h3><div class="row2">
    ${SLOTS.map(k=>`<div class="field"><label for="r-${k}">${PLACE[k]} ($ per episode)</label><input id="r-${k}" type="number" min="0" inputmode="numeric" value="${s.rates[k]}"></div>`).join('')}</div></div>
-  <div class="card"><h3>Ad slots per episode</h3><div class="row2">
-   ${SLOTS.map(k=>`<div class="field"><label for="c-${k}">${PLACE[k]}</label><input id="c-${k}" type="number" min="0" max="10" inputmode="numeric" value="${s.capacity[k]}"></div>`).join('')}</div>
+  <div class="card"><h3>Release schedule</h3>
    <div class="row2"><div class="field"><label for="rd">Episodes release on</label><select id="rd">${days.map((d,i)=>`<option value="${i}" ${i===Number(s.releaseDay)?'selected':''}>${d}</option>`).join('')}</select></div>
    <div class="field"><label for="wa">Weeks open for booking</label><input id="wa" type="number" min="4" max="52" inputmode="numeric" value="${s.weeksAhead}"></div></div></div>
   <div class="card"><h3>Audience numbers on the Advertise page</h3><p class="hint" style="margin:-6px 0 14px">Leave blank to hide a number. Use what Scott's hosting and YouTube dashboards report, like "4,800".</p><div class="row2">
@@ -283,7 +282,7 @@ function settings(){
 </div></form>`;
  const n=id=>Number(document.getElementById(id).value)||0;
  document.getElementById('sf').addEventListener('submit',async e=>{e.preventDefault();
-  const ns={...s,rates:Object.fromEntries(SLOTS.map(k=>[k,n('r-'+k)])),capacity:Object.fromEntries(SLOTS.map(k=>[k,n('c-'+k)])),releaseDay:n('rd'),weeksAhead:Math.min(52,Math.max(4,n('wa'))),
+  const ns={...s,rates:Object.fromEntries(SLOTS.map(k=>[k,n('r-'+k)])),releaseDay:n('rd'),weeksAhead:Math.min(52,Math.max(4,n('wa'))),
    stats:{downloads:document.getElementById('sd').value.trim(),views:document.getElementById('sv').value.trim(),followers:document.getElementById('sfw').value.trim()}};
   try{st=await API.saveSettings(ns);document.getElementById('sok').textContent='Saved.'}catch(x){document.getElementById('sok').textContent=x.message}});
  const r=document.getElementById('reset');if(r)r.onclick=()=>{API.reset();location.reload()};

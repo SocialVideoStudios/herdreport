@@ -140,7 +140,7 @@ body.cart-open .scrim{opacity:1;pointer-events:auto}body.cart-open .drawer{trans
 .pending.show{display:block}
 @media (prefers-reduced-motion:reduce){.drawer,.scrim{transition:none}}
 
-.ticker{overflow:hidden;margin:0 calc(-1*max(5vw,16px));padding:4px 0;-webkit-mask:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent);mask:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent)}
+.ticker{overflow:hidden;margin:0;padding:4px 0;-webkit-mask:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent);mask:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent)}
 .track{display:flex;gap:20px;width:max-content;animation:tick 32s linear infinite}
 .ticker:hover .track,.ticker:focus-within .track{animation-play-state:paused}
 .track .item{width:clamp(240px,26vw,300px);flex:none}

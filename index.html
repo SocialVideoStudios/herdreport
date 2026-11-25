@@ -164,6 +164,18 @@ body.cart-open .scrim{opacity:1;pointer-events:auto}body.cart-open .drawer{trans
 
 /* episodes */
 .eps{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:20px}
+.eps.rail{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:4px 2px 8px;margin:-4px -2px 0}
+.eps.rail::-webkit-scrollbar{display:none}
+.eps.rail .ep{flex:0 0 calc((100% - 40px)/3);scroll-snap-align:start}
+@media(max-width:1000px){.eps.rail .ep{flex-basis:calc((100% - 20px)/2)}}
+@media(max-width:640px){.eps.rail .ep{flex-basis:86%}}
+.shr{display:flex;align-items:end;justify-content:space-between;gap:20px;flex:1 1 100%}
+.arrows{display:flex;gap:8px}
+.arw{width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:none;color:inherit;display:grid;place-items:center;cursor:pointer}
+.arw svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.arw:hover:not([disabled]){background:var(--ink);color:var(--bg)}
+.arw[disabled]{opacity:.3;cursor:default}
+.arrows[hidden],.more [hidden]{display:none}
 .ep{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:12px;transition:transform .15s}
 .ep:hover{transform:translateY(-3px)}
 .ep .d{display:flex;justify-content:space-between;gap:8px;font-size:14px;color:var(--soft)}
@@ -322,10 +334,11 @@ footer small{opacity:.7}
  <div class="wrap">
   <div class="sh">
    <h2>Fresh from the barn</h2>
-   <p>New conversations with the operations shaping the cattle business. Watch every episode on YouTube or listen wherever you get your podcasts.</p>
+   <div class="shr"><p>New conversations with the operations shaping the cattle business. Watch every episode on YouTube or listen wherever you get your podcasts.</p>
+    <div class="arrows" id="arrows"><button class="arw" id="prevEp" type="button" aria-label="Previous episodes"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><button class="arw" id="nextEp" type="button" aria-label="More episodes"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button></div></div>
   </div>
-  <div class="eps" id="eps"></div>
-  <div class="more"><a class="btn" href="https://www.herdreportpodcast.com/episodes/">Full episode archive</a></div>
+  <div class="eps rail" id="eps"></div>
+  <div class="more"><button class="btn" id="allEps" type="button" aria-controls="eps" aria-expanded="false">See all episodes</button><a class="btn" id="archive" href="https://www.herdreportpodcast.com/episodes/" hidden>Full episode archive</a></div>
  </div>
 </section>
 
@@ -514,6 +527,14 @@ document.querySelectorAll('.vid').forEach(a=>{const im=a.querySelector('img.yt')
   const f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(a.dataset.yt)+'?autoplay=1&rel=0';
   f.title='Herd Report video';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;
   const d=document.createElement('div');d.className=a.classList.contains('lthumb')?'thumb lthumb':'thumb';d.appendChild(f);a.replaceWith(d);});});
+{const rail=document.getElementById('eps'),pv=document.getElementById('prevEp'),nx=document.getElementById('nextEp');
+ const step=()=>{const c=rail.querySelector('.ep');return c?c.getBoundingClientRect().width+20:300};
+ const upd=()=>{pv.disabled=rail.scrollLeft<=4;nx.disabled=rail.scrollLeft+rail.clientWidth>=rail.scrollWidth-4};
+ pv.addEventListener('click',()=>rail.scrollBy({left:-step(),behavior:'smooth'}));
+ nx.addEventListener('click',()=>rail.scrollBy({left:step(),behavior:'smooth'}));
+ rail.addEventListener('scroll',upd,{passive:true});window.addEventListener('resize',upd);upd();
+ document.getElementById('allEps').addEventListener('click',e=>{rail.classList.remove('rail');rail.scrollLeft=0;document.getElementById('arrows').hidden=true;
+  e.currentTarget.hidden=true;e.currentTarget.setAttribute('aria-expanded','true');document.getElementById('archive').hidden=false});}
 const btn=document.getElementById('menubtn'),menu=document.getElementById('menu');
 btn.addEventListener('click',()=>{const o=menu.classList.toggle('open');btn.setAttribute('aria-expanded',o);btn.textContent=o?'Close':'Menu'});
 menu.addEventListener('click',e=>{if(e.target.closest('a')){menu.classList.remove('open');btn.setAttribute('aria-expanded','false');btn.textContent='Menu'}});

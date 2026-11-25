@@ -6,7 +6,19 @@ import { parse } from 'node-html-parser';
 
 const BASE = 'https://www.herdreportpodcast.com';
 const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36';
-const get = async u => { const r = await fetch(u.startsWith('http') ? u : BASE + u, { headers: { 'user-agent': UA } }); if (!r.ok) throw new Error(`${u} ${r.status}`); return r.text(); };
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+async function get(u) {
+  const url = u.startsWith('http') ? u : BASE + u;
+  for (let i = 0; i < 6; i++) {
+    await sleep(2500);
+    const r = await fetch(url, { headers: { 'user-agent': UA } });
+    if (r.ok) return r.text();
+    if (r.status !== 429 && r.status < 500) throw new Error(`${u} ${r.status}`);
+    const wait = (Number(r.headers.get('retry-after')) || 15 * (i + 1)) * 1000;
+    console.log('waiting', wait / 1000, 's for', u); await sleep(wait);
+  }
+  throw new Error(`${u} gave up`);
+}
 const ALLOWED = new Set(['p', 'h2', 'h3', 'h4', 'ul', 'ol', 'li', 'strong', 'b', 'em', 'i', 'a', 'blockquote', 'br']);
 
 // Keep only simple formatting tags; drop every attribute except a safe href.
@@ -95,7 +107,7 @@ async function guests() {
       let photo = '';
       if (imgUrl) {
         try {
-          const r = await fetch(imgUrl, { headers: { 'user-agent': UA } });
+          await sleep(1000); const r = await fetch(imgUrl, { headers: { 'user-agent': UA } });
           if (r.ok) { const ext = /webp/.test(imgUrl) ? 'webp' : 'jpg'; photo = `img/guests/${slug}.${ext}`; await writeFile(new URL('../' + photo, import.meta.url), Buffer.from(await r.arrayBuffer())); }
         } catch (e) { console.log('no photo', slug, e.message); }
       }

@@ -49,6 +49,9 @@ body.hrc-open .hrc-scrim{opacity:1;pointer-events:auto}body.hrc-open .hrc-drawer
 .hrc-line{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:2px 12px;align-items:center;padding:12px 0;border-bottom:1px solid rgb(11 11 13/.12)}
 .hrc-th{grid-row:span 3;width:56px;height:46px;border-radius:10px;overflow:hidden;background:#fff}
 .hrc-th img{width:100%;height:100%;object-fit:contain}
+.hrc-th.ad{background:#85272C;color:#F3EFE7;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
+.hrc-th.ad svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.hrc-th.ad i{font:900 9px Archivo,sans-serif;font-style:normal;text-transform:uppercase;letter-spacing:.04em;line-height:1}
 .hrc-line b{font:900 16px Archivo,sans-serif;text-transform:uppercase}
 .hrc-line .p{font:900 16px Archivo,sans-serif;white-space:nowrap;text-align:right}
 .hrc-line .d{grid-column:2/-1;font-size:14px;color:var(--soft,#5a5450)}
@@ -91,7 +94,8 @@ function line(it,i){
  const p=price(it);const money=H().money;
  if(it.type==='hat')return `<div class="hrc-line"><span class="hrc-th">${it.img?`<img src="${esc(it.img)}" alt="">`:''}</span><b>${esc(label(it))}</b><span class="p">${money(p)}</span>
   <span class="d">${esc(desc(it))}</span><span class="a"><span class="hrc-q"><button data-q="-1" data-i="${i}" aria-label="One fewer">−</button><output>${it.qty}</output><button data-q="1" data-i="${i}" aria-label="One more">+</button></span><button class="hrc-link" data-rm="${i}">Remove</button></span></div>`;
- return `<div class="hrc-line noimg"><b>${esc(label(it))}</b><span class="p">${p==null?'Quote':money(p)}</span><span class="d">${esc(desc(it))}</span>
+ const tag=it.type==='slot'?({pre:'Pre',mid1:'Mid 1',mid2:'Mid 2',mid3:'Mid 3',post:'Post'}[it.slot]||'Ad'):'Package';
+ return `<div class="hrc-line"><span class="hrc-th ad" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5M8 22h8"/></svg><i>${tag}</i></span><b>${esc(label(it))}</b><span class="p">${p==null?'Quote':money(p)}</span><span class="d">${esc(desc(it))}</span>
   <span class="a">${Cart.onEdit?`<button class="hrc-link" data-ed="${i}">Edit</button>`:''}<button class="hrc-link" data-rm="${i}">Remove</button></span></div>`;
 }
 function draw(){

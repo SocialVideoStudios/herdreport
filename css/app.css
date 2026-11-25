@@ -19,6 +19,7 @@ p{margin:0 0 12px}
 .soft{color:var(--soft)}
 .sh{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px 24px;margin-bottom:clamp(20px,3vw,36px)}
 .sh p{margin:0;max-width:32em;color:var(--soft)}
+.sh p.kick{color:var(--red2);margin-bottom:12px}
 :focus-visible{outline:3px solid var(--red2);outline-offset:3px}
 
 /* buttons */

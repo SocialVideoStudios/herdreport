@@ -92,27 +92,9 @@ body.open .scrim{opacity:1;pointer-events:auto}body.open .drawer{transform:none}
 <body>
 <div id="hdr"></div>
 <main>
-<section class="hero band">
- <div class="wrap">
-  <div>
-   <p class="kick">Advertise with Herd Report</p>
-   <h1>Reach the cattlemen who buy</h1>
-   <p class="lede">Herd Report goes inside the operations shaping the cattle business, every week on YouTube and every podcast app. Pick your spots, add them to your cart and check out in a couple of minutes. You only create an account when you're ready to send your request.</p>
-   <div class="btns"><a class="btn solid" href="#shop">Shop ad spots</a><a class="btn" href="account.html">Client login</a></div>
-  </div>
-  <aside class="ratecard" aria-label="Episode ad rates">
-   <h3>Episode ad rates</h3>
-   <div class="sub">Five host-read spots per episode. Price per episode.</div>
-   <div id="rates"></div>
-  </aside>
- </div>
-</section>
-
-<section class="aud band" aria-label="Audience"><div class="wrap grid" id="aud"></div></section>
-
 <section class="band" id="shop">
  <div class="wrap">
-  <div class="sh"><h2>Episode ads</h2><p>Every episode has five spots, each read by Scott. Pick a spot, choose your weeks and add it to your cart.</p></div>
+  <div class="sh"><div><p class="kick">Advertise with Herd Report</p><h1 style="font-size:clamp(40px,5.6vw,72px)">Episode ads</h1></div><p>Every episode has five spots, each read by Scott. Pick a spot, choose your weeks and add it to your cart. You only create an account at checkout.</p></div>
   <div class="slots" id="slots"></div>
  </div>
 </section>
@@ -336,7 +318,7 @@ async function submit(){
 
 Promise.all([API.packages(),API.settings(),API.usage()]).then(([p,s,u])=>{pkgs=p;st=s;usage=u;weeks=upcoming(st.weeksAhead||16,st.releaseDay??1);
  cart=cart.filter(it=>it.type==='slot'?SLOTS.includes(it.slot):pkgs.some(p=>p.id===it.type));
- renderRates();renderAud();renderAll();
+ renderAll();
 }).catch(e=>{$('slots').innerHTML=`<p class="err">Couldn't load the shop: ${esc(e.message)}</p>`});
 }
 </script>

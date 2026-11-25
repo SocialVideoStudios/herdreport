@@ -187,3 +187,29 @@ on conflict (key) do nothing;
 
 -- Make Scott an admin: sign up on the site first, then run this with his email.
 -- update public.profiles set role = 'admin' where email = 'scott@example.com';
+
+-- Client portal: brand kit, creative files and talking points ---------------
+alter table public.profiles add column if not exists brand jsonb not null default '{}';
+alter table public.bookings add column if not exists assets jsonb not null default '[]';
+
+-- Clients can update only the talking points and files on their own open orders.
+create or replace function public.update_booking_creative(bid uuid, p_notes text, p_assets jsonb)
+returns public.bookings language plpgsql security definer set search_path = public as $$
+declare r public.bookings;
+begin
+  update public.bookings set notes = coalesce(p_notes, notes), assets = coalesce(p_assets, assets), updated_at = now()
+   where id = bid and client_id = auth.uid() and status in ('pending','approved','paid','live')
+   returning * into r;
+  if not found then raise exception 'This order can no longer be changed.'; end if;
+  return r;
+end $$;
+grant execute on function public.update_booking_creative(uuid, text, jsonb) to authenticated;
+
+-- File storage for logos and ad files. Each client uploads into their own folder.
+insert into storage.buckets (id, name, public) values ('creative', 'creative', true) on conflict (id) do nothing;
+drop policy if exists "creative upload own" on storage.objects;
+create policy "creative upload own" on storage.objects for insert to authenticated
+  with check (bucket_id = 'creative' and (storage.foldername(name))[1] = auth.uid()::text);
+drop policy if exists "creative delete own" on storage.objects;
+create policy "creative delete own" on storage.objects for delete to authenticated
+  using (bucket_id = 'creative' and ((storage.foldername(name))[1] = auth.uid()::text or public.is_admin()));

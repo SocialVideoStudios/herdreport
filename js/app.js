@@ -51,11 +51,19 @@ function seed(){const w=upcoming(6,1);const now=new Date().toISOString();
   {id:'b3',client_id:'u-bigsky',package_id:'ads',kind:'ad',placement:'pre',episode_dates:[w[2]],amount:500,status:'approved',notes:'Sale reminder.',creative_url:'',admin_note:'Invoice sent.',created_at:now}]}}
 function db(){if(mem)return mem;try{const d=JSON.parse(localStorage.getItem(K));if(d&&d.users){mem=d;return d}}catch(e){}mem=seed();put();return mem}
 function put(){try{localStorage.setItem(K,JSON.stringify(mem))}catch(e){}}
-const strip=u=>u&&({id:u.id,email:u.email,role:u.role,company:u.company,contact_name:u.contact_name,phone:u.phone,created_at:u.created_at});
+const strip=u=>u&&({id:u.id,email:u.email,role:u.role,company:u.company,contact_name:u.contact_name,phone:u.phone,brand:structuredClone(u.brand||{}),created_at:u.created_at});
+const EDITABLE=['pending','approved','paid','live'];
+const MAXF=20*1024*1024;
 const uid=()=>Math.random().toString(36).slice(2,10);
 const wait=v=>new Promise(r=>setTimeout(()=>r(v),80));
 const fail=m=>Promise.reject(new Error(m));
 
+/* demo uploads: shrink images and keep them in this browser */
+function readFile(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=()=>rej(new Error('Could not read that file.'));r.readAsDataURL(file)})}
+async function shrink(file){const url=await readFile(file);if(!/^image\/(png|jpe?g|webp|gif)$/.test(file.type))return url;
+ const img=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=url});
+ const k=Math.min(1,900/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);
+ c.getContext('2d').drawImage(img,0,0,c.width,c.height);return c.toDataURL(file.type==='image/png'?'image/png':'image/jpeg',.85)}
 const Demo={
  async current(){const d=db();return wait(strip(d.users.find(u=>u.id===d.session)))},
  async signIn(email,pw){const d=db();const u=d.users.find(u=>u.email.toLowerCase()===String(email).trim().toLowerCase()&&u.pw===pw);if(!u)return fail('That email and password do not match.');d.session=u.id;put();return wait(strip(u))},
@@ -71,6 +79,14 @@ const Demo={
  async allBookings(){const d=db();return wait(d.bookings.map(b=>({...structuredClone(b),client:strip(d.users.find(u=>u.id===b.client_id))||{}})).reverse())},
  async createBooking(b){const d=db();const nb={...b,id:'b-'+uid(),client_id:d.session,status:b.status==='paid'?'paid':'pending',admin_note:'',created_at:new Date().toISOString()};d.bookings.push(nb);put();return wait(nb)},
  async updateBooking(id,patch){const d=db();const b=d.bookings.find(b=>b.id===id);Object.assign(b,patch);put();return wait(b)},
+ async saveBrand(brand){const d=db();const u=d.users.find(u=>u.id===d.session);u.brand=brand;put();return wait(strip(u))},
+ async uploadFile(file){if(file.size>MAXF)return fail('That file is over 20 MB. Send a smaller version.');
+  const url=await shrink(file);if(url.length>1.4e6)return fail('That file is too large for this browser. Try a smaller image or PDF.');
+  return wait({name:file.name,type:file.type,size:file.size,url})},
+ async updateMyBooking(id,patch){const d=db();const b=d.bookings.find(b=>b.id===id&&b.client_id===d.session);if(!b)return fail('Booking not found.');
+  if(!EDITABLE.includes(b.status))return fail('This order can no longer be changed.');b.notes=patch.notes??b.notes;b.assets=patch.assets??b.assets;
+  try{localStorage.setItem(K,JSON.stringify(mem))}catch(e){return fail('Storage is full. Remove a file and try again.')}return wait(structuredClone(b))},
+ async changePassword(pw){const d=db();const u=d.users.find(u=>u.id===d.session);u.pw=pw;put();return wait()},
  async payBooking(id){const d=db();const b=d.bookings.find(b=>b.id===id&&b.client_id===d.session);if(!b)return fail('Booking not found.');b.status='paid';put();return wait(b)},
  async cancelBooking(id){const d=db();const b=d.bookings.find(b=>b.id===id&&b.client_id===d.session);if(!b||b.status!=='pending')return fail('Only pending requests can be cancelled.');b.status='cancelled';put();return wait(b)},
  async usage(){const m={};db().bookings.filter(b=>TAKEN.includes(b.status)&&b.placement).forEach(b=>b.episode_dates.forEach(dt=>{const k=dt+'|'+b.placement;m[k]=(m[k]||0)+1}));return wait(m)},
@@ -99,10 +115,16 @@ const Live={
  async settings(){const r=ok(await sb.from('settings').select('value').eq('key','main').maybeSingle());return mergeSet(r?.value||{})},
  async saveSettings(s){ok(await sb.from('settings').upsert({key:'main',value:s}));return s},
  async myBookings(){const me=await Live.current();return ok(await sb.from('bookings').select('*').eq('client_id',me.id).order('created_at',{ascending:false}))},
- async allBookings(){const r=ok(await sb.from('bookings').select('*, client:profiles(id,email,company,contact_name,phone)').order('created_at',{ascending:false}));return r.map(b=>({...b,client:b.client||{}}))},
+ async allBookings(){const r=ok(await sb.from('bookings').select('*, client:profiles(id,email,company,contact_name,phone,brand)').order('created_at',{ascending:false}));return r.map(b=>({...b,client:b.client||{}}))},
  async createBooking(b){const me=await Live.current();const{status,...rest}=b;return ok(await sb.from('bookings').insert({...rest,client_id:me.id,status:'pending'}).select().single())},
  async updateBooking(id,patch){return ok(await sb.from('bookings').update(patch).eq('id',id).select().single())},
  async cancelBooking(id){return ok(await sb.rpc('cancel_booking',{bid:id}))},
+ async saveBrand(brand){const me=await Live.current();return ok(await sb.from('profiles').update({brand}).eq('id',me.id).select().single())},
+ async uploadFile(file){if(file.size>MAXF)throw new Error('That file is over 20 MB. Send a smaller version.');const me=await Live.current();
+  const path=`${me.id}/${Date.now()}-${file.name.replace(/[^\w.-]+/g,'-')}`;ok(await sb.storage.from('creative').upload(path,file,{contentType:file.type}));
+  return{name:file.name,type:file.type,size:file.size,url:sb.storage.from('creative').getPublicUrl(path).data.publicUrl}},
+ async updateMyBooking(id,patch){return ok(await sb.rpc('update_booking_creative',{bid:id,p_notes:patch.notes??null,p_assets:patch.assets??null}))},
+ async changePassword(pw){ok(await sb.auth.updateUser({password:pw}))},
  async payBooking(){throw new Error('Card payment opens here once Stripe is connected.')},
  async usage(){const r=ok(await sb.rpc('slot_usage'));const m={};(r||[]).forEach(x=>{m[x.episode_date+'|'+x.placement]=Number(x.n)});return m},
  async clients(){return ok(await sb.from('profiles').select('*').eq('role','client').order('created_at',{ascending:false}))},
@@ -132,5 +154,5 @@ function chrome(active){
   if(u.role==='admin'){b.textContent='Admin';b.href='admin.html'}else b.textContent='My account'}).catch(()=>{});
 }
 
-window.HR={API,LIVE,esc,money,fmtDate,shortDate,upcoming,SLOTS,PLACE,SLOT_INFO,STATUS,TAKEN,DEF_SETTINGS,DEF_PACKAGES,chrome};
+window.HR={API,LIVE,EDITABLE,esc,money,fmtDate,shortDate,upcoming,SLOTS,PLACE,SLOT_INFO,STATUS,TAKEN,DEF_SETTINGS,DEF_PACKAGES,chrome};
 })();

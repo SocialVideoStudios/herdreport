@@ -32,6 +32,9 @@
 .set h3{margin:4px 0 14px;font-size:20px}
 .set .card+.card{margin-top:20px}
 td .who{font-weight:600}td .sub{color:var(--soft);font-size:14px}
+.afiles{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.afile{display:flex;align-items:center;gap:8px;border:2px solid var(--line);border-radius:12px;padding:5px 10px 5px 5px;color:inherit;text-decoration:none;font-size:14px;font-weight:600;max-width:100%}
+.afile img,.afile span{width:36px;height:36px;object-fit:contain;background:#fff;border-radius:8px;display:grid;place-items:center;font:900 10px Archivo,sans-serif;color:#85272C;flex:none}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="js/config.js"></script>
@@ -126,6 +129,12 @@ function wire(el){
  el.querySelectorAll('[data-ed]').forEach(b=>b.onclick=()=>edit(b.dataset.ed));
 }
 
+/* ---------- client files ---------- */
+function assetsHtml(b){const br=b.client?.brand||{},fs=[...(br.logo?[{...br.logo,name:'Brand logo: '+br.logo.name}]:[]),...(b.assets||[])];
+ const chip=f=>`<a class="afile" href="${esc(f.url)}" target="_blank" rel="noopener" download="${esc(f.name)}">${/^image\//.test(f.type||'')||/^data:image/.test(f.url)?`<img src="${esc(f.url)}" alt="">`:'<span>'+esc((f.name.split('.').pop()||'').slice(0,4).toUpperCase())+'</span>'}${esc(f.name)}</a>`;
+ return `${fs.length?`<p style="margin-bottom:6px"><b>Files from client:</b></p><div class="afiles">${fs.map(chip).join('')}</div>`:''}
+  ${br.website||br.socials||br.points||br.notes?`<p><b>Brand kit:</b> ${[br.website&&`<a href="${esc(br.website)}" target="_blank" rel="noopener">${esc(br.website)}</a>`,br.socials&&esc(br.socials)].filter(Boolean).join(' · ')}${br.notes?`<br><i>${esc(br.notes)}</i>`:''}${br.points&&!b.notes?`<br>Standard points: ${esc(br.points)}`:''}</p>`:''}`}
+
 /* ---------- booking editor ---------- */
 const modal=document.getElementById('modal'),mbody=document.getElementById('mbody');
 function close(){modal.classList.remove('open')}
@@ -137,7 +146,8 @@ function edit(id,nextStatus){
   <p class="soft" style="margin-bottom:16px">${esc(co(b))} · ${esc(b.client?.contact_name||'')} · ${esc(b.client?.email||'')}${b.client?.phone?' · '+esc(b.client.phone):''}</p>
   <p><b>Details:</b> ${esc(detail(b))}</p>
   ${b.notes?`<p><b>Talking points:</b><br>${esc(b.notes).replace(/\n/g,'<br>')}</p>`:''}
-  ${b.creative_url?`<p><b>Files:</b> <a href="${esc(b.creative_url)}" target="_blank" rel="noopener">${esc(b.creative_url)}</a></p>`:''}
+  ${b.creative_url?`<p><b>Link:</b> <a href="${esc(b.creative_url)}" target="_blank" rel="noopener">${esc(b.creative_url)}</a></p>`:''}
+  ${assetsHtml(b)}
   <form id="ef" novalidate><div class="row2">
    <div class="field"><label for="es">Status</label><select id="es">${Object.keys(STATUS).map(s=>`<option value="${s}">${STATUS[s]}</option>`).join('')}</select></div>
    <div class="field"><label for="ea">Amount ($)</label><input id="ea" type="number" min="0" step="1" inputmode="numeric" value="${b.amount??''}" placeholder="Set a quote"></div></div>
@@ -245,7 +255,7 @@ async function clients(){
  const cs=await API.clients();
  pane.innerHTML=cs.length?`<div class="card" style="padding:8px 16px"><table class="stack"><thead><tr><th>Company</th><th>Contact</th><th>Phone</th><th class="num">Bookings</th><th class="num">Booked</th></tr></thead><tbody>
   ${cs.map(c=>{const mine=all.filter(b=>b.client_id===c.id);const tot=mine.filter(b=>['approved','paid','live','completed'].includes(b.status)).reduce((t,b)=>t+(Number(b.amount)||0),0);
-   return `<tr><td data-l="Company"><div class="who">${esc(c.company||'–')}</div></td><td data-l="Contact">${esc(c.contact_name||'')}<div class="sub">${esc(c.email)}</div></td><td data-l="Phone">${esc(c.phone||'')}</td><td data-l="Bookings" class="num">${mine.length}</td><td data-l="Booked" class="num">${money(tot)}</td></tr>`}).join('')}
+   return `<tr><td data-l="Company"><div class="who" style="display:flex;align-items:center;gap:10px">${c.brand?.logo?`<img src="${esc(c.brand.logo.url)}" alt="" style="width:36px;height:36px;object-fit:contain;background:#fff;border-radius:8px;border:1px solid var(--hair)">`:''}${esc(c.company||'–')}</div>${c.brand?.website?`<div class="sub"><a href="${esc(c.brand.website)}" target="_blank" rel="noopener">${esc(c.brand.website)}</a></div>`:''}</td><td data-l="Contact">${esc(c.contact_name||'')}<div class="sub">${esc(c.email)}</div></td><td data-l="Phone">${esc(c.phone||'')}</td><td data-l="Bookings" class="num">${mine.length}</td><td data-l="Booked" class="num">${money(tot)}</td></tr>`}).join('')}
   </tbody></table></div>`:'<p class="empty">No client accounts yet.</p>';
 }
 

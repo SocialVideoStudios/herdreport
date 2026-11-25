@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Client account | Herd Report</title>
+<title>Client portal | Herd Report</title>
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -14,20 +14,23 @@
 .auth .card.alt input{background:var(--cream);color:#0B0B0D;border-color:var(--cream)}
 .auth .card.alt .hint{color:#f1dcdc}
 .auth .card.alt .btn{background:var(--cream);color:#85272C;border-color:var(--cream)}
-.who{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:16px;margin-bottom:28px}
-.who p{margin:6px 0 0}
-.place{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));gap:10px}
-.place label{margin:0;border:2px solid var(--line);border-radius:14px;padding:12px 14px;cursor:pointer;display:flex;flex-direction:column;gap:2px;font-weight:600}
-.place label span{font-weight:400;color:var(--soft);font-size:14px}
-.place input{position:absolute;opacity:0;pointer-events:none}
-.place label:has(input:checked){background:var(--red);border-color:var(--red);color:var(--cream)}
-.place label:has(input:checked) span{color:#f1dcdc}
-.place label:has(input:focus-visible){outline:3px solid var(--red2);outline-offset:3px}
-.book{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:24px;align-items:start}
-.sum{position:sticky;top:90px;background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.sum .tot{font:900 40px Archivo,sans-serif;margin:6px 0 4px}
-.sum .ln{display:flex;justify-content:space-between;gap:12px;font-size:15px;padding:6px 0;border-bottom:1px solid rgb(243 239 231/.15)}
-.sum .btn{width:100%;margin-top:18px;background:var(--red);border-color:var(--red);color:var(--cream)}
+.perks{list-style:none;padding:0;margin:0 0 6px;display:grid;gap:6px}.perks li::before{content:"✓ ";font-weight:700}
+.who{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;margin-bottom:24px}
+.who .id{display:flex;align-items:center;gap:16px}
+.who .lg{width:72px;height:72px;border-radius:18px;border:2px solid var(--line);background:#fff;display:grid;place-items:center;overflow:hidden;font:900 30px Archivo,sans-serif;color:#85272C;flex:none}
+.who .lg img{width:100%;height:100%;object-fit:contain}
+.who h1{font-size:clamp(32px,4.6vw,58px)}.who p{margin:4px 0 0}
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:20px}
+.tile{border:2px solid var(--line);border-radius:18px;padding:16px 18px;background:var(--card)}
+.tile b{display:block;font:900 32px/1.05 Archivo,sans-serif}.tile span{font:700 12px Archivo,sans-serif;text-transform:uppercase;color:var(--soft)}
+.tile.hot{background:var(--red);border-color:var(--red);color:var(--cream)}.tile.hot span{color:#f1dcdc}
+.two{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:20px;align-items:start}
+.todo{list-style:none;margin:0;padding:0}.todo li{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--hair)}
+.todo li:last-child{border:0}.todo .ck{width:24px;height:24px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-size:13px;flex:none}
+.todo .done .ck{background:var(--ok);border-color:var(--ok);color:#fff}.todo .done span{color:var(--soft);text-decoration:line-through}
+.todo .l{display:flex;gap:12px;align-items:center}
+.air{list-style:none;margin:0;padding:0}.air li{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--hair)}.air li:last-child{border:0}
+.air b{font:900 15px Archivo,sans-serif;text-transform:uppercase}
 .blist{display:grid;gap:16px}
 .bk{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 20px;align-items:start}
 .bk h3{font-size:22px}
@@ -35,7 +38,23 @@
 .bk .amt{font:900 24px Archivo,sans-serif;text-align:right;white-space:nowrap}
 .bk .note{grid-column:1/-1;background:var(--bg);border-radius:12px;padding:10px 14px;font-size:15px}
 .bk .acts{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-@media(max-width:860px){.book{grid-template-columns:minmax(0,1fr)}.sum{position:static}}
+.cr{grid-column:1/-1;border-top:2px solid var(--hair);padding-top:16px;margin-top:4px}
+.cr h4{font:900 16px Archivo,sans-serif;text-transform:uppercase;margin:0 0 10px}
+.flag{display:inline-block;font:700 12px Archivo,sans-serif;text-transform:uppercase;background:var(--warn);color:#fff;border-radius:999px;padding:3px 10px;margin-left:8px;vertical-align:middle}
+.files{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 12px}
+.file{display:flex;align-items:center;gap:10px;border:2px solid var(--line);border-radius:14px;padding:6px 8px 6px 6px;max-width:100%}
+.file .th{width:44px;height:44px;border-radius:10px;background:#fff;display:grid;place-items:center;overflow:hidden;flex:none;font:900 11px Archivo,sans-serif;color:#85272C}
+.file .th img{width:100%;height:100%;object-fit:contain}
+.file a{color:inherit;font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px}
+.file button{border:0;background:none;color:var(--soft);font-size:20px;cursor:pointer;width:32px;height:32px}
+.drop{display:flex;align-items:center;justify-content:center;gap:10px;border:2px dashed var(--line);border-radius:14px;padding:14px;cursor:pointer;font-weight:600;text-align:center;min-height:56px}
+.drop.on{background:var(--ink);color:var(--bg)}
+.drop input{position:absolute;width:1px;height:1px;opacity:0}
+.brand{display:grid;grid-template-columns:240px minmax(0,1fr);gap:24px;align-items:start}
+.logo-box{aspect-ratio:1;border:2px solid var(--line);border-radius:22px;background:#fff;display:grid;place-items:center;overflow:hidden;margin-bottom:12px;color:#5a5450;text-align:center;padding:12px;font-size:14px}
+.logo-box img{width:100%;height:100%;object-fit:contain}
+@media(max-width:860px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.two,.brand{grid-template-columns:minmax(0,1fr)}.brand .logo-box{max-width:220px}}
+@media(max-width:600px){.who .lg{width:56px;height:56px}.tile b{font-size:26px}.bk{grid-template-columns:minmax(0,1fr)}.bk .amt{text-align:left}.tabs{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}.tabs button{flex:none}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="js/config.js"></script>
@@ -48,114 +67,198 @@
 <div id="ftr"></div>
 <script>
 {
-const {API,LIVE,esc,money,fmtDate,shortDate,PLACE,STATUS}=HR;
-chrome('account');
-const app=document.getElementById('app');
+const {API,LIVE,EDITABLE,esc,money,fmtDate,shortDate,PLACE,STATUS}=HR;
+HR.chrome('account');
+const app=document.getElementById('app'),$=id=>document.getElementById(id);
 const qs=new URLSearchParams(location.search);
 if(qs.has('book')||qs.has('new'))location.replace('advertise.html#shop');
-let me=null,pkgs=[],st=null,tab='bookings';
+let me=null,pkgs=[],list=[],tab=(location.hash.slice(1)||'dashboard');
+const TABS=[['dashboard','Dashboard'],['ads','Ad orders'],['merch','Merch orders'],['brand','Brand kit'],['account','Account']];
 const pkgName=id=>(pkgs.find(p=>p.id===id)||{}).name||id;
 const title=b=>b.kind==='store'?'Hat order':b.kind==='ad'?(PLACE[b.placement]||'Episode ad')+' ad':pkgName(b.package_id);
+const today=new Date().toISOString().slice(0,10);
+const isAd=b=>b.kind!=='store';
+const live=b=>['approved','paid','live'].includes(b.status);
+const needsCreative=b=>isAd(b)&&EDITABLE.includes(b.status)&&(!String(b.notes||'').trim()||!(b.assets||[]).length&&!b.creative_url&&!me.brand?.logo);
+const size=n=>n>1e6?(n/1e6).toFixed(1)+' MB':Math.max(1,Math.round(n/1e3))+' KB';
+const isImg=f=>/^image\//.test(f.type||'')||/^data:image/.test(f.url||'');
 
-async function start(){
- [pkgs,st]=await Promise.all([API.packages(),API.settings()]);
- me=await API.current();
- me?home():authView();
-}
+async function start(){pkgs=await API.packages();me=await API.current();
+ if(me&&me.role==='admin'){location.replace('admin.html');return}
+ me?home():authView()}
 
-/* ---------- sign in / create account ---------- */
+/* ---------- sign in ---------- */
 function authView(msg){
- app.innerHTML=`<div class="sh"><div><p class="kick">Client account</p><h1>Client login</h1></div>
-  <p>Track your Herd Report bookings, approvals and invoices in one place. New here? <a href="advertise.html#shop">Browse ad spots</a> first and create your account at checkout.</p></div>
+ app.innerHTML=`<div class="sh"><div><p class="kick">Client portal</p><h1>Client login</h1></div>
+  <p>Manage your ad spots and merch orders, upload your logo and talking points, and pay invoices. New here? Create an account, or <a href="advertise.html#shop">browse ad spots</a> and create one at checkout.</p></div>
  <div class="auth">
   <form class="card" id="fin" novalidate>
    <h3 style="margin-bottom:18px">Sign in</h3>
    <div class="field"><label for="ie">Email</label><input id="ie" type="email" autocomplete="email" required></div>
    <div class="field"><label for="ip">Password</label><input id="ip" type="password" autocomplete="current-password" required></div>
-   <button class="btn solid" type="submit">Sign in</button>
+   <div class="btns"><button class="btn solid" type="submit">Sign in</button>${LIVE?'':'<button class="btn" type="button" id="prev">Preview sign in</button>'}</div>
    <p class="err" id="ierr">${msg?esc(msg):''}</p>
+   <p class="soft" style="font-size:14px;margin:14px 0 0">Herd Report team? <a href="admin.html">Admin login</a></p>
   </form>
   <form class="card alt" id="fup" novalidate>
-   <h3 style="margin-bottom:18px">Create an account</h3>
-   <div class="row2">
+   <h3 style="margin-bottom:12px">Create an account</h3>
+   <ul class="perks"><li>See every spot you've booked and when it airs</li><li>Upload your logo and ad files once</li><li>Track hat orders</li></ul>
+   <div class="row2" style="margin-top:14px">
     <div class="field"><label for="uc">Ranch or company</label><input id="uc" autocomplete="organization" required></div>
-    <div class="field"><label for="un">Your name</label><input id="un" autocomplete="name" required></div>
-   </div>
+    <div class="field"><label for="un">Your name</label><input id="un" autocomplete="name" required></div></div>
    <div class="row2">
     <div class="field"><label for="ue">Email</label><input id="ue" type="email" autocomplete="email" required></div>
-    <div class="field"><label for="uph">Phone</label><input id="uph" type="tel" autocomplete="tel"></div>
-   </div>
+    <div class="field"><label for="uph">Phone</label><input id="uph" type="tel" autocomplete="tel"></div></div>
    <div class="field"><label for="upw">Password</label><input id="upw" type="password" autocomplete="new-password" minlength="8" required><div class="hint">At least 8 characters.</div></div>
    <button class="btn" type="submit">Create account</button>
    <p class="err" id="uerr" style="color:#fff"></p>
-  </form>
- </div>`;
- document.getElementById('fin').addEventListener('submit',async e=>{e.preventDefault();const er=document.getElementById('ierr');er.textContent='';
-  try{me=await API.signIn(ie.value,ip.value);if(me.role==='admin'){location.href='admin.html';return}home()}catch(x){er.textContent=x.message}});
- document.getElementById('fup').addEventListener('submit',async e=>{e.preventDefault();const er=document.getElementById('uerr');er.textContent='';
-  if(!uc.value.trim()||!un.value.trim()||!ue.value.trim()){er.textContent='Fill in your company, name and email.';return}
-  if(upw.value.length<8){er.textContent='Use a password with at least 8 characters.';return}
-  try{const r=await API.signUp({company:uc.value.trim(),contact_name:un.value.trim(),email:ue.value,phone:uph.value.trim(),password:upw.value});
-   if(r.confirm){authView('Check your email to confirm your account, then sign in.');return}
-   me=r.user;tab='bookings';home()}catch(x){er.textContent=x.message}});
+  </form></div>`;
+ const go=u=>{me=u;if(me.role==='admin'){location.href='admin.html';return}HR.chrome('account');home()};
+ $('fin').addEventListener('submit',async e=>{e.preventDefault();$('ierr').textContent='';try{go(await API.signIn($('ie').value,$('ip').value))}catch(x){$('ierr').textContent=x.message}});
+ if($('prev'))$('prev').onclick=async()=>{try{go(await API.signIn('demo@prairieline.co','sponsor2026'))}catch(x){$('ierr').textContent=x.message}};
+ $('fup').addEventListener('submit',async e=>{e.preventDefault();const er=$('uerr');er.textContent='';
+  if(!$('uc').value.trim()||!$('un').value.trim()||!$('ue').value.trim()){er.textContent='Fill in your company, name and email.';return}
+  if($('upw').value.length<8){er.textContent='Use a password with at least 8 characters.';return}
+  try{const r=await API.signUp({company:$('uc').value.trim(),contact_name:$('un').value.trim(),email:$('ue').value,phone:$('uph').value.trim(),password:$('upw').value});
+   if(r.confirm){authView('Check your email to confirm your account, then sign in.');return}tab='brand';go(r.user)}catch(x){er.textContent=x.message}});
 }
 
-/* ---------- signed in ---------- */
-function home(){
- chrome('account');
- app.innerHTML=`<div class="who"><div><p class="kick">${esc(me.company||'Client account')}</p><h1>Howdy, ${esc((me.contact_name||'').split(' ')[0]||'partner')}</h1>
-   <p class="soft">${esc(me.email)}</p></div>
-  <div class="btns">${me.role==='admin'?'<a class="btn solid" href="admin.html">Admin dashboard</a>':''}<button class="btn" id="out">Sign out</button></div></div>
- <div class="tabs" role="tablist">
-  <button role="tab" data-t="bookings">My bookings</button><button role="tab" data-t="profile">Profile</button><a class="btn solid" href="advertise.html#shop" style="min-height:42px">Book more ads</a>
- </div><div id="pane"></div>`;
- document.getElementById('out').onclick=async()=>{await API.signOut();me=null;chrome('account');authView()};
- app.querySelector('.tabs').addEventListener('click',e=>{const b=e.target.closest('button[data-t]');if(b){tab=b.dataset.t;show()}});
- show();
+/* ---------- portal shell ---------- */
+async function home(){
+ list=await API.myBookings();
+ const ads=list.filter(isAd),todo=ads.filter(needsCreative).length+ads.filter(b=>b.status==='approved').length;
+ app.innerHTML=`<div class="who"><div class="id"><span class="lg">${me.brand?.logo?`<img src="${esc(me.brand.logo.url)}" alt="">`:esc((me.company||'?')[0])}</span>
+   <div><p class="kick" style="margin:0">Client portal</p><h1>${esc(me.company||'Your account')}</h1><p class="soft">${esc(me.contact_name||'')} · ${esc(me.email)}</p></div></div>
+  <div class="btns"><a class="btn solid" href="advertise.html#shop">Book more ads</a><button class="btn" id="out">Sign out</button></div></div>
+ <div class="tabs" role="tablist">${TABS.map(([k,n])=>`<button role="tab" data-t="${k}">${n}${k==='ads'&&todo?`<span class="n">${todo}</span>`:''}</button>`).join('')}</div><div id="pane"></div>`;
+ $('out').onclick=async()=>{await API.signOut();me=null;HR.chrome('account');history.replaceState(null,'',location.pathname);authView()};
+ app.querySelector('.tabs').addEventListener('click',e=>{const b=e.target.closest('button[data-t]');if(b)show(b.dataset.t)});
+ show(TABS.some(t=>t[0]===tab)?tab:'dashboard');
 }
-function show(){
- app.querySelectorAll('.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===tab));
- ({bookings:listView,profile:profileView})[tab]();
+function show(t){tab=t;history.replaceState(null,'','#'+t);
+ app.querySelectorAll('.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===t));
+ ({dashboard,ads:adsView,merch:merchView,brand:brandView,account:accountView})[t]()}
+
+/* ---------- dashboard ---------- */
+function dashboard(){
+ const ads=list.filter(isAd),hats=list.filter(b=>b.kind==='store');
+ const airs=ads.filter(live).flatMap(b=>(b.episode_dates||[]).filter(d=>d>=today).map(d=>({d,b}))).sort((a,b)=>a.d.localeCompare(b.d));
+ const due=ads.filter(b=>b.status==='approved'),need=ads.filter(needsCreative);
+ const spent=list.filter(b=>['paid','live','completed'].includes(b.status)).reduce((a,b)=>a+Number(b.amount||0),0);
+ const br=me.brand||{};
+ const steps=[[!!br.logo,'Upload your logo','brand'],[!!br.website,'Add your website','brand'],[!!br.points,'Write your standard talking points','brand'],[ads.length>0,'Book your first ad spot','shop']];
+ $('pane').innerHTML=`<div class="tiles">
+  <div class="tile"><b>${airs.length}</b><span>Upcoming airings</span></div>
+  <div class="tile"><b>${airs[0]?shortDate(airs[0].d):'—'}</b><span>Next air date</span></div>
+  <div class="tile ${due.length+need.length?'hot':''}"><b>${due.length+need.length}</b><span>Need your attention</span></div>
+  <div class="tile"><b>${money(spent)}</b><span>Paid to date</span></div></div>
+ <div class="two">
+  <div class="card"><h3 style="margin-bottom:12px">Coming up</h3>${airs.length?`<ul class="air">${airs.slice(0,8).map(a=>`<li><span><b>${esc(PLACE[a.b.placement]||title(a.b))}</b><br><span class="soft">${esc(STATUS[a.b.status]||a.b.status)}</span></span><span>${fmtDate(a.d)}</span></li>`).join('')}</ul>`:`<p class="soft" style="margin:0 0 14px">Nothing scheduled yet.</p><a class="btn solid" href="advertise.html#shop">Browse ad spots</a>`}</div>
+  <div style="display:grid;gap:20px">
+   ${due.length+need.length?`<div class="card"><h3 style="margin-bottom:8px">To do</h3><ul class="todo">${due.map(b=>`<li><span class="l"><span class="ck">$</span><span>Pay for ${esc(title(b))}</span></span><button class="btn sm solid" data-go="ads">Pay ${money(b.amount)}</button></li>`).join('')}${need.map(b=>`<li><span class="l"><span class="ck">!</span><span>Add talking points or files for ${esc(title(b))}</span></span><button class="btn sm" data-go="ads">Add</button></li>`).join('')}</ul></div>`:''}
+   <div class="card"><h3 style="margin-bottom:8px">Get set up</h3><ul class="todo">${steps.map(([d,t,g])=>`<li class="${d?'done':''}"><span class="l"><span class="ck">${d?'✓':''}</span><span>${t}</span></span>${d?'':g==='shop'?'<a class="btn sm" href="advertise.html#shop">Go</a>':`<button class="btn sm" data-go="${g}">Go</button>`}</li>`).join('')}</ul></div>
+   ${hats.length?`<div class="card"><h3 style="margin-bottom:6px">Merch</h3><p class="soft" style="margin:0 0 12px">${hats.length} hat order${hats.length>1?'s':''}</p><button class="btn sm" data-go="merch">View orders</button></div>`:''}
+  </div></div>`;
+ $('pane').querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>show(b.dataset.go));
 }
 
-/* ---------- my bookings ---------- */
+/* ---------- ad orders ---------- */
 function detail(b){
  if(b.kind==='ad')return `${PLACE[b.placement]||b.placement} · ${b.episode_dates.length} episode${b.episode_dates.length===1?'':'s'}: ${b.episode_dates.map(shortDate).join(', ')}`;
- if(b.kind==='presenting')return `Pre-roll on 52 episodes, starting ${fmtDate(b.episode_dates[0])}`;
+ if(b.kind==='presenting')return `Pre-roll on 52 episodes${b.episode_dates?.[0]?', starting '+fmtDate(b.episode_dates[0]):''}`;
  if(b.kind==='spotlight')return `Sale ${fmtDate(b.sale_date)}${b.location?' · '+b.location:''}`;
  if(b.kind==='store')return String(b.notes||'').split('\n').filter(l=>!l.startsWith('Ship to')).join(', ');
  return b.sale_date?`Event ${fmtDate(b.sale_date)}`:'Merch partnership';
 }
-async function listView(){
- const pane=document.getElementById('pane');pane.innerHTML='<p class="soft">Loading…</p>';
- const list=await API.myBookings();
- if(!list.length){pane.innerHTML=`<div class="card"><p style="margin:0 0 14px">You don't have any bookings yet.</p><a class="btn solid" href="advertise.html#shop">Browse ad spots</a></div>`;return}
- pane.innerHTML=`<div class="blist">${list.map(b=>`<article class="card bk">
-  <div><span class="pill st-${esc(b.status)}">${esc(STATUS[b.status]||b.status)}</span><h3 style="margin-top:10px">${esc(title(b))}</h3><p class="meta">${esc(detail(b))}</p>
-   <p class="meta">Requested ${fmtDate(String(b.created_at).slice(0,10))}</p></div>
+const fileChip=(f,i,rm)=>`<div class="file"><span class="th">${isImg(f)?`<img src="${esc(f.url)}" alt="">`:esc((f.name.split('.').pop()||'file').slice(0,4).toUpperCase())}</span>
+ <span><a href="${esc(f.url)}" target="_blank" rel="noopener" download="${esc(f.name)}">${esc(f.name)}</a><br><span class="soft" style="font-size:12px">${f.size?size(f.size):''}</span></span>${rm?`<button type="button" ${rm}="${i}" aria-label="Remove ${esc(f.name)}">×</button>`:''}</div>`;
+function dropZone(id,label,accept){return `<label class="drop" id="${id}"><input type="file" ${accept?`accept="${accept}"`:''} multiple><span>⬆ ${label}</span></label>`}
+function wireDrop(el,onFiles){
+ const inp=el.querySelector('input');inp.onchange=()=>{onFiles([...inp.files]);inp.value=''};
+ ['dragenter','dragover'].forEach(t=>el.addEventListener(t,e=>{e.preventDefault();el.classList.add('on')}));
+ ['dragleave','drop'].forEach(t=>el.addEventListener(t,e=>{e.preventDefault();el.classList.remove('on')}));
+ el.addEventListener('drop',e=>onFiles([...e.dataTransfer.files]));
+}
+function adsView(){
+ const ads=list.filter(isAd),pane=$('pane');
+ if(!ads.length){pane.innerHTML=`<div class="card"><p style="margin:0 0 14px">You haven't booked any ads yet.</p><a class="btn solid" href="advertise.html#shop">Browse ad spots</a></div>`;return}
+ pane.innerHTML=`<div class="blist">${ads.map(b=>{const ed=EDITABLE.includes(b.status),fs=b.assets||[];
+  return `<article class="card bk" data-id="${esc(b.id)}">
+  <div><span class="pill st-${esc(b.status)}">${esc(STATUS[b.status]||b.status)}</span>${needsCreative(b)?'<span class="flag">Needs your info</span>':''}
+   <h3 style="margin-top:10px">${esc(title(b))}</h3><p class="meta">${esc(detail(b))}</p><p class="meta">Ordered ${fmtDate(String(b.created_at).slice(0,10))}</p></div>
   <div class="amt">${money(b.amount)}</div>
   ${b.admin_note?`<div class="note"><b>Note from Scott:</b> ${esc(b.admin_note)}</div>`:''}
-  <div class="acts">${b.status==='pending'?`<button class="btn sm" data-cancel="${esc(b.id)}">Cancel request</button>`:''}
-   ${b.status==='approved'?`<button class="btn sm solid" data-pay="${esc(b.id)}">Pay ${money(b.amount)}</button><span class="soft" style="font-size:14px">Your quote is ready.</span>`:''}</div>
- </article>`).join('')}</div>`;
- pane.querySelectorAll('[data-pay]').forEach(btn=>btn.addEventListener('click',async()=>{btn.disabled=true;try{await API.payBooking(btn.dataset.pay);listView()}catch(x){btn.disabled=false;btn.insertAdjacentHTML('afterend',`<span class="err">${esc(x.message)}</span>`)}}));
- pane.querySelectorAll('[data-cancel]').forEach(btn=>btn.addEventListener('click',async()=>{btn.disabled=true;try{await API.cancelBooking(btn.dataset.cancel);listView()}catch(x){btn.disabled=false;btn.insertAdjacentHTML('afterend',`<span class="err">${esc(x.message)}</span>`)}}));
+  <div class="acts">${b.status==='pending'?`<button class="btn sm" data-cancel>Cancel order</button>`:''}
+   ${b.status==='approved'?`<button class="btn sm solid" data-pay>Pay ${money(b.amount)}</button><span class="soft" style="font-size:14px">Your quote is ready.</span>`:''}</div>
+  <div class="cr"><h4>Your ad</h4>
+   ${ed?`<div class="field"><label for="tp-${esc(b.id)}">Talking points for Scott</label><textarea id="tp-${esc(b.id)}" rows="4" placeholder="What should Scott say? Products, sale dates, offers, website, phone.">${esc(b.notes||'')}</textarea>
+     ${me.brand?.points&&!b.notes?`<button type="button" class="btn sm" data-fill style="margin-top:8px">Use my standard talking points</button>`:''}</div>`
+    :`<p style="margin:0 0 12px">${b.notes?esc(b.notes).replace(/\n/g,'<br>'):'<span class="soft">No talking points.</span>'}</p>`}
+   <p style="font-weight:600;margin:0 0 8px">Files${me.brand?.logo?' <span class="soft" style="font-weight:400;font-size:14px">(your brand kit logo is shared with Scott automatically)</span>':''}</p>
+   <div class="files">${fs.map((f,i)=>fileChip(f,i,ed?'data-rmf':'')).join('')}${b.creative_url?`<div class="file"><span class="th">LINK</span><a href="${esc(b.creative_url)}" target="_blank" rel="noopener">${esc(b.creative_url)}</a></div>`:''}${!fs.length&&!b.creative_url?'<span class="soft">No files yet.</span>':''}</div>
+   ${ed?`${dropZone('dz-'+b.id,'Upload logo, script or images','image/*,.pdf,.doc,.docx,.txt,.mp3,.wav,.m4a')}
+   <div class="btns" style="margin-top:14px"><button class="btn solid sm" data-save>Save</button></div><p class="err" data-msg></p>`:''}
+  </div></article>`}).join('')}</div>`;
+ pane.querySelectorAll('.bk').forEach(card=>{
+  const b=list.find(x=>x.id===card.dataset.id),msg=card.querySelector('[data-msg]'),say=(t,ok)=>{if(msg){msg.textContent=t;msg.className=ok?'okmsg':'err'}};
+  const save=async patch=>{try{const nb=await API.updateMyBooking(b.id,patch);Object.assign(b,nb);return true}catch(x){say(x.message);return false}};
+  card.querySelector('[data-pay]')?.addEventListener('click',async e=>{e.target.disabled=true;try{await API.payBooking(b.id);home()}catch(x){e.target.disabled=false;e.target.insertAdjacentHTML('afterend',`<span class="err">${esc(x.message)}</span>`)}});
+  card.querySelector('[data-cancel]')?.addEventListener('click',async e=>{if(!confirm('Cancel this order?'))return;e.target.disabled=true;try{await API.cancelBooking(b.id);home()}catch(x){e.target.disabled=false;say(x.message)}});
+  card.querySelector('[data-fill]')?.addEventListener('click',e=>{card.querySelector('textarea').value=me.brand.points;e.target.remove()});
+  card.querySelector('[data-save]')?.addEventListener('click',async()=>{if(await save({notes:card.querySelector('textarea').value.trim()})){say('Saved. Scott will see your updates.',true);setTimeout(()=>home().then(()=>show('ads')),900)}});
+  card.querySelectorAll('[data-rmf]').forEach(x=>x.onclick=async()=>{const a=[...(b.assets||[])];a.splice(+x.dataset.rmf,1);if(await save({assets:a}))adsView()});
+  const dz=card.querySelector('.drop');if(dz)wireDrop(dz,async files=>{say('Uploading…',true);const a=[...(b.assets||[])];
+   for(const f of files){try{a.push(await API.uploadFile(f))}catch(x){say(x.message);return}}
+   if(await save({assets:a,notes:card.querySelector('textarea')?.value.trim()}))adsView()});
+ });
 }
 
-/* ---------- profile ---------- */
-function profileView(){
- const pane=document.getElementById('pane');
- pane.innerHTML=`<form class="card" id="pf" style="max-width:640px" novalidate>
+/* ---------- merch ---------- */
+function merchView(){
+ const hats=list.filter(b=>b.kind==='store');
+ $('pane').innerHTML=hats.length?`<div class="blist">${hats.map(b=>{const lines=String(b.notes||'').split('\n'),ship=lines.find(l=>l.startsWith('Ship to'));
+  return `<article class="card bk"><div><span class="pill st-${esc(b.status)}">${esc(b.status==='paid'?'Paid, preparing to ship':b.status==='completed'?'Shipped':STATUS[b.status]||b.status)}</span>
+  <h3 style="margin-top:10px">Hat order</h3><p class="meta">${esc(lines.filter(l=>!l.startsWith('Ship to')).join(', '))}</p>${ship?`<p class="meta">${esc(ship)}</p>`:''}<p class="meta">Ordered ${fmtDate(String(b.created_at).slice(0,10))}</p></div>
+  <div class="amt">${money(b.amount)}</div>${b.admin_note?`<div class="note"><b>Note from Scott:</b> ${esc(b.admin_note)}</div>`:''}</article>`}).join('')}</div>`
+ :`<div class="card"><p style="margin:0 0 14px">No hat orders yet.</p><a class="btn solid" href="index.html#store">Shop hats</a></div>`;
+}
+
+/* ---------- brand kit ---------- */
+function brandView(){
+ const br={...(me.brand||{})};
+ $('pane').innerHTML=`<form class="card" id="bf" novalidate><div class="brand">
+  <div><p style="font-weight:600;margin:0 0 8px">Logo</p><div class="logo-box" id="lb">${br.logo?`<img src="${esc(br.logo.url)}" alt="Your logo">`:'No logo yet. PNG with a transparent background works best.'}</div>
+   ${dropZone('dzl',br.logo?'Replace logo':'Upload logo','image/*,.svg,.pdf')}${br.logo?'<button type="button" class="btn sm" id="rml" style="margin-top:10px">Remove logo</button>':''}</div>
+  <div><h3 style="margin-bottom:6px">Brand kit</h3><p class="soft" style="margin:0 0 18px">Scott uses this for every ad you book, so you only add it once.</p>
+   <div class="row2"><div class="field"><label for="bw">Website</label><input id="bw" type="url" placeholder="https://" value="${esc(br.website||'')}"></div>
+   <div class="field"><label for="bs">Social handles</label><input id="bs" placeholder="@yourranch" value="${esc(br.socials||'')}"></div></div>
+   <div class="field"><label for="bp">Standard talking points</label><textarea id="bp" rows="5" placeholder="Who you are, what you sell, where to buy, any offer code.">${esc(br.points||'')}</textarea></div>
+   <div class="field"><label for="bn">Pronunciation and notes for Scott</label><input id="bn" placeholder="How to say names, words to avoid" value="${esc(br.notes||'')}"></div>
+   <button class="btn solid" type="submit">Save brand kit</button><p class="err" id="bmsg"></p></div></div></form>`;
+ const say=(t,ok)=>{$('bmsg').textContent=t;$('bmsg').className=ok?'okmsg':'err'};
+ const persist=async()=>{try{me=await API.saveBrand(br);return true}catch(x){say(x.message);return false}};
+ wireDrop($('dzl'),async files=>{const f=files[0];if(!f)return;say('Uploading…',true);try{br.logo=await API.uploadFile(f)}catch(x){say(x.message);return}if(await persist()){brandView();home().then(()=>show('brand'))}});
+ if($('rml'))$('rml').onclick=async()=>{delete br.logo;if(await persist())home().then(()=>show('brand'))};
+ $('bf').addEventListener('submit',async e=>{e.preventDefault();Object.assign(br,{website:$('bw').value.trim(),socials:$('bs').value.trim(),points:$('bp').value.trim(),notes:$('bn').value.trim()});
+  if(await persist())say('Saved.',true)});
+}
+
+/* ---------- account ---------- */
+function accountView(){
+ $('pane').innerHTML=`<div class="two"><form class="card" id="pf" novalidate><h3 style="margin-bottom:16px">Contact details</h3>
   <div class="row2"><div class="field"><label for="pc">Ranch or company</label><input id="pc" value="${esc(me.company)}"></div>
   <div class="field"><label for="pn">Your name</label><input id="pn" value="${esc(me.contact_name)}"></div></div>
   <div class="row2"><div class="field"><label for="pe">Email</label><input id="pe" value="${esc(me.email)}" disabled></div>
   <div class="field"><label for="pp">Phone</label><input id="pp" type="tel" value="${esc(me.phone)}"></div></div>
-  <button class="btn solid" type="submit">Save</button><p class="okmsg" id="pok"></p></form>`;
- document.getElementById('pf').addEventListener('submit',async e=>{e.preventDefault();
-  try{me=await API.saveProfile({company:pc.value.trim(),contact_name:pn.value.trim(),phone:pp.value.trim()});document.getElementById('pok').textContent='Saved.'}
-  catch(x){document.getElementById('pok').textContent=x.message}});
+  <button class="btn solid" type="submit">Save</button><p class="okmsg" id="pok"></p></form>
+  <form class="card" id="pw" novalidate><h3 style="margin-bottom:16px">Change password</h3>
+  <div class="field"><label for="np">New password</label><input id="np" type="password" autocomplete="new-password" minlength="8"><div class="hint">At least 8 characters.</div></div>
+  <button class="btn" type="submit">Update password</button><p class="okmsg" id="wok"></p></form></div>`;
+ $('pf').addEventListener('submit',async e=>{e.preventDefault();
+  try{me=await API.saveProfile({company:$('pc').value.trim(),contact_name:$('pn').value.trim(),phone:$('pp').value.trim()});$('pok').textContent='Saved.'}catch(x){$('pok').textContent=x.message}});
+ $('pw').addEventListener('submit',async e=>{e.preventDefault();const v=$('np').value;if(v.length<8){$('wok').textContent='Use at least 8 characters.';return}
+  try{await API.changePassword(v);$('np').value='';$('wok').textContent='Password updated.'}catch(x){$('wok').textContent=x.message}});
 }
-function chrome(a){HR.chrome(a)}
 start().catch(e=>{app.innerHTML=`<p class="err">Something went wrong: ${esc(e.message)}</p>`});
 }
 </script>

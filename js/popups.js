@@ -19,14 +19,13 @@ function inject(){
 .hrp-f input,.hrp-f textarea{width:100%;box-sizing:border-box;font:16px "IBM Plex Sans",sans-serif;color:inherit;background:var(--bg,#F3EFE7);border:2px solid var(--line,#0B0B0D);border-radius:12px;padding:10px 14px;min-height:46px}
 .hrp-f textarea{min-height:120px;resize:vertical}
 .hrp-2{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
-.hrp-opt{font:700 13px Archivo,sans-serif;text-transform:uppercase;color:var(--soft,#5a5450);border-top:2px solid rgb(11 11 13/.12);padding-top:14px;margin:6px 0 12px}
-.hrp-chips{display:flex;flex-wrap:wrap;gap:6px}.hrp-chips label{position:relative;margin:0;cursor:pointer}
-.hrp-chips input{position:absolute;opacity:0;width:1px;height:1px}
-.hrp-chips span{display:inline-flex;align-items:center;min-height:36px;padding:0 12px;border:2px solid var(--line,#0B0B0D);border-radius:999px;font-weight:600;font-size:14px}
-.hrp-chips input:checked+span{background:var(--red,#85272C);border-color:var(--red,#85272C);color:#F3EFE7}
-.hrp-chips input:focus-visible+span{outline:3px solid var(--red2,#85272C);outline-offset:2px}
+.hrp-more{border-top:2px solid rgb(11 11 13/.12);margin:4px 0 14px;padding-top:10px}
+.hrp-more summary{cursor:pointer;font:700 14px Archivo,sans-serif;text-transform:uppercase;list-style:none;display:flex;justify-content:space-between;align-items:center;min-height:40px}
+.hrp-more summary::-webkit-details-marker{display:none}.hrp-more summary::after{content:"+";font-size:22px}.hrp-more[open] summary::after{content:"–"}
+.hrp-more summary small{font:500 13px "IBM Plex Sans",sans-serif;text-transform:none;color:var(--soft,#5a5450);margin-left:8px;flex:1}
+.hrp-more .in{padding-top:8px}
 .hrp-chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
-.hrp-chips label{position:relative;display:inline-flex;align-items:center;border:2px solid var(--line,#0B0B0D);border-radius:999px;padding:6px 12px;font-weight:600;font-size:14px;cursor:pointer;min-height:40px}
+.hrp-chips label{position:relative;display:inline-flex;align-items:center;border:2px solid var(--line,#0B0B0D);border-radius:999px;padding:4px 12px;font-weight:600;font-size:14px;cursor:pointer;min-height:36px;margin:0}
 .hrp-chips input{position:absolute;inset:0;width:1px;height:1px;opacity:0;pointer-events:none}
 .hrp-chips label:has(input:checked){background:var(--red,#85272C);border-color:var(--red,#85272C);color:var(--cream,#F3EFE7)}
 .hrp-chips label:has(input:focus-visible){outline:3px solid var(--red,#85272C);outline-offset:3px}
@@ -113,13 +112,14 @@ function guest(){
   <div class="hrp-2"><div class="hrp-f"><label for="gN">Your name</label><input id="gN" autocomplete="name"></div><div class="hrp-f"><label for="gO">Ranch or operation</label><input id="gO" autocomplete="organization"></div></div>
   <div class="hrp-2"><div class="hrp-f"><label for="gE">Email</label><input id="gE" type="email" autocomplete="email"></div><div class="hrp-f"><label for="gP">Phone</label><input id="gP" type="tel" autocomplete="tel"></div></div>
   <div class="hrp-f"><label for="gL">Where are you located?</label><input id="gL" placeholder="Town, state"></div>
-  <div class="hrp-f"><label for="gT">What would you like to talk about?</label><textarea id="gT" placeholder="Your cattle, your program, a sale coming up, your story."></textarea></div>
-  <p class="hrp-opt">Optional</p>
+  <div class="hrp-f"><label for="gT">What would you like to talk about?</label><textarea id="gT" rows="3" style="min-height:90px" placeholder="Your cattle, your program, a sale coming up, your story."></textarea></div>
+  <details class="hrp-more"><summary>More about you <small>Optional</small></summary><div class="in">
   <div class="hrp-f"><span class="hrp-l" id="gBL">Breeds you raise</span><div class="hrp-chips" role="group" aria-labelledby="gBL" id="gB">${['Angus','Simmental','Charolais','Hereford','Gelbvieh','Limousin','Red Angus','Other'].map(b=>`<label><input type="checkbox" value="${b}"><span>${b}</span></label>`).join('')}</div></div>
-  <div class="hrp-f"><span class="hrp-l" id="gHL">Your operation</span><div class="hrp-chips" role="radiogroup" aria-labelledby="gHL" id="gH">${['Registered seedstock','Commercial','Both'].map(b=>`<label><input type="radio" name="gH" value="${b}"><span>${b}</span></label>`).join('')}</div></div>
+  <div class="hrp-f"><span class="hrp-l" id="gHL">Your operation</span><div class="hrp-chips" role="radiogroup" aria-labelledby="gHL" id="gH">${['Seedstock','Commercial','Both'].map(b=>`<label><input type="radio" name="gH" value="${b}"><span>${b}</span></label>`).join('')}</div></div>
   <div class="hrp-2"><div class="hrp-f"><label for="gR">Your role</label><input id="gR" placeholder="Owner, manager, etc."></div><div class="hrp-f"><label for="gS">Upcoming sale date</label><input id="gS" type="date"></div></div>
   <div class="hrp-2"><div class="hrp-f"><label for="gW">Website</label><input id="gW" type="url" placeholder="https://"></div><div class="hrp-f"><label for="gSo">Social handles</label><input id="gSo" placeholder="@yourranch"></div></div>
   <div class="hrp-2"><div class="hrp-f"><label for="gPh">Link to a photo</label><input id="gPh" type="url" placeholder="https://"></div><div class="hrp-f"><label for="gHd">How did you hear about us?</label><input id="gHd"></div></div>
+  </div></details>
   <p class="hrp-err" id="gErr"></p><button class="hrp-btn solid" type="submit" id="gGo">Send</button>
  </form>`);
  $('hrpG').onsubmit=async e=>{e.preventDefault();const v=id=>$(id).value.trim(),er=$('gErr');er.textContent='';

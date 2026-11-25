@@ -180,12 +180,14 @@ body.cart-open .scrim{opacity:1;pointer-events:auto}body.cart-open .drawer{trans
 .pending.show{display:block}
 @media (prefers-reduced-motion:reduce){.drawer,.scrim{transition:none}}
 
-.ticker{overflow:hidden;margin:0;padding:4px 0}
-.track{display:flex;gap:20px;width:max-content;animation:tick 32s linear infinite}
-.ticker:hover .track,.ticker:focus-within .track{animation-play-state:paused}
+.ticker{overflow-x:auto;overflow-y:hidden;margin:0;padding:4px 0;scrollbar-width:none;cursor:grab;touch-action:pan-x pan-y;overscroll-behavior-x:contain}
+.ticker::-webkit-scrollbar{display:none}.ticker.drag{cursor:grabbing;user-select:none}.ticker.drag a,.ticker.drag img{pointer-events:none}
+.track{display:flex;gap:20px;width:max-content}
+.track img{-webkit-user-drag:none;user-select:none}
+.more{display:flex;justify-content:center;align-items:center;gap:12px}
 .track .item{width:clamp(240px,26vw,300px);flex:none}
 @keyframes tick{to{transform:translateX(calc(-50% - 10px))}}
-@media (prefers-reduced-motion:reduce){.track{animation:none}.ticker{overflow-x:auto;-webkit-mask:none;mask:none}}
+
 .back{display:inline-block;font-weight:600;text-decoration:none;padding:10px 0;margin-bottom:12px}
 .back:hover{text-decoration:underline}
 
@@ -519,7 +521,7 @@ footer small{opacity:.7}
    <p>Flat bill, structured front, mesh back and an adjustable fit, with the HR logo up front. Built for sale barns, feed trucks, show days and road trips. Nine colorways, $30 each.</p>
   </div>
   <div class="ticker" id="ticker"><div class="track" id="track"></div></div>
-  <div class="more"><a class="btn solid" href="#store">Shop all hats</a></div>
+  <div class="more"><button class="arw" id="hatPrev" type="button" aria-label="Scroll hats left"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><a class="btn solid" href="#store">Shop all hats</a><button class="arw" id="hatNext" type="button" aria-label="Scroll hats right"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button></div>
  </div>
 </section>
 
@@ -674,6 +676,29 @@ const onAdd=e=>{const b=e.target.closest('.add');if(!b||b.disabled||!window.Cart
  Cart.addHat({id:h.id,n:h.n,price:PRICE,img:h.img||''});b.textContent='Added ✓';setTimeout(()=>b.textContent='Add to cart',1200);Cart.open()};
 document.getElementById('grid').addEventListener('click',onAdd);
 document.getElementById('ticker').addEventListener('click',onAdd);
+/* hat ticker: auto-scrolls, stops when touched/hovered/dragged, scrolls either way, then resumes */
+{const tk=document.getElementById('ticker'),tr=document.getElementById('track');
+ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ let hold=false,hover=false,idleUntil=0,pos=0,last=0;
+ const half=()=>tr.scrollWidth/2;
+ const wrap=()=>{const h=half();if(h<=0)return;if(tk.scrollLeft>=h)tk.scrollLeft-=h;else if(tk.scrollLeft<=0)tk.scrollLeft+=h};
+ const pause=(ms=2500)=>{idleUntil=performance.now()+ms};
+ function tick(t){const dt=last?Math.min(64,t-last):16;last=t;
+  if(!reduce&&!hold&&!hover&&t>idleUntil&&!document.hidden){pos=(pos||tk.scrollLeft)+dt*0.035;tk.scrollLeft=pos;wrap();pos=tk.scrollLeft}else pos=tk.scrollLeft;
+  requestAnimationFrame(tick)}
+ requestAnimationFrame(tick);
+ tk.addEventListener('scroll',()=>{if(hold||hover||performance.now()<idleUntil)wrap()},{passive:true});
+ tk.addEventListener('mouseenter',()=>hover=true);tk.addEventListener('mouseleave',()=>{hover=false;pause(800)});
+ tk.addEventListener('touchstart',()=>{hold=true},{passive:true});tk.addEventListener('touchend',()=>{hold=false;pause()},{passive:true});
+ tk.addEventListener('wheel',()=>pause(),{passive:true});tk.addEventListener('focusin',()=>pause(6000));
+ let sx=0,sl=0,moved=false,down=false;
+ tk.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button!==0||e.target.closest('button'))return;down=true;moved=false;sx=e.clientX;sl=tk.scrollLeft;hold=true});
+ addEventListener('pointermove',e=>{if(!down)return;const dx=e.clientX-sx;if(Math.abs(dx)>4){moved=true;tk.classList.add('drag')}tk.scrollLeft=sl-dx;wrap();if(tk.scrollLeft!==sl-dx){sl=tk.scrollLeft+dx}});
+ addEventListener('pointerup',()=>{if(!down)return;down=false;hold=false;pause();setTimeout(()=>tk.classList.remove('drag'),0)});
+ tk.addEventListener('click',e=>{if(moved){e.preventDefault();e.stopPropagation();moved=false}},true);
+ const step=d=>{pause(5000);const w=(tr.firstElementChild?.offsetWidth||280)+20;if(d<0&&tk.scrollLeft<w)tk.scrollLeft+=half();tk.scrollBy({left:d*w,behavior:'smooth'})};
+ document.getElementById('hatPrev').onclick=()=>step(-1);document.getElementById('hatNext').onclick=()=>step(1);
+ requestAnimationFrame(()=>{tk.scrollLeft=1})}
 document.getElementById('cartbtn').addEventListener('click',()=>window.Cart&&Cart.open());
 const mainEl=document.querySelector('main'),storeEl=document.getElementById('store');
 const route=()=>{const st=location.hash==='#store';mainEl.hidden=st;storeEl.hidden=!st;

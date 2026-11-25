@@ -271,7 +271,7 @@ body.cart-open .scrim{opacity:1;pointer-events:auto}body.cart-open .drawer{trans
 
 /* episodes */
 .eps{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:20px}
-.eps.rail{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:4px 2px 8px;margin:-4px -2px 0}
+.eps.rail{display:flex;overflow-x:auto;overflow-y:hidden;overscroll-behavior-y:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:4px 2px 8px;margin:-4px -2px 0}
 .eps.rail::-webkit-scrollbar{display:none}
 .eps.rail .ep{flex:0 0 calc((100% - 40px)/3);scroll-snap-align:start}
 @media(max-width:1000px){.eps.rail .ep{flex-basis:calc((100% - 20px)/2)}}

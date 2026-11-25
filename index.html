@@ -273,7 +273,7 @@ body.cart-open .scrim{opacity:1;pointer-events:auto}body.cart-open .drawer{trans
 
 /* episodes */
 .eps{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:20px}
-.eps.rail{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:4px 2px 8px;margin:-4px -2px 0}
+.eps.rail{display:flex;overflow-x:auto;overflow-y:hidden;overscroll-behavior-y:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:4px 2px 8px;margin:-4px -2px 0}
 .eps.rail::-webkit-scrollbar{display:none}
 .eps.rail .ep{flex:0 0 calc((100% - 40px)/3);scroll-snap-align:start}
 @media(max-width:1000px){.eps.rail .ep{flex-basis:calc((100% - 20px)/2)}}
@@ -436,7 +436,7 @@ html,body{overflow-x:clip}.v2-after{position:relative;z-index:1;background:var(-
 .proof b{font-variant-numeric:tabular-nums}
 /* episodes: heading glides in, cards deal in one after another, thumbnails settle */
 #episodes .sh h2{transform:translateX(calc((1 - var(--eh,1))*-120px));opacity:calc(.25 + var(--eh,1)*.75)}
-#eps .ep[data-rv]{transform:translateY(60px) rotate(1.5deg)}#eps .ep[data-rv].in{transform:none}
+#eps .ep[data-rv]{transform:none;opacity:0}#eps .ep[data-rv].in{transform:none;opacity:1}
 #eps .ep .thumb img,#eps .ep img{transition:transform 1.4s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--d,0s) + .1s)}
 #eps .ep[data-rv]:not(.in) img{transform:scale(1.15)}
 @media(max-width:760px){
@@ -748,14 +748,21 @@ document.getElementById('ticker').addEventListener('click',onAdd);
 window.makeTicker=function(tk,tr,pv,nx,speed){speed=speed||0.035;
  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
  let hold=false,hover=false,idleUntil=0,pos=0,last=0;
- const half=()=>tr.scrollWidth/2;
+ const half=()=>{const k=tr.children,n=k.length;return n>1?k[n/2|0].offsetLeft-k[0].offsetLeft:tr.scrollWidth/2};
  const wrap=()=>{const h=half();if(h<=0)return;if(tk.scrollLeft>=h)tk.scrollLeft-=h;else if(tk.scrollLeft<=0)tk.scrollLeft+=h};
  const pause=(ms=2500)=>{idleUntil=performance.now()+ms};
- function tick(t){const dt=last?Math.min(64,t-last):16;last=t;
-  if(!reduce&&!hold&&!hover&&t>idleUntil&&!document.hidden){pos=(pos||tk.scrollLeft)+dt*speed;tk.scrollLeft=pos;wrap();pos=tk.scrollLeft}else pos=tk.scrollLeft;
+ let frac=0,setBy=0;
+ const setX=f=>{frac=f;tr.style.transform=f?`translate3d(${-f}px,0,0)`:''};
+ function tick(t){const dt=last?Math.min(50,t-last):16;last=t;
+  const auto=!reduce&&!hold&&!hover&&t>idleUntil&&!document.hidden;
+  if(auto){
+   if(Math.abs(tk.scrollLeft-setBy)>1.5)pos=tk.scrollLeft;   // someone else moved it
+   pos+=dt*speed;const h=half();if(h>0){if(pos>=h)pos-=h;if(pos<0)pos+=h}
+   const whole=Math.floor(pos);if(tk.scrollLeft!==whole)tk.scrollLeft=whole;setBy=tk.scrollLeft;setX(pos-whole);
+  }else{if(frac)setX(0);pos=tk.scrollLeft;setBy=pos}
   requestAnimationFrame(tick)}
  requestAnimationFrame(tick);
- tk.addEventListener('scroll',()=>{if(hold||hover||performance.now()<idleUntil)wrap()},{passive:true});
+ tk.addEventListener('scroll',()=>{if(hold||hover||performance.now()<idleUntil)wrap()},{passive:true});tr.style.willChange='transform';
  tk.addEventListener('mouseenter',()=>hover=true);tk.addEventListener('mouseleave',()=>{hover=false;pause(800)});
  tk.addEventListener('touchstart',()=>{hold=true},{passive:true});tk.addEventListener('touchend',()=>{hold=false;pause()},{passive:true});
  tk.addEventListener('wheel',()=>pause(),{passive:true});tk.addEventListener('focusin',()=>pause(6000));

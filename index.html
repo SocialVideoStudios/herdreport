@@ -46,11 +46,43 @@ header .wrap{display:flex;align-items:center;gap:16px;padding:10px max(5vw,16px)
 .socials a:hover{background:color-mix(in srgb,var(--red) 14%,transparent)}
 .socials svg{width:20px;height:20px;fill:currentColor}
 .menubtn{font:700 15px Archivo,sans-serif;text-transform:uppercase;background:var(--ink);color:var(--bg);border:0;border-radius:999px;padding:0 20px;height:44px;cursor:pointer}
-nav.menu{display:none;border-top:2px solid var(--line);background:var(--bg)}
-nav.menu.open{display:block}
-nav.menu ul{list-style:none;margin:0 auto;padding:16px max(5vw,16px) 28px;max-width:1240px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:4px 24px}
-nav.menu a{display:block;font:900 clamp(26px,4vw,38px)/1.25 Archivo,sans-serif;text-transform:uppercase;text-decoration:none;padding:4px 0}
-nav.menu a:hover{color:var(--red2)}
+.menubtn{display:inline-flex;align-items:center;gap:10px}
+.menubtn .bars{position:relative;width:16px;height:12px}
+.menubtn .bars i{position:absolute;left:0;width:16px;height:2px;border-radius:2px;background:currentColor;transition:transform .25s,opacity .2s,top .25s}
+.menubtn .bars i:nth-child(1){top:0}.menubtn .bars i:nth-child(2){top:5px}.menubtn .bars i:nth-child(3){top:10px}
+.menubtn[aria-expanded=true]{background:var(--red)}
+.menubtn[aria-expanded=true] .bars i:nth-child(1){top:5px;transform:rotate(45deg)}
+.menubtn[aria-expanded=true] .bars i:nth-child(2){opacity:0}
+.menubtn[aria-expanded=true] .bars i:nth-child(3){top:5px;transform:rotate(-45deg)}
+nav.menu{position:absolute;left:0;right:0;top:100%;background:var(--bg);border-bottom:2px solid var(--line);box-shadow:0 24px 40px -12px rgb(0 0 0/.25);
+ opacity:0;visibility:hidden;transform:translateY(-10px);transition:opacity .2s,transform .25s,visibility 0s .25s;max-height:calc(100vh - 70px);overflow:auto}
+nav.menu.open{opacity:1;visibility:visible;transform:none;transition:opacity .2s,transform .25s}
+.mgrid{max-width:1240px;margin:0 auto;padding:clamp(24px,3vw,40px) max(5vw,16px);display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,.8fr) minmax(0,1fr);gap:clamp(20px,3vw,48px)}
+.mlabel{font:700 13px Archivo,sans-serif;text-transform:uppercase;color:var(--soft);margin:0 0 10px}
+.mbig{list-style:none;margin:0;padding:0}
+.mbig a{display:flex;align-items:center;gap:16px;font:900 clamp(30px,3.6vw,46px)/1.1 Archivo,sans-serif;text-transform:uppercase;text-decoration:none;padding:8px 0;border-bottom:2px solid var(--hair)}
+.mbig a small{margin-left:auto;font:500 14px "IBM Plex Sans",sans-serif;text-transform:none;color:var(--soft);text-align:right}
+.mbig a svg{width:26px;height:26px;flex:none;fill:none;stroke:currentColor;stroke-width:2.5;opacity:0;transform:translateX(-8px);transition:opacity .15s,transform .15s}
+.mbig a:hover,.mbig a:focus-visible{color:var(--red2)}
+.mbig a:hover svg,.mbig a:focus-visible svg{opacity:1;transform:none}
+.msmall{list-style:none;margin:0;padding:0}
+.msmall a{display:block;font-weight:600;font-size:17px;text-decoration:none;padding:9px 0}
+.msmall a:hover{color:var(--red2);text-decoration:underline}
+.mcard{background:var(--red);color:var(--cream);border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:12px}
+.mcard .mlabel{color:#f1dcdc}
+.mcard h3{font-size:26px}
+.mcard a.lst{display:flex;align-items:center;gap:12px;background:rgb(243 239 231/.12);border:1.5px solid rgb(243 239 231/.35);border-radius:14px;padding:10px 14px;text-decoration:none;font-weight:600}
+.mcard a.lst:hover{background:var(--cream);color:#85272C}
+.mcard a.lst svg{width:20px;height:20px;fill:currentColor;flex:none}
+.mcard .cta{margin-top:4px;background:var(--cream);color:#85272C;border-color:var(--cream);justify-content:center}
+nav.menu.open .mbig li{animation:mIn .35s both}
+nav.menu.open .mbig li:nth-child(2){animation-delay:.03s}nav.menu.open .mbig li:nth-child(3){animation-delay:.06s}nav.menu.open .mbig li:nth-child(4){animation-delay:.09s}nav.menu.open .mbig li:nth-child(5){animation-delay:.12s}
+@keyframes mIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.mscrim{position:fixed;inset:0;background:rgb(0 0 0/.35);opacity:0;visibility:hidden;transition:opacity .2s,visibility 0s .2s;z-index:19}
+.mscrim.open{opacity:1;visibility:visible;transition:opacity .2s}
+@media(max-width:860px){.mgrid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.mgrid>div:first-child{grid-column:1/-1}}
+@media(max-width:560px){.mgrid{grid-template-columns:minmax(0,1fr)}.mbig a small{display:none}}
+@media (prefers-reduced-motion:reduce){nav.menu,nav.menu.open,.mscrim,.menubtn .bars i{transition:none}nav.menu.open .mbig li{animation:none}}
 
 /* hero */
 .hero{position:relative;border-bottom:2px solid var(--line);overflow:hidden}
@@ -294,22 +326,27 @@ footer small{opacity:.7}
    <a href="https://www.tiktok.com/@herd.report" aria-label="TikTok"><svg><use href="#i-tt"/></svg></a>
   </div>
   <button class="cartbtn" id="cartbtn" aria-label="Open cart"><svg viewBox="0 0 24 24"><path d="M3 4h2l2.4 11h11L21 8H6.2"/><circle cx="9" cy="19.5" r="1.5"/><circle cx="17" cy="19.5" r="1.5"/></svg><b id="count"></b></button>
-  <button class="menubtn" id="menubtn" aria-expanded="false" aria-controls="menu">Menu</button>
+  <button class="menubtn" id="menubtn" aria-expanded="false" aria-controls="menu"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><span id="menulbl">Menu</span></button>
  </div>
  <nav class="menu" id="menu" aria-label="Main">
-  <ul>
-   <li><a href="#episodes">Episodes</a></li>
-   <li><a href="#host">The host</a></li>
-   <li><a href="#store">Shop</a></li>
-   <li><a href="https://www.herdreportpodcast.com/guests/">Guests</a></li>
-   <li><a href="https://www.herdreportpodcast.com/blog/">Blog</a></li>
-   <li><a href="advertise.html">Advertise</a></li>
-   <li><a href="guest.html">Be a guest</a></li>
-   <li><a href="account.html">Client login</a></li>
-   <li><a href="https://www.herdreportpodcast.com/contact/">Contact</a></li>
-  </ul>
+  <div class="mgrid">
+   <div><p class="mlabel">Explore</p><ul class="mbig"><li><a href="#episodes">Episodes<small>Watch and listen</small><svg viewBox="0 0 34 34"><path d="M6 17h22M19 8l9 9-9 9"/></svg></a></li><li><a href="#store">Shop<small>Signature Hats</small><svg viewBox="0 0 34 34"><path d="M6 17h22M19 8l9 9-9 9"/></svg></a></li><li><a href="advertise.html">Advertise<small>Book ad spots</small><svg viewBox="0 0 34 34"><path d="M6 17h22M19 8l9 9-9 9"/></svg></a></li><li><a href="guest.html">Be a guest<small>Come on the show</small><svg viewBox="0 0 34 34"><path d="M6 17h22M19 8l9 9-9 9"/></svg></a></li><li><a href="#host">The host<small>Meet Scott Beck</small><svg viewBox="0 0 34 34"><path d="M6 17h22M19 8l9 9-9 9"/></svg></a></li></ul></div>
+   <div><p class="mlabel">More</p><ul class="msmall">
+    <li><a href="https://www.herdreportpodcast.com/guests/">Past guests</a></li>
+    <li><a href="https://www.herdreportpodcast.com/blog/">Blog</a></li>
+    <li><a href="account.html">Client login</a></li>
+    <li><a href="https://www.herdreportpodcast.com/reviews/new/">Leave a review</a></li>
+    <li><a href="https://www.herdreportpodcast.com/contact/">Contact</a></li>
+   </ul></div>
+   <div class="mcard"><p class="mlabel" style="margin:0">Watch &amp; listen</p><h3>Never miss an episode</h3>
+    <a class="lst" href="https://www.youtube.com/@herdreportpodcast"><svg><use href="#i-yt"/></svg>YouTube</a>
+    <a class="lst" href="https://open.spotify.com/show/37IlQvHObaNPHxXoUcjEyz"><svg><use href="#i-sp"/></svg>Spotify</a>
+    <a class="lst" href="https://podcasts.apple.com/us/podcast/id1835474334?mt=2&amp;ls=1"><svg><use href="#i-ap"/></svg>Apple Podcasts</a>
+   </div>
+  </div>
  </nav>
 </header>
+<div class="mscrim" id="mscrim"></div>
 
 <main id="top">
 <section class="hero band">
@@ -582,8 +619,12 @@ window.addEventListener('load',()=>{if(!window.HR)return;HR.API.settings().then(
  if(f.some(Boolean)){const el=document.getElementById('homeAud');[...el.children].forEach((c,i)=>{if(f[i]){c.querySelector('.big').textContent=f[i][0];c.querySelector('p').textContent=f[i][1]}})}
  document.getElementById('homeRates').innerHTML=HR.SLOTS.map(k=>`<div class="rc-row"><b>${HR.PLACE[k]}</b><span>${HR.money(st.rates[k])}</span></div>`).join('')}).catch(()=>{})});
 const btn=document.getElementById('menubtn'),menu=document.getElementById('menu');
-btn.addEventListener('click',()=>{const o=menu.classList.toggle('open');btn.setAttribute('aria-expanded',o);btn.textContent=o?'Close':'Menu'});
-menu.addEventListener('click',e=>{if(e.target.closest('a')){menu.classList.remove('open');btn.setAttribute('aria-expanded','false');btn.textContent='Menu'}});
+const ms=document.getElementById('mscrim'),lbl=document.getElementById('menulbl');
+const setMenu=o=>{menu.classList.toggle('open',o);ms.classList.toggle('open',o);btn.setAttribute('aria-expanded',o);lbl.textContent=o?'Close':'Menu';if(o)setTimeout(()=>menu.querySelector('a').focus({preventScroll:true}),60)};
+btn.addEventListener('click',()=>setMenu(!menu.classList.contains('open')));
+menu.addEventListener('click',e=>{if(e.target.closest('a'))setMenu(false)});
+ms.addEventListener('click',()=>setMenu(false));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&menu.classList.contains('open')){setMenu(false);btn.focus()}});
 }
 </script>
 </body>

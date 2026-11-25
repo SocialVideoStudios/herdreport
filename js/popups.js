@@ -101,6 +101,24 @@ function review(){
   catch(x){er.textContent=x.message;b.disabled=false;b.textContent='Submit review'}};
 }
 
+function guest(){
+ show(`<p class="k">Be a guest</p><h2 id="hrpT">Come on the show</h2><p class="sub">Tell Scott a little about your operation. He'll reach out if it's a fit.</p>
+ <form id="hrpG" novalidate>
+  <div class="hrp-2"><div class="hrp-f"><label for="gN">Your name</label><input id="gN" autocomplete="name"></div><div class="hrp-f"><label for="gO">Ranch or operation</label><input id="gO" autocomplete="organization"></div></div>
+  <div class="hrp-2"><div class="hrp-f"><label for="gE">Email</label><input id="gE" type="email" autocomplete="email"></div><div class="hrp-f"><label for="gP">Phone</label><input id="gP" type="tel" autocomplete="tel"></div></div>
+  <div class="hrp-f"><label for="gL">Where are you located?</label><input id="gL" placeholder="Town, state"></div>
+  <div class="hrp-f"><label for="gT">What would you like to talk about?</label><textarea id="gT" placeholder="Your cattle, your program, a sale coming up, your story."></textarea></div>
+  <p class="hrp-err" id="gErr"></p><button class="hrp-btn solid" type="submit" id="gGo">Send</button>
+ </form>`);
+ $('hrpG').onsubmit=async e=>{e.preventDefault();const v=id=>$(id).value.trim(),er=$('gErr');er.textContent='';
+  const miss=[['gN','your name'],['gO','your ranch or operation'],['gE','your email'],['gT','what you want to talk about']].filter(([id])=>!v(id));
+  if(miss.length){er.textContent='Please add '+miss.map(m=>m[1]).join(', ')+'.';$(miss[0][0]).focus();return}
+  if(!/^\S+@\S+\.\S+$/.test(v('gE'))){er.textContent="That email address doesn't look right.";return}
+  const b=$('gGo');b.disabled=true;b.textContent='Sending…';
+  try{await HR.API.submitGuest({name:v('gN'),operation:v('gO'),email:v('gE'),phone:v('gP'),location:v('gL'),topics:v('gT'),breeds:[],herd_type:'',role:'',website:'',socials:'',sale_date:null,photo_url:'',heard_from:''});
+   $('hrpBox').innerHTML=okMsg('Thanks!',`Got it, ${esc(v('gN').split(' ')[0])}`,"Scott will reach out if it's a fit. Let's get to it!!");$('hrpDone').onclick=close}
+  catch(x){er.textContent=x.message;b.disabled=false;b.textContent='Send'}};
+}
 function login(startNew){
  show(`<div class="hrp-slide"><div class="hrp-track${startNew?' new':''}" id="hpTrack">
   <section aria-label="Sign in" id="hpIn">
@@ -150,13 +168,14 @@ document.addEventListener('click',e=>{
  if(e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||!window.HR)return;
  const el=e.target.closest('[data-pop],a[href]');if(!el)return;
  const href=el.getAttribute('href')||'';
- const pop=el.dataset.pop||(/(^|\/)contact\.html(\?|$)/.test(href)?'contact':/reviews\/new/.test(href)?'review':/(^|\/)account\.html(\?|#|$)/.test(href)?'login':'');
+ const pop=el.dataset.pop||(/(^|\/)contact\.html(\?|$)/.test(href)?'contact':/reviews\/new/.test(href)?'review':/(^|\/)account\.html(\?|#|$)/.test(href)?'login':/(^|\/)guest\.html(\?|#|$)/.test(href)?'guest':'');
  if(!pop)return;
  if(document.body.dataset.page==='contact'&&pop==='contact')return;
  if(pop==='login'&&document.body.dataset.page==='account')return;
  e.preventDefault();last=el;
  if(pop==='login'){HR.API.current().then(u=>{if(u)location.href='account.html';else login(el.dataset.new==='1')}).catch(()=>login());return}
+ if(pop==='guest'){guest();return}
  if(pop==='review')review();else contact(new URL(el.href||location.href,location.href).searchParams.get('topic'));
 });
-window.HRPop={contact,review,login};
+window.HRPop={contact,review,login,guest};
 })();

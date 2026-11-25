@@ -9,31 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/app.css">
 <style>
-.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:clamp(24px,4vw,64px);align-items:start}
-.intro{position:sticky;top:100px}
-.intro h1{margin-bottom:18px}
-.intro .lede{font-size:18px;margin-bottom:24px}
-.expect{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.expect h3{font-size:20px;margin-bottom:12px;color:#e9a9ad}
-.expect ul{margin:0;padding-left:18px}.expect li{margin:8px 0}
-.spot{margin-top:16px;border-radius:18px;background:var(--red);color:var(--cream);border-color:var(--red)}
-.spot a{color:var(--cream);font-weight:600}
-fieldset{border:0;padding:0;margin:0 0 8px}
-legend{font:900 20px Archivo,sans-serif;text-transform:uppercase;margin-bottom:14px;padding:0}
-.sec+.sec{border-top:2px solid var(--hair);padding-top:22px;margin-top:8px}
-.checks{display:flex;flex-wrap:wrap;gap:8px}
-.checks label,.radios label{margin:0;display:inline-flex;align-items:center;gap:8px;border:2px solid var(--line);border-radius:999px;padding:8px 14px;font-weight:600;font-size:15px;cursor:pointer;min-height:44px}
-.checks label,.radios label{position:relative}
-.checks input,.radios input{position:absolute;inset:0;width:1px;height:1px;min-height:0;opacity:0;pointer-events:none}
-.checks label:has(input:checked),.radios label:has(input:checked){background:var(--red);border-color:var(--red);color:var(--cream)}
-.checks label:has(input:focus-visible),.radios label:has(input:focus-visible){outline:3px solid var(--red2);outline-offset:3px}
-.radios{display:flex;flex-wrap:wrap;gap:8px}
-.consent{display:flex;gap:12px;align-items:flex-start;font-weight:500;font-size:15px}
-.consent input{width:22px;height:22px;min-height:0;flex:none;margin-top:2px;accent-color:var(--red)}
-.req{color:var(--red2)}
-.done{text-align:center;padding:40px 10px}
-.done h2{margin-bottom:12px}
-@media(max-width:900px){.layout{grid-template-columns:minmax(0,1fr)}.intro{position:static}}
+.gate{max-width:620px;margin:6vh auto;text-align:center}.gate h1{margin-bottom:14px}.gate .lede{font-size:18px}.gate .btns{justify-content:center;margin-top:24px}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="js/config.js"></script>
@@ -42,102 +18,12 @@ legend{font:900 20px Archivo,sans-serif;text-transform:uppercase;margin-bottom:1
 </head>
 <body>
 <div id="hdr"></div>
-<main class="band">
- <div class="wrap layout">
-  <div class="intro">
-   <p class="kick">Be a guest</p>
-   <h1>Come on the show</h1>
-   <p class="lede">Herd Report is about good cattle and the great people who raise them. If you've got a breeding program, an operation or a story the industry should hear, tell Scott about it.</p>
-   <div class="card expect">
-    <h3>What happens next</h3>
-    <ul>
-     <li>Scott reads every application himself.</li>
-     <li>If it's a fit, he'll reach out to talk through your story and timing.</li>
-     <li>Episodes dig into your genetics, breeding program, herd management and marketing.</li>
-     <li>Your episode goes out on YouTube, Apple, Spotify and every podcast app.</li>
-    </ul>
-   </div>
-   <div class="card spot"><b>Previewing a sale?</b> A Spotlight Series episode puts your offering in front of buyers before sale day. <a href="advertise.html#packages">See the Spotlight Series</a></div>
-  </div>
-
-  <div class="card" id="formCard">
-   <form id="gf" novalidate>
-    <div class="sec"><fieldset><legend>About you</legend>
-     <div class="row2">
-      <div class="field"><label for="g-name">Your name <span class="req">*</span></label><input id="g-name" autocomplete="name" required></div>
-      <div class="field"><label for="g-op">Ranch or operation <span class="req">*</span></label><input id="g-op" autocomplete="organization" required></div>
-     </div>
-     <div class="row2">
-      <div class="field"><label for="g-role">Your role</label><input id="g-role" placeholder="Owner, herd manager, sale manager…"></div>
-      <div class="field"><label for="g-loc">Location <span class="req">*</span></label><input id="g-loc" placeholder="Town, state" required></div>
-     </div>
-     <div class="row2">
-      <div class="field"><label for="g-email">Email <span class="req">*</span></label><input id="g-email" type="email" autocomplete="email" required></div>
-      <div class="field"><label for="g-phone">Phone</label><input id="g-phone" type="tel" autocomplete="tel"></div>
-     </div>
-    </fieldset></div>
-
-    <div class="sec"><fieldset><legend>Your cattle</legend>
-     <div class="field"><label>Breeds you raise</label>
-      <div class="checks" id="breeds">
-       <label><input type="checkbox" value="Angus">Angus</label><label><input type="checkbox" value="Red Angus">Red Angus</label>
-       <label><input type="checkbox" value="Simmental">Simmental</label><label><input type="checkbox" value="Charolais">Charolais</label>
-       <label><input type="checkbox" value="Hereford">Hereford</label><label><input type="checkbox" value="Gelbvieh">Gelbvieh</label>
-       <label><input type="checkbox" value="Limousin">Limousin</label><label><input type="checkbox" value="Other">Other</label>
-      </div></div>
-     <div class="field"><label>Your herd</label>
-      <div class="radios" id="herd">
-       <label><input type="radio" name="herd" value="Registered seedstock">Registered seedstock</label>
-       <label><input type="radio" name="herd" value="Commercial">Commercial</label>
-       <label><input type="radio" name="herd" value="Both">Both</label>
-       <label><input type="radio" name="herd" value="Industry or service">Industry or service</label>
-      </div></div>
-     <div class="row2">
-      <div class="field"><label for="g-web">Website</label><input id="g-web" type="url" placeholder="https://"></div>
-      <div class="field"><label for="g-soc">Facebook or Instagram</label><input id="g-soc" placeholder="@yourranch"></div>
-     </div>
-    </fieldset></div>
-
-    <div class="sec"><fieldset><legend>Your story</legend>
-     <div class="field"><label for="g-topics">What would you like to talk about? <span class="req">*</span></label>
-      <textarea id="g-topics" required placeholder="Your history, the genetics you use and why, how you manage and market your cattle, lessons learned."></textarea></div>
-     <div class="row2">
-      <div class="field"><label for="g-sale">Upcoming sale date</label><input id="g-sale" type="date"><div class="hint">If you have one coming up.</div></div>
-      <div class="field"><label for="g-heard">How did you hear about Herd Report?</label><input id="g-heard"></div>
-     </div>
-     <div class="field"><label for="g-photo">Link to a photo of you or your cattle</label><input id="g-photo" type="url" placeholder="https://"><div class="hint">A Facebook, Google Drive or Dropbox link works.</div></div>
-    </fieldset></div>
-
-    <div class="sec">
-     <label class="consent"><input type="checkbox" id="g-ok"> It's OK for Herd Report to contact me about being on the show.</label>
-     <p class="err" id="gerr"></p>
-     <button class="btn solid" type="submit" id="gsend" style="width:100%;margin-top:6px">Send my application</button>
-    </div>
-   </form>
-  </div>
- </div>
-</main>
+<main class="band"><div class="wrap gate">
+ <p class="kick">Be a guest</p><h1>Come on the show</h1>
+ <p class="lede">Herd Report is about good cattle and the people who raise them. If you've got a program or a story the industry should hear, tell Scott about it.</p>
+ <div class="btns"><button class="btn solid" data-pop="guest">Apply to be a guest</button><a class="btn" href="guests.html">See past guests</a></div>
+</div></main>
 <div id="ftr"></div>
-<script>
-{
-const {API,esc}=HR;
-HR.chrome('guest');
-const $=id=>document.getElementById(id);
-$('gf').addEventListener('submit',async e=>{e.preventDefault();const er=$('gerr');er.textContent='';
- const v=id=>$(id).value.trim();
- const miss=[['g-name','your name'],['g-op','your ranch or operation'],['g-loc','your location'],['g-email','your email'],['g-topics','what you\'d like to talk about']].filter(([id])=>!v(id));
- if(miss.length){er.textContent='Please add '+miss.map(m=>m[1]).join(', ')+'.';$(miss[0][0]).focus();return}
- if(!/^\S+@\S+\.\S+$/.test(v('g-email'))){er.textContent='That email address doesn\'t look right.';$('g-email').focus();return}
- if(!$('g-ok').checked){er.textContent='Please check the box so Scott can contact you.';return}
- const g={name:v('g-name'),operation:v('g-op'),role:v('g-role'),email:v('g-email'),phone:v('g-phone'),location:v('g-loc'),website:v('g-web'),socials:v('g-soc'),
-  breeds:[...document.querySelectorAll('#breeds input:checked')].map(i=>i.value),herd_type:(document.querySelector('#herd input:checked')||{}).value||'',
-  topics:v('g-topics'),sale_date:v('g-sale')||null,photo_url:v('g-photo'),heard_from:v('g-heard')};
- const b=$('gsend');b.disabled=true;b.textContent='Sending…';
- try{await API.submitGuest(g);
-  $('formCard').innerHTML=`<div class="done"><p class="kick">Application received</p><h2>Thanks, ${esc(g.name.split(' ')[0])}!</h2><p>Scott will read your application and reach out at ${esc(g.email)} if it's a fit. Let's get to it!!</p><div class="btns" style="justify-content:center;margin-top:20px"><a class="btn solid" href="index.html#episodes">Watch episodes</a><a class="btn" href="index.html">Back to home</a></div></div>`;
-  window.scrollTo({top:0,behavior:'smooth'});
- }catch(x){er.textContent=x.message;b.disabled=false;b.textContent='Send my application'}});
-}
-</script>
+<script>HR.chrome('guest');addEventListener('load',()=>window.HRPop&&HRPop.guest())</script>
 </body>
 </html>

@@ -447,7 +447,7 @@ footer small{opacity:.7}
    <div class="btns"><a class="btn solid" href="advertise.html#shop">Shop ad spots</a><a class="btn ghost" href="account.html">Client login</a></div>
   </div>
   <aside class="ratecard" aria-label="Episode ad rates">
-   <div class="rch"><h3>Episode ad rates</h3><span class="nextep" id="nextEp">Host-read, price per episode</span></div>
+   <div class="rch"><h3>Episode ad rates</h3><span class="nextep" id="nextEpisode">Host-read, price per episode</span></div>
    <div id="homeRates">
     <a class="rc-row" href="advertise.html#shop"><b>Pre-roll<small>Open weeks available</small></b><span>$500</span><i>Book →</i></a><a class="rc-row" href="advertise.html#shop"><b>Mid-roll 1<small>Open weeks available</small></b><span>$350</span><i>Book →</i></a><a class="rc-row" href="advertise.html#shop"><b>Mid-roll 2<small>Open weeks available</small></b><span>$350</span><i>Book →</i></a><a class="rc-row" href="advertise.html#shop"><b>Mid-roll 3<small>Open weeks available</small></b><span>$350</span><i>Book →</i></a><a class="rc-row" href="advertise.html#shop"><b>Post-roll<small>Open weeks available</small></b><span>$250</span><i>Book →</i></a>
    </div>
@@ -668,7 +668,7 @@ window.addEventListener('load',()=>{if(!window.HR)return;
   document.getElementById('homeRates').innerHTML=HR.SLOTS.map(k=>{const nx=weeks.find(w=>left(w,k)>0);
    return `<a class="rc-row${nx?'':' full'}" href="advertise.html#shop"><b>${HR.PLACE[k]}<small>${nx?'Next open: '+short(nx):'Booked for the next '+weeks.length+' weeks'}</small></b><span>${HR.money(st.rates[k])}</span><i>${nx?'Book →':'Waitlist'}</i></a>`}).join('');
   const first=weeks[0],open=HR.SLOTS.filter(k=>left(first,k)>0).length;
-  document.getElementById('nextEp').innerHTML=`Next episode ${short(first)} <b>${open} of ${HR.SLOTS.length} spots open</b>`;
+  document.getElementById('nextEpisode').innerHTML=`Next episode ${short(first)} <b>${open} of ${HR.SLOTS.length} spots open</b>`;
  }).catch(()=>{});
 });
 fetch('data/stats.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(d=>{if(!d||!d.platforms)return;const p=d.platforms;

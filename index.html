@@ -449,7 +449,7 @@ footer small{opacity:.7}
   <aside class="ratecard" aria-label="Episode ad rates">
    <div class="rch"><h3>Episode ad rates</h3><span class="nextep" id="nextEp">Host-read, price per episode</span></div>
    <div id="homeRates">
-    <a class="rc-row" href="advertise.html?spot=pre#shop"><b>Pre-roll<small>Open weeks available</small></b><span>$500</span><i>Book →</i></a><a class="rc-row" href="advertise.html?spot=mid1#shop"><b>Mid-roll 1<small>Open weeks available</small></b><span>$350</span><i>Book →</i></a><a class="rc-row" href="advertise.html?spot=mid2#shop"><b>Mid-roll 2<small>Open weeks available</small></b><span>$350</span><i>Book →</i></a><a class="rc-row" href="advertise.html?spot=mid3#shop"><b>Mid-roll 3<small>Open weeks available</small></b><span>$350</span><i>Book →</i></a><a class="rc-row" href="advertise.html?spot=post#shop"><b>Post-roll<small>Open weeks available</small></b><span>$250</span><i>Book →</i></a>
+    <a class="rc-row" href="advertise.html#shop"><b>Pre-roll<small>Open weeks available</small></b><span>$500</span><i>Book →</i></a><a class="rc-row" href="advertise.html#shop"><b>Mid-roll 1<small>Open weeks available</small></b><span>$350</span><i>Book →</i></a><a class="rc-row" href="advertise.html#shop"><b>Mid-roll 2<small>Open weeks available</small></b><span>$350</span><i>Book →</i></a><a class="rc-row" href="advertise.html#shop"><b>Mid-roll 3<small>Open weeks available</small></b><span>$350</span><i>Book →</i></a><a class="rc-row" href="advertise.html#shop"><b>Post-roll<small>Open weeks available</small></b><span>$250</span><i>Book →</i></a>
    </div>
    <a class="rcfoot" href="advertise.html#packages">Spotlight episodes &amp; sponsorships →</a>
   </aside>
@@ -666,7 +666,7 @@ window.addEventListener('load',()=>{if(!window.HR)return;
   const weeks=HR.upcoming(st.weeksAhead||16,st.releaseDay??1);const left=(d,k)=>(st.capacity[k]??1)-(use[d+'|'+k]||0);
   const short=d=>new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
   document.getElementById('homeRates').innerHTML=HR.SLOTS.map(k=>{const nx=weeks.find(w=>left(w,k)>0);
-   return `<a class="rc-row${nx?'':' full'}" href="advertise.html?spot=${k}#shop"><b>${HR.PLACE[k]}<small>${nx?'Next open: '+short(nx):'Booked for the next '+weeks.length+' weeks'}</small></b><span>${HR.money(st.rates[k])}</span><i>${nx?'Book →':'Waitlist'}</i></a>`}).join('');
+   return `<a class="rc-row${nx?'':' full'}" href="advertise.html#shop"><b>${HR.PLACE[k]}<small>${nx?'Next open: '+short(nx):'Booked for the next '+weeks.length+' weeks'}</small></b><span>${HR.money(st.rates[k])}</span><i>${nx?'Book →':'Waitlist'}</i></a>`}).join('');
   const first=weeks[0],open=HR.SLOTS.filter(k=>left(first,k)>0).length;
   document.getElementById('nextEp').innerHTML=`Next episode ${short(first)} <b>${open} of ${HR.SLOTS.length} spots open</b>`;
  }).catch(()=>{});

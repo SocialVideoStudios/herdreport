@@ -109,6 +109,7 @@ function login(startNew){
     <div class="hrp-f"><label for="hpE1">Email</label><input id="hpE1" type="email" autocomplete="email"></div>
     <div class="hrp-f"><label for="hpP1">Password</label><input id="hpP1" type="password" autocomplete="current-password"></div>
     <p class="hrp-err" id="hpErr1"></p><button class="hrp-btn solid" type="submit" id="hpGo1">Sign in</button>
+    ${HR.LIVE?'':'<button class="hrp-btn wide" type="button" id="hpPrev" style="margin-top:8px">Preview sign in</button>'}
    </form>
    <div class="hrp-or">Not a client yet?</div>
    <button class="hrp-btn wide" type="button" id="hpToNew">Create an account</button>
@@ -129,11 +130,12 @@ function login(startNew){
  const sideTo=n=>{tr.classList.toggle('new',n);inS.inert=n;nwS.inert=!n;fit();setTimeout(()=>(n?$('hpC2'):$('hpE1')).focus({preventScroll:true}),360)};
  inS.inert=!!startNew;nwS.inert=!startNew;fit();new ResizeObserver(fit).observe(tr);
  $('hpToNew').onclick=()=>sideTo(true);$('hpToIn').onclick=()=>sideTo(false);
- const done=u=>{location.href=u&&u.role==='admin'?'admin.html':'account.html'};
+ const done=u=>{const to=u&&u.role==='admin'?'admin.html':'account.html';if(document.body.dataset.page==='account'&&to==='account.html')location.reload();else location.href=to};
  $('hpSI').onsubmit=async e=>{e.preventDefault();const er=$('hpErr1'),b=$('hpGo1');er.textContent='';
   if(!$('hpE1').value.trim()||!$('hpP1').value){er.textContent='Enter your email and password.';return}
   b.disabled=true;b.textContent='Signing in…';
   try{done(await HR.API.signIn($('hpE1').value,$('hpP1').value))}catch(x){er.textContent=x.message;b.disabled=false;b.textContent='Sign in'}};
+ if($('hpPrev'))$('hpPrev').onclick=async()=>{try{done(await HR.API.signIn('demo@prairieline.co','sponsor2026'))}catch(x){$('hpErr1').textContent=x.message}};
  $('hpSU').onsubmit=async e=>{e.preventDefault();const v=id=>$(id).value.trim(),er=$('hpErr2'),b=$('hpGo2');er.textContent='';
   if(!v('hpC2')||!v('hpN2')||!v('hpE2')){er.textContent='Add your company, name and email.';return}
   if(!/^\S+@\S+\.\S+$/.test(v('hpE2'))){er.textContent="That email address doesn't look right.";return}

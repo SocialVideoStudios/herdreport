@@ -15,46 +15,48 @@
 .auth .card.alt .hint{color:#f1dcdc}
 .auth .card.alt .btn{background:var(--cream);color:#85272C;border-color:var(--cream)}
 .perks{list-style:none;padding:0;margin:0 0 6px;display:grid;gap:6px}.perks li::before{content:"✓ ";font-weight:700}
-.who{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;margin-bottom:24px}
-.who .id{display:flex;align-items:center;gap:16px}
-.who .lg{width:72px;height:72px;border-radius:18px;border:2px solid var(--line);background:#fff;display:grid;place-items:center;overflow:hidden;font:900 30px Archivo,sans-serif;color:#85272C;flex:none}
-.who .lg img{width:100%;height:100%;object-fit:contain}
-.who h1{font-size:clamp(32px,4.6vw,58px)}.who p{margin:4px 0 0}
-.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:20px}
-.tile{border:2px solid var(--line);border-radius:18px;padding:16px 18px;background:var(--card)}
-.tile b{display:block;font:900 32px/1.05 Archivo,sans-serif}.tile span{font:700 12px Archivo,sans-serif;text-transform:uppercase;color:var(--soft)}
-.tile.hot{background:var(--red);border-color:var(--red);color:var(--cream)}.tile.hot span{color:#f1dcdc}
-.two{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:20px;align-items:start}
-.todo{list-style:none;margin:0;padding:0}.todo li{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--hair)}
-.todo li:last-child{border:0}.todo .ck{width:24px;height:24px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-size:13px;flex:none}
-.todo .done .ck{background:var(--ok);border-color:var(--ok);color:#fff}.todo .done span{color:var(--soft);text-decoration:line-through}
-.todo .l{display:flex;gap:12px;align-items:center}
-.air{list-style:none;margin:0;padding:0}.air li{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--hair)}.air li:last-child{border:0}
-.air b{font:900 15px Archivo,sans-serif;text-transform:uppercase}
-.blist{display:grid;gap:16px}
-.bk{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 20px;align-items:start}
-.bk h3{font-size:22px}
-.bk .meta{color:var(--soft);font-size:15px;margin:6px 0 0}
-.bk .amt{font:900 24px Archivo,sans-serif;text-align:right;white-space:nowrap}
-.bk .note{grid-column:1/-1;background:var(--bg);border-radius:12px;padding:10px 14px;font-size:15px}
-.bk .acts{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.cr{grid-column:1/-1;border-top:2px solid var(--hair);padding-top:16px;margin-top:4px}
-.cr h4{font:900 16px Archivo,sans-serif;text-transform:uppercase;margin:0 0 10px}
-.flag{display:inline-block;font:700 12px Archivo,sans-serif;text-transform:uppercase;background:var(--warn);color:#fff;border-radius:999px;padding:3px 10px;margin-left:8px;vertical-align:middle}
+.hi{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:16px;margin-bottom:28px}
+.hi h1{font-size:clamp(36px,5vw,64px)}.hi p{margin:6px 0 0}
+.todo{background:var(--red);color:var(--cream);border-radius:22px;padding:18px 22px;margin-bottom:28px}
+.todo h2{font-size:22px;margin-bottom:6px}
+.todo .ti{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:10px 0;border-top:1px solid rgb(243 239 231/.25);font-weight:600}
+.todo .btn{border-color:var(--cream);color:var(--cream);flex:none}.todo .btn:hover{background:var(--cream);color:#85272C}
+.blk{margin-bottom:36px}.blk>h2{font-size:clamp(26px,3vw,36px);margin-bottom:14px}
+.ord{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:20px 22px;margin-bottom:14px}
+.oh{display:flex;justify-content:space-between;gap:16px;align-items:start}
+.oh h3{font-size:22px}.oh p{margin:4px 0 0;font-size:15px}
+.pr{font:900 22px Archivo,sans-serif;white-space:nowrap}
+.stl{margin:14px 0 0;font-weight:600;font-size:16px;text-decoration:none!important}
+.stl.st-pending,.stl.st-refund_requested{color:var(--warn)}.stl.st-approved,.stl.st-paid,.stl.st-live,.stl.st-completed{color:var(--ok)}.stl.st-refunded,.stl.st-declined,.stl.st-cancelled{color:var(--soft)}
+.dates{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:12px}
+.dates .dl{font:700 12px Archivo,sans-serif;text-transform:uppercase;color:var(--soft);margin-right:4px}
+.dt{border:1.5px solid var(--line);border-radius:999px;padding:4px 11px;font-size:14px;font-weight:600}
+.dt.past{opacity:.5;border-style:dashed}.dt.next{background:var(--ink);color:var(--bg)}
+.scott{background:var(--bg);border-radius:12px;padding:10px 14px;margin:14px 0 0;font-size:15px}
+.oa{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:16px}.oa:empty{display:none}
+.lnk{background:none;border:0;padding:0;color:var(--red2);font:inherit;font-weight:600;text-decoration:underline;cursor:pointer;min-height:36px}
+.panel{border-top:2px solid var(--hair);margin-top:16px;padding-top:16px}
+.none{border:2px dashed var(--line);border-radius:20px;padding:22px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.none p{margin:0}
+.more{background:var(--card);border:2px solid var(--line);border-radius:20px;margin-bottom:12px}
+.more summary{cursor:pointer;padding:18px 22px;font:900 18px Archivo,sans-serif;text-transform:uppercase;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;list-style:none}
+.more summary::-webkit-details-marker{display:none}
+.more summary::after{content:"+";font-size:24px;line-height:1}.more[open] summary::after{content:"–"}
+.more summary .soft{font:500 14px 'IBM Plex Sans',sans-serif;text-transform:none;flex:1}
+.more>div{padding:0 22px 22px}
+.help{color:var(--soft);font-size:15px}
 .files{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 12px}
 .file{display:flex;align-items:center;gap:10px;border:2px solid var(--line);border-radius:14px;padding:6px 8px 6px 6px;max-width:100%}
 .file .th{width:44px;height:44px;border-radius:10px;background:#fff;display:grid;place-items:center;overflow:hidden;flex:none;font:900 11px Archivo,sans-serif;color:#85272C}
 .file .th img{width:100%;height:100%;object-fit:contain}
 .file a{color:inherit;font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px}
 .file button{border:0;background:none;color:var(--soft);font-size:20px;cursor:pointer;width:32px;height:32px}
-.drop{display:flex;align-items:center;justify-content:center;gap:10px;border:2px dashed var(--line);border-radius:14px;padding:14px;cursor:pointer;font-weight:600;text-align:center;min-height:56px}
+.drop{display:flex;align-items:center;justify-content:center;gap:10px;border:2px dashed var(--line);border-radius:14px;padding:14px;cursor:pointer;font-weight:600;text-align:center;min-height:52px}
 .drop.on{background:var(--ink);color:var(--bg)}
 .drop input{position:absolute;width:1px;height:1px;opacity:0}
-.brand{display:grid;grid-template-columns:240px minmax(0,1fr);gap:24px;align-items:start}
-.logo-box{aspect-ratio:1;border:2px solid var(--line);border-radius:22px;background:#fff;display:grid;place-items:center;overflow:hidden;margin-bottom:12px;color:#5a5450;text-align:center;padding:12px;font-size:14px}
+.brand{display:grid;grid-template-columns:200px minmax(0,1fr);gap:24px;align-items:start}
+.logo-box{aspect-ratio:1;border:2px solid var(--line);border-radius:18px;background:#fff;display:grid;place-items:center;overflow:hidden;margin-bottom:10px;color:#5a5450;font-size:14px}
 .logo-box img{width:100%;height:100%;object-fit:contain}
-@media(max-width:860px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.two,.brand{grid-template-columns:minmax(0,1fr)}.brand .logo-box{max-width:220px}}
-@media(max-width:600px){.who .lg{width:56px;height:56px}.tile b{font-size:26px}.bk{grid-template-columns:minmax(0,1fr)}.bk .amt{text-align:left}.tabs{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}.tabs button{flex:none}}
+@media(max-width:700px){.brand{grid-template-columns:minmax(0,1fr)}.brand .logo-box{max-width:160px}.hi .btns{width:100%}.todo .ti{flex-direction:column;align-items:flex-start}.ord{padding:18px}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="js/config.js"></script>
@@ -72,8 +74,7 @@ HR.chrome('account');
 const app=document.getElementById('app'),$=id=>document.getElementById(id);
 const qs=new URLSearchParams(location.search);
 if(qs.has('book')||qs.has('new'))location.replace('advertise.html#shop');
-let me=null,pkgs=[],list=[],tab=(location.hash.slice(1)||'dashboard');
-const TABS=[['dashboard','Dashboard'],['ads','Ad orders'],['merch','Merch orders'],['brand','Brand kit'],['account','Account']];
+let me=null,pkgs=[],list=[];
 const pkgName=id=>(pkgs.find(p=>p.id===id)||{}).name||id;
 const title=b=>b.kind==='store'?'Hat order':b.kind==='ad'?(PLACE[b.placement]||'Episode ad')+' ad':pkgName(b.package_id);
 const today=new Date().toISOString().slice(0,10);
@@ -120,54 +121,100 @@ function authView(msg){
   if(!$('uc').value.trim()||!$('un').value.trim()||!$('ue').value.trim()){er.textContent='Fill in your company, name and email.';return}
   if($('upw').value.length<8){er.textContent='Use a password with at least 8 characters.';return}
   try{const r=await API.signUp({company:$('uc').value.trim(),contact_name:$('un').value.trim(),email:$('ue').value,phone:$('uph').value.trim(),password:$('upw').value});
-   if(r.confirm){authView('Check your email to confirm your account, then sign in.');return}tab='brand';go(r.user)}catch(x){er.textContent=x.message}});
+   if(r.confirm){authView('Check your email to confirm your account, then sign in.');return}go(r.user)}catch(x){er.textContent=x.message}});
 }
 
-/* ---------- portal shell ---------- */
+/* ---------- dashboard (one simple page) ---------- */
+const STEP={
+ pending:['⏳','Waiting for Scott to approve your order.'],
+ approved:['✅','Approved! Pay to lock in your spot.'],
+ paid:['✅','Approved and paid. You\'re on the schedule.'],
+ live:['🎙','On air now.'],
+ completed:['🏁','All done. Thanks for advertising!'],
+ refund_requested:['↩','Refund requested.'],
+ refunded:['💵','Refunded.'],
+ declined:['✕','Scott wasn\'t able to take this one.'],
+ cancelled:['✕','Cancelled.']};
+const HATSTEP={paid:['📦','Paid. Getting your order ready to ship.'],completed:['🚚','Shipped.']};
+const canRefund=b=>['paid','live'].includes(b.status)&&(b.kind==='store'||!(b.episode_dates||[]).length||(b.episode_dates||[]).some(d=>d>=today));
+function statusLine(b){const [ic,t]=(b.kind==='store'&&HATSTEP[b.status])||STEP[b.status]||['•',STATUS[b.status]||b.status];let extra='';
+ if(b.status==='refund_requested'&&b.refund)extra=` You'll get ${money(b.refund.amount)} back (${money(b.amount)} minus the ${money(HR.REFUND_FEE)} fee). Scott will confirm soon.`;
+ if(b.status==='refunded')extra=` ${money(b.refund?.amount??Math.max(0,b.amount-HR.REFUND_FEE))} was sent back to your card.`;
+ return `<p class="stl st-${esc(b.status)}"><span aria-hidden="true">${ic}</span> ${esc(t+extra)}</p>`}
+function dates(b){const ds=b.episode_dates||[];if(!ds.length)return'';const next=ds.find(d=>d>=today);
+ return `<div class="dates"><span class="dl">${b.kind==='presenting'?'Starts':'Airs on'}</span>${ds.map(d=>`<span class="dt ${d<today?'past':d===next?'next':''}">${shortDate(d)}${d<today?' · aired':d===next&&live(b)?' · next':''}</span>`).join('')}</div>`}
+function orderCard(b){const hat=b.kind==='store',lines=String(b.notes||'').split('\n');
+ return `<article class="ord" data-id="${esc(b.id)}">
+  <div class="oh"><div><h3>${esc(title(b))}</h3><p class="soft">${hat?esc(lines.filter(l=>!l.startsWith('Ship to')).join(', ')):esc(b.kind==='ad'?PLACE[b.placement]+' · read by Scott':detail(b))}</p></div><b class="pr">${money(b.amount)}</b></div>
+  ${statusLine(b)}${hat?'':dates(b)}
+  ${b.admin_note?`<p class="scott"><b>From Scott:</b> ${esc(b.admin_note)}</p>`:''}
+  <div class="oa">
+   ${b.status==='approved'?`<button class="btn sm solid" data-pay>Pay ${money(b.amount)}</button>`:''}
+   ${!hat&&EDITABLE.includes(b.status)?`<button class="btn sm" data-ed aria-expanded="false">${needsCreative(b)?'Add your ad details':'Edit ad details'}</button>`:''}
+   ${b.status==='pending'?`<button class="btn sm" data-cancel>Cancel order</button>`:''}
+   ${canRefund(b)?`<button class="lnk" data-rf>Request a refund</button>`:''}
+  </div>
+  <div class="panel" data-panel hidden></div>
+ </article>`}
 async function home(){
  list=await API.myBookings();
- const ads=list.filter(isAd),todo=ads.filter(needsCreative).length+ads.filter(b=>b.status==='approved').length;
- app.innerHTML=`<div class="who"><div class="id"><span class="lg">${me.brand?.logo?`<img src="${esc(me.brand.logo.url)}" alt="">`:esc((me.company||'?')[0])}</span>
-   <div><p class="kick" style="margin:0">Client portal</p><h1>${esc(me.company||'Your account')}</h1><p class="soft">${esc(me.contact_name||'')} · ${esc(me.email)}</p></div></div>
-  <div class="btns"><a class="btn solid" href="advertise.html#shop">Book more ads</a><button class="btn" id="out">Sign out</button></div></div>
- <div class="tabs" role="tablist">${TABS.map(([k,n])=>`<button role="tab" data-t="${k}">${n}${k==='ads'&&todo?`<span class="n">${todo}</span>`:''}</button>`).join('')}</div><div id="pane"></div>`;
- $('out').onclick=async()=>{await API.signOut();me=null;HR.chrome('account');history.replaceState(null,'',location.pathname);authView()};
- app.querySelector('.tabs').addEventListener('click',e=>{const b=e.target.closest('button[data-t]');if(b)show(b.dataset.t)});
- show(TABS.some(t=>t[0]===tab)?tab:'dashboard');
-}
-function show(t){tab=t;history.replaceState(null,'','#'+t);
- app.querySelectorAll('.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===t));
- ({dashboard,ads:adsView,merch:merchView,brand:brandView,account:accountView})[t]()}
-
-/* ---------- dashboard ---------- */
-function dashboard(){
  const ads=list.filter(isAd),hats=list.filter(b=>b.kind==='store');
- const airs=ads.filter(live).flatMap(b=>(b.episode_dates||[]).filter(d=>d>=today).map(d=>({d,b}))).sort((a,b)=>a.d.localeCompare(b.d));
- const due=ads.filter(b=>b.status==='approved'),need=ads.filter(needsCreative);
- const spent=list.filter(b=>['paid','live','completed'].includes(b.status)).reduce((a,b)=>a+Number(b.amount||0),0);
- const br=me.brand||{};
- const steps=[[!!br.logo,'Upload your logo','brand'],[!!br.website,'Add your website','brand'],[!!br.points,'Write your standard talking points','brand'],[ads.length>0,'Book your first ad spot','shop']];
- $('pane').innerHTML=`<div class="tiles">
-  <div class="tile"><b>${airs.length}</b><span>Upcoming airings</span></div>
-  <div class="tile"><b>${airs[0]?shortDate(airs[0].d):'—'}</b><span>Next air date</span></div>
-  <div class="tile ${due.length+need.length?'hot':''}"><b>${due.length+need.length}</b><span>Need your attention</span></div>
-  <div class="tile"><b>${money(spent)}</b><span>Paid to date</span></div></div>
- <div class="two">
-  <div class="card"><h3 style="margin-bottom:12px">Coming up</h3>${airs.length?`<ul class="air">${airs.slice(0,8).map(a=>`<li><span><b>${esc(PLACE[a.b.placement]||title(a.b))}</b><br><span class="soft">${esc(STATUS[a.b.status]||a.b.status)}</span></span><span>${fmtDate(a.d)}</span></li>`).join('')}</ul>`:`<p class="soft" style="margin:0 0 14px">Nothing scheduled yet.</p><a class="btn solid" href="advertise.html#shop">Browse ad spots</a>`}</div>
-  <div style="display:grid;gap:20px">
-   ${due.length+need.length?`<div class="card"><h3 style="margin-bottom:8px">To do</h3><ul class="todo">${due.map(b=>`<li><span class="l"><span class="ck">$</span><span>Pay for ${esc(title(b))}</span></span><button class="btn sm solid" data-go="ads">Pay ${money(b.amount)}</button></li>`).join('')}${need.map(b=>`<li><span class="l"><span class="ck">!</span><span>Add talking points or files for ${esc(title(b))}</span></span><button class="btn sm" data-go="ads">Add</button></li>`).join('')}</ul></div>`:''}
-   <div class="card"><h3 style="margin-bottom:8px">Get set up</h3><ul class="todo">${steps.map(([d,t,g])=>`<li class="${d?'done':''}"><span class="l"><span class="ck">${d?'✓':''}</span><span>${t}</span></span>${d?'':g==='shop'?'<a class="btn sm" href="advertise.html#shop">Go</a>':`<button class="btn sm" data-go="${g}">Go</button>`}</li>`).join('')}</ul></div>
-   ${hats.length?`<div class="card"><h3 style="margin-bottom:6px">Merch</h3><p class="soft" style="margin:0 0 12px">${hats.length} hat order${hats.length>1?'s':''}</p><button class="btn sm" data-go="merch">View orders</button></div>`:''}
-  </div></div>`;
- $('pane').querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>show(b.dataset.go));
+ const todo=[...ads.filter(b=>b.status==='approved').map(b=>[b,`Pay for your ${title(b)}`,'Pay now','pay']),...ads.filter(needsCreative).map(b=>[b,`Tell Scott what to say in your ${title(b)}`,'Add details','ed'])];
+ app.innerHTML=`<div class="hi"><div><p class="kick">My dashboard</p><h1>Hi, ${esc((me.contact_name||'').split(' ')[0]||'there')}</h1><p class="soft">${esc(me.company||'')}</p></div>
+  <div class="btns"><a class="btn solid" href="advertise.html#shop">Book ads</a><a class="btn" href="index.html#store">Shop hats</a><button class="btn" id="out">Sign out</button></div></div>
+ ${todo.length?`<div class="todo"><h2>To do</h2>${todo.map(([b,t,l,k])=>`<div class="ti"><span>${esc(t)}</span><button class="btn sm" data-jump="${esc(b.id)}" data-k="${k}">${l}</button></div>`).join('')}</div>`:''}
+ <section class="blk"><h2>My ads</h2>${ads.length?ads.map(orderCard).join(''):`<div class="none"><p>No ads yet.</p><a class="btn sm solid" href="advertise.html#shop">Book an ad</a></div>`}</section>
+ <section class="blk"><h2>My merch</h2>${hats.length?hats.map(orderCard).join(''):`<div class="none"><p>No hat orders yet.</p><a class="btn sm" href="index.html#store">Shop hats</a></div>`}</section>
+ <section class="blk"><h2>My info</h2>
+  <details class="more" id="dBrand"><summary>Logo and ad info <span class="soft">${me.brand?.logo?'Logo uploaded':'Add your logo once, Scott uses it for every ad'}</span></summary><div id="brandPane"></div></details>
+  <details class="more" id="dAcct"><summary>Contact details and password</summary><div id="acctPane"></div></details>
+ </section>
+ <p class="help">Questions? <a href="contact.html">Contact Scott</a>. Refunds are the order total minus a ${money(HR.REFUND_FEE)} fee.</p>`;
+ $('out').onclick=async()=>{await API.signOut();me=null;HR.chrome('account');authView()};
+ brandView();accountView();
+ app.querySelectorAll('[data-jump]').forEach(x=>x.onclick=()=>{const c=app.querySelector(`.ord[data-id="${x.dataset.jump}"]`);c.scrollIntoView({behavior:'smooth',block:'center'});
+  if(x.dataset.k==='ed')openEdit(c);else c.querySelector('[data-pay]')?.focus()});
+ app.querySelectorAll('.ord').forEach(wire);
 }
-
-/* ---------- ad orders ---------- */
+function wire(card){
+ const b=list.find(x=>x.id===card.dataset.id),panel=card.querySelector('[data-panel]');
+ card.querySelector('[data-pay]')?.addEventListener('click',async e=>{e.target.disabled=true;e.target.textContent='Paying…';try{await API.payBooking(b.id);home()}catch(x){e.target.disabled=false;e.target.textContent='Pay '+money(b.amount);panelMsg(card,x.message)}});
+ card.querySelector('[data-cancel]')?.addEventListener('click',()=>{panel.hidden=false;panel.innerHTML=`<p><b>Cancel this order?</b> Nothing has been charged yet.</p><div class="btns"><button class="btn sm solid" data-yes>Yes, cancel it</button><button class="btn sm" data-no>Keep it</button></div><p class="err"></p>`;
+  panel.querySelector('[data-no]').onclick=()=>{panel.hidden=true};panel.querySelector('[data-yes]').onclick=async()=>{try{await API.cancelBooking(b.id);home()}catch(x){panel.querySelector('.err').textContent=x.message}}});
+ card.querySelector('[data-rf]')?.addEventListener('click',()=>{const back=Math.max(0,Number(b.amount||0)-HR.REFUND_FEE);panel.hidden=false;
+  panel.innerHTML=`<p><b>Request a refund</b><br>You'll get <b>${money(back)}</b> back (${money(b.amount)} minus the ${money(HR.REFUND_FEE)} fee).${b.kind==='store'?'':' Your spots will be released.'}</p>
+   <div class="field"><label for="rr-${esc(b.id)}">Reason (optional)</label><textarea id="rr-${esc(b.id)}" rows="2" placeholder="Let Scott know why"></textarea></div>
+   <div class="btns"><button class="btn sm solid" data-yes>Request refund</button><button class="btn sm" data-no>Never mind</button></div><p class="err"></p>`;
+  panel.querySelector('[data-no]').onclick=()=>{panel.hidden=true};
+  panel.querySelector('[data-yes]').onclick=async e=>{e.target.disabled=true;try{await API.requestRefund(b.id,panel.querySelector('textarea').value.trim());home()}catch(x){e.target.disabled=false;panel.querySelector('.err').textContent=x.message}}});
+ card.querySelector('[data-ed]')?.addEventListener('click',()=>openEdit(card));
+}
+function panelMsg(card,t){const p=card.querySelector('[data-panel]');p.hidden=false;p.innerHTML=`<p class="err">${esc(t)}</p>`}
+function openEdit(card){
+ const b=list.find(x=>x.id===card.dataset.id),panel=card.querySelector('[data-panel]'),btn=card.querySelector('[data-ed]');
+ if(!panel.hidden&&panel.dataset.mode==='ed'){panel.hidden=true;btn.setAttribute('aria-expanded','false');return}
+ panel.dataset.mode='ed';panel.hidden=false;btn?.setAttribute('aria-expanded','true');
+ const draw=()=>{const fs=b.assets||[];
+  panel.innerHTML=`<div class="field"><label for="tp-${esc(b.id)}">What should Scott say?</label><textarea id="tp-${esc(b.id)}" rows="4" placeholder="Products, sale dates, offers, your website or phone number.">${esc(b.notes||'')}</textarea>
+   ${me.brand?.points&&!b.notes?`<button type="button" class="lnk" data-fill>Use my saved talking points</button>`:''}</div>
+   <p style="font-weight:600;margin:0 0 8px">Files <span class="soft" style="font-weight:400;font-size:14px">(optional: logo, script, images)</span></p>
+   ${fs.length?`<div class="files">${fs.map((f,i)=>fileChip(f,i,'data-rmf')).join('')}</div>`:''}
+   ${dropZone('dz-'+b.id,'Add a file','image/*,.pdf,.doc,.docx,.txt,.mp3,.wav,.m4a')}
+   <div class="btns" style="margin-top:14px"><button class="btn sm solid" data-save>Save</button><button class="btn sm" data-close>Close</button></div><p class="err" data-msg></p>`;
+  const msg=panel.querySelector('[data-msg]'),say=(t,ok)=>{msg.textContent=t;msg.className=ok?'okmsg':'err'};
+  const save=async patch=>{try{Object.assign(b,await API.updateMyBooking(b.id,patch));return true}catch(x){say(x.message);return false}};
+  panel.querySelector('[data-fill]')?.addEventListener('click',e=>{panel.querySelector('textarea').value=me.brand.points;e.target.remove()});
+  panel.querySelector('[data-close]').onclick=()=>{panel.hidden=true;btn?.setAttribute('aria-expanded','false')};
+  panel.querySelector('[data-save]').onclick=async()=>{if(await save({notes:panel.querySelector('textarea').value.trim()})){say('Saved. Scott can see it now.',true);setTimeout(home,900)}};
+  panel.querySelectorAll('[data-rmf]').forEach(x=>x.onclick=async()=>{const a=[...(b.assets||[])];a.splice(+x.dataset.rmf,1);if(await save({assets:a}))draw()});
+  wireDrop(panel.querySelector('.drop'),async files=>{say('Uploading…',true);const a=[...(b.assets||[])];
+   for(const f of files){try{a.push(await API.uploadFile(f))}catch(x){say(x.message);return}}
+   if(await save({assets:a,notes:panel.querySelector('textarea').value.trim()}))draw()});
+ };draw();
+}
 function detail(b){
- if(b.kind==='ad')return `${PLACE[b.placement]||b.placement} · ${b.episode_dates.length} episode${b.episode_dates.length===1?'':'s'}: ${b.episode_dates.map(shortDate).join(', ')}`;
- if(b.kind==='presenting')return `Pre-roll on 52 episodes${b.episode_dates?.[0]?', starting '+fmtDate(b.episode_dates[0]):''}`;
+ if(b.kind==='presenting')return 'Pre-roll on 52 episodes';
  if(b.kind==='spotlight')return `Sale ${fmtDate(b.sale_date)}${b.location?' · '+b.location:''}`;
- if(b.kind==='store')return String(b.notes||'').split('\n').filter(l=>!l.startsWith('Ship to')).join(', ');
  return b.sale_date?`Event ${fmtDate(b.sale_date)}`:'Merch partnership';
 }
 const fileChip=(f,i,rm)=>`<div class="file"><span class="th">${isImg(f)?`<img src="${esc(f.url)}" alt="">`:esc((f.name.split('.').pop()||'file').slice(0,4).toUpperCase())}</span>
@@ -179,85 +226,35 @@ function wireDrop(el,onFiles){
  ['dragleave','drop'].forEach(t=>el.addEventListener(t,e=>{e.preventDefault();el.classList.remove('on')}));
  el.addEventListener('drop',e=>onFiles([...e.dataTransfer.files]));
 }
-function adsView(){
- const ads=list.filter(isAd),pane=$('pane');
- if(!ads.length){pane.innerHTML=`<div class="card"><p style="margin:0 0 14px">You haven't booked any ads yet.</p><a class="btn solid" href="advertise.html#shop">Browse ad spots</a></div>`;return}
- pane.innerHTML=`<div class="blist">${ads.map(b=>{const ed=EDITABLE.includes(b.status),fs=b.assets||[];
-  return `<article class="card bk" data-id="${esc(b.id)}">
-  <div><span class="pill st-${esc(b.status)}">${esc(STATUS[b.status]||b.status)}</span>${needsCreative(b)?'<span class="flag">Needs your info</span>':''}
-   <h3 style="margin-top:10px">${esc(title(b))}</h3><p class="meta">${esc(detail(b))}</p><p class="meta">Ordered ${fmtDate(String(b.created_at).slice(0,10))}</p></div>
-  <div class="amt">${money(b.amount)}</div>
-  ${b.admin_note?`<div class="note"><b>Note from Scott:</b> ${esc(b.admin_note)}</div>`:''}
-  <div class="acts">${b.status==='pending'?`<button class="btn sm" data-cancel>Cancel order</button>`:''}
-   ${b.status==='approved'?`<button class="btn sm solid" data-pay>Pay ${money(b.amount)}</button><span class="soft" style="font-size:14px">Your quote is ready.</span>`:''}</div>
-  <div class="cr"><h4>Your ad</h4>
-   ${ed?`<div class="field"><label for="tp-${esc(b.id)}">Talking points for Scott</label><textarea id="tp-${esc(b.id)}" rows="4" placeholder="What should Scott say? Products, sale dates, offers, website, phone.">${esc(b.notes||'')}</textarea>
-     ${me.brand?.points&&!b.notes?`<button type="button" class="btn sm" data-fill style="margin-top:8px">Use my standard talking points</button>`:''}</div>`
-    :`<p style="margin:0 0 12px">${b.notes?esc(b.notes).replace(/\n/g,'<br>'):'<span class="soft">No talking points.</span>'}</p>`}
-   <p style="font-weight:600;margin:0 0 8px">Files${me.brand?.logo?' <span class="soft" style="font-weight:400;font-size:14px">(your brand kit logo is shared with Scott automatically)</span>':''}</p>
-   <div class="files">${fs.map((f,i)=>fileChip(f,i,ed?'data-rmf':'')).join('')}${b.creative_url?`<div class="file"><span class="th">LINK</span><a href="${esc(b.creative_url)}" target="_blank" rel="noopener">${esc(b.creative_url)}</a></div>`:''}${!fs.length&&!b.creative_url?'<span class="soft">No files yet.</span>':''}</div>
-   ${ed?`${dropZone('dz-'+b.id,'Upload logo, script or images','image/*,.pdf,.doc,.docx,.txt,.mp3,.wav,.m4a')}
-   <div class="btns" style="margin-top:14px"><button class="btn solid sm" data-save>Save</button></div><p class="err" data-msg></p>`:''}
-  </div></article>`}).join('')}</div>`;
- pane.querySelectorAll('.bk').forEach(card=>{
-  const b=list.find(x=>x.id===card.dataset.id),msg=card.querySelector('[data-msg]'),say=(t,ok)=>{if(msg){msg.textContent=t;msg.className=ok?'okmsg':'err'}};
-  const save=async patch=>{try{const nb=await API.updateMyBooking(b.id,patch);Object.assign(b,nb);return true}catch(x){say(x.message);return false}};
-  card.querySelector('[data-pay]')?.addEventListener('click',async e=>{e.target.disabled=true;try{await API.payBooking(b.id);home()}catch(x){e.target.disabled=false;e.target.insertAdjacentHTML('afterend',`<span class="err">${esc(x.message)}</span>`)}});
-  card.querySelector('[data-cancel]')?.addEventListener('click',async e=>{if(!confirm('Cancel this order?'))return;e.target.disabled=true;try{await API.cancelBooking(b.id);home()}catch(x){e.target.disabled=false;say(x.message)}});
-  card.querySelector('[data-fill]')?.addEventListener('click',e=>{card.querySelector('textarea').value=me.brand.points;e.target.remove()});
-  card.querySelector('[data-save]')?.addEventListener('click',async()=>{if(await save({notes:card.querySelector('textarea').value.trim()})){say('Saved. Scott will see your updates.',true);setTimeout(()=>home().then(()=>show('ads')),900)}});
-  card.querySelectorAll('[data-rmf]').forEach(x=>x.onclick=async()=>{const a=[...(b.assets||[])];a.splice(+x.dataset.rmf,1);if(await save({assets:a}))adsView()});
-  const dz=card.querySelector('.drop');if(dz)wireDrop(dz,async files=>{say('Uploading…',true);const a=[...(b.assets||[])];
-   for(const f of files){try{a.push(await API.uploadFile(f))}catch(x){say(x.message);return}}
-   if(await save({assets:a,notes:card.querySelector('textarea')?.value.trim()}))adsView()});
- });
-}
 
-/* ---------- merch ---------- */
-function merchView(){
- const hats=list.filter(b=>b.kind==='store');
- $('pane').innerHTML=hats.length?`<div class="blist">${hats.map(b=>{const lines=String(b.notes||'').split('\n'),ship=lines.find(l=>l.startsWith('Ship to'));
-  return `<article class="card bk"><div><span class="pill st-${esc(b.status)}">${esc(b.status==='paid'?'Paid, preparing to ship':b.status==='completed'?'Shipped':STATUS[b.status]||b.status)}</span>
-  <h3 style="margin-top:10px">Hat order</h3><p class="meta">${esc(lines.filter(l=>!l.startsWith('Ship to')).join(', '))}</p>${ship?`<p class="meta">${esc(ship)}</p>`:''}<p class="meta">Ordered ${fmtDate(String(b.created_at).slice(0,10))}</p></div>
-  <div class="amt">${money(b.amount)}</div>${b.admin_note?`<div class="note"><b>Note from Scott:</b> ${esc(b.admin_note)}</div>`:''}</article>`}).join('')}</div>`
- :`<div class="card"><p style="margin:0 0 14px">No hat orders yet.</p><a class="btn solid" href="index.html#store">Shop hats</a></div>`;
-}
-
-/* ---------- brand kit ---------- */
+/* ---------- my info: brand kit ---------- */
 function brandView(){
  const br={...(me.brand||{})};
- $('pane').innerHTML=`<form class="card" id="bf" novalidate><div class="brand">
-  <div><p style="font-weight:600;margin:0 0 8px">Logo</p><div class="logo-box" id="lb">${br.logo?`<img src="${esc(br.logo.url)}" alt="Your logo">`:'No logo yet. PNG with a transparent background works best.'}</div>
-   ${dropZone('dzl',br.logo?'Replace logo':'Upload logo','image/*,.svg,.pdf')}${br.logo?'<button type="button" class="btn sm" id="rml" style="margin-top:10px">Remove logo</button>':''}</div>
-  <div><h3 style="margin-bottom:6px">Brand kit</h3><p class="soft" style="margin:0 0 18px">Scott uses this for every ad you book, so you only add it once.</p>
-   <div class="row2"><div class="field"><label for="bw">Website</label><input id="bw" type="url" placeholder="https://" value="${esc(br.website||'')}"></div>
-   <div class="field"><label for="bs">Social handles</label><input id="bs" placeholder="@yourranch" value="${esc(br.socials||'')}"></div></div>
-   <div class="field"><label for="bp">Standard talking points</label><textarea id="bp" rows="5" placeholder="Who you are, what you sell, where to buy, any offer code.">${esc(br.points||'')}</textarea></div>
-   <div class="field"><label for="bn">Pronunciation and notes for Scott</label><input id="bn" placeholder="How to say names, words to avoid" value="${esc(br.notes||'')}"></div>
-   <button class="btn solid" type="submit">Save brand kit</button><p class="err" id="bmsg"></p></div></div></form>`;
+ $('brandPane').innerHTML=`<form id="bf" class="bform" novalidate><div class="brand">
+  <div><div class="logo-box">${br.logo?`<img src="${esc(br.logo.url)}" alt="Your logo">`:'No logo yet'}</div>
+   ${dropZone('dzl',br.logo?'Replace logo':'Upload logo','image/*,.svg,.pdf')}${br.logo?'<button type="button" class="lnk" id="rml">Remove logo</button>':''}</div>
+  <div><div class="field"><label for="bw">Website</label><input id="bw" type="url" placeholder="https://" value="${esc(br.website||'')}"></div>
+   <div class="field"><label for="bp">Talking points you use most</label><textarea id="bp" rows="3" placeholder="Who you are, what you sell, where to buy.">${esc(br.points||'')}</textarea></div>
+   <div class="field"><label for="bn">How to say your name (optional)</label><input id="bn" value="${esc(br.notes||'')}"></div>
+   <button class="btn sm solid" type="submit">Save</button><p class="err" id="bmsg"></p></div></div></form>`;
  const say=(t,ok)=>{$('bmsg').textContent=t;$('bmsg').className=ok?'okmsg':'err'};
  const persist=async()=>{try{me=await API.saveBrand(br);return true}catch(x){say(x.message);return false}};
- wireDrop($('dzl'),async files=>{const f=files[0];if(!f)return;say('Uploading…',true);try{br.logo=await API.uploadFile(f)}catch(x){say(x.message);return}if(await persist()){brandView();home().then(()=>show('brand'))}});
- if($('rml'))$('rml').onclick=async()=>{delete br.logo;if(await persist())home().then(()=>show('brand'))};
- $('bf').addEventListener('submit',async e=>{e.preventDefault();Object.assign(br,{website:$('bw').value.trim(),socials:$('bs').value.trim(),points:$('bp').value.trim(),notes:$('bn').value.trim()});
-  if(await persist())say('Saved.',true)});
+ const reopen=()=>{brandView();$('dBrand').open=true;$('dBrand').querySelector('summary .soft').textContent=me.brand?.logo?'Logo uploaded':'Add your logo once, Scott uses it for every ad'};
+ wireDrop($('dzl'),async files=>{const f=files[0];if(!f)return;say('Uploading…',true);try{br.logo=await API.uploadFile(f)}catch(x){say(x.message);return}if(await persist())reopen()});
+ if($('rml'))$('rml').onclick=async()=>{delete br.logo;if(await persist())reopen()};
+ $('bf').addEventListener('submit',async e=>{e.preventDefault();Object.assign(br,{website:$('bw').value.trim(),points:$('bp').value.trim(),notes:$('bn').value.trim()});if(await persist())say('Saved.',true)});
 }
-
-/* ---------- account ---------- */
+/* ---------- my info: account ---------- */
 function accountView(){
- $('pane').innerHTML=`<div class="two"><form class="card" id="pf" novalidate><h3 style="margin-bottom:16px">Contact details</h3>
-  <div class="row2"><div class="field"><label for="pc">Ranch or company</label><input id="pc" value="${esc(me.company)}"></div>
+ $('acctPane').innerHTML=`<form id="pf" novalidate><div class="row2"><div class="field"><label for="pc">Ranch or company</label><input id="pc" value="${esc(me.company)}"></div>
   <div class="field"><label for="pn">Your name</label><input id="pn" value="${esc(me.contact_name)}"></div></div>
   <div class="row2"><div class="field"><label for="pe">Email</label><input id="pe" value="${esc(me.email)}" disabled></div>
   <div class="field"><label for="pp">Phone</label><input id="pp" type="tel" value="${esc(me.phone)}"></div></div>
-  <button class="btn solid" type="submit">Save</button><p class="okmsg" id="pok"></p></form>
-  <form class="card" id="pw" novalidate><h3 style="margin-bottom:16px">Change password</h3>
-  <div class="field"><label for="np">New password</label><input id="np" type="password" autocomplete="new-password" minlength="8"><div class="hint">At least 8 characters.</div></div>
-  <button class="btn" type="submit">Update password</button><p class="okmsg" id="wok"></p></form></div>`;
- $('pf').addEventListener('submit',async e=>{e.preventDefault();
-  try{me=await API.saveProfile({company:$('pc').value.trim(),contact_name:$('pn').value.trim(),phone:$('pp').value.trim()});$('pok').textContent='Saved.'}catch(x){$('pok').textContent=x.message}});
- $('pw').addEventListener('submit',async e=>{e.preventDefault();const v=$('np').value;if(v.length<8){$('wok').textContent='Use at least 8 characters.';return}
-  try{await API.changePassword(v);$('np').value='';$('wok').textContent='Password updated.'}catch(x){$('wok').textContent=x.message}});
+  <button class="btn sm solid" type="submit">Save</button><p class="okmsg" id="pok"></p></form>
+  <form id="pw" novalidate style="margin-top:18px;border-top:1px solid var(--hair);padding-top:18px"><div class="field"><label for="np">New password</label><input id="np" type="password" autocomplete="new-password" minlength="8"><div class="hint">At least 8 characters.</div></div>
+  <button class="btn sm" type="submit">Change password</button><p class="okmsg" id="wok"></p></form>`;
+ $('pf').addEventListener('submit',async e=>{e.preventDefault();try{me=await API.saveProfile({company:$('pc').value.trim(),contact_name:$('pn').value.trim(),phone:$('pp').value.trim()});$('pok').textContent='Saved.'}catch(x){$('pok').textContent=x.message}});
+ $('pw').addEventListener('submit',async e=>{e.preventDefault();const v=$('np').value;if(v.length<8){$('wok').textContent='Use at least 8 characters.';return}try{await API.changePassword(v);$('np').value='';$('wok').textContent='Password updated.'}catch(x){$('wok').textContent=x.message}});
 }
 start().catch(e=>{app.innerHTML=`<p class="err">Something went wrong: ${esc(e.message)}</p>`});
 }

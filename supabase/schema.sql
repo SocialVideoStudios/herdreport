@@ -64,7 +64,7 @@ create table if not exists public.bookings (
   creative_url text,
   amount numeric,
   status text not null default 'pending'
-    check (status in ('pending','approved','paid','live','completed','declined','cancelled')),
+    check (status in ('pending','approved','paid','live','completed','refund_requested','refunded','declined','cancelled')),
   admin_note text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
@@ -85,7 +85,7 @@ returns table (episode_date date, placement text, n bigint)
 language sql stable security definer set search_path = public as $$
   select d, b.placement, count(*)
     from public.bookings b, unnest(b.episode_dates) d
-   where b.status in ('approved','paid','live') and b.placement is not null
+   where b.status in ('approved','paid','live','refund_requested') and b.placement is not null
    group by d, b.placement;
 $$;
 
@@ -241,3 +241,21 @@ select * from (values
  (4,'Sample review','Ranch hand and 4-H dad','Practical, down-to-earth and easy to listen to on the road. My kids have started asking about EPDs.',true,'approved'),
  (5,'Sample review','Commercial cattleman','Honest talk about genetics, management and marketing from people who live it. Let''s get to it!',true,'approved')
 ) v where not exists (select 1 from public.reviews);
+
+-- Refunds: clients can request a refund on paid orders. Scott marks it refunded in the admin.
+alter table public.bookings add column if not exists refund jsonb;
+alter table public.bookings drop constraint if exists bookings_status_check;
+alter table public.bookings add constraint bookings_status_check
+  check (status in ('pending','approved','paid','live','completed','refund_requested','refunded','declined','cancelled'));
+create or replace function public.request_refund(bid uuid, p_reason text)
+returns public.bookings language plpgsql security definer set search_path = public as $$
+declare r public.bookings;
+begin
+  update public.bookings set status = 'refund_requested', updated_at = now(),
+    refund = jsonb_build_object('reason', p_reason, 'requested_at', now(), 'amount', greatest(0, coalesce(amount,0) - 50))
+   where id = bid and client_id = auth.uid() and status in ('paid','live')
+   returning * into r;
+  if not found then raise exception 'This order can''t be refunded online. Contact Scott.'; end if;
+  return r;
+end $$;
+grant execute on function public.request_refund(uuid, text) to authenticated;

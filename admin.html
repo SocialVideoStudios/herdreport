@@ -80,7 +80,7 @@ function login(msg){
 }
 
 function shell(){
- const pend=all.filter(b=>b.status==='pending').length,gnew=guests.filter(g=>g.status==='new').length,mnew=msgs.filter(m=>m.status==='new').length,rnew=revs.filter(r=>r.status==='pending').length;
+ const pend=all.filter(b=>['pending','refund_requested'].includes(b.status)).length,gnew=guests.filter(g=>g.status==='new').length,mnew=msgs.filter(m=>m.status==='new').length,rnew=revs.filter(r=>r.status==='pending').length;
  app.innerHTML=`<div class="top2"><div><p class="kick">Admin dashboard</p><h1 style="font-size:clamp(36px,5vw,64px)">Sponsors &amp; ads</h1></div>
   <div class="btns"><a class="btn" href="advertise.html">View Advertise page</a><button class="btn" id="out">Sign out</button></div></div>
   <div class="tabs" role="tablist">${TABS.map(([k,n])=>`<button role="tab" data-t="${k}">${n}${k==='bookings'&&pend?`<span class="n">${pend}</span>`:''}${k==='guests'&&gnew?`<span class="n">${gnew}</span>`:''}${k==='messages'&&mnew?`<span class="n">${mnew}</span>`:''}${k==='reviews'&&rnew?`<span class="n">${rnew}</span>`:''}</button>`).join('')}</div>
@@ -111,17 +111,22 @@ function overview(){
  const sumOf=s=>all.filter(b=>s.includes(b.status)).reduce((t,b)=>t+(Number(b.amount)||0),0);
  const next4=upcoming(4,st.releaseDay??1);
  const liveSpots=all.filter(b=>TAKEN.includes(b.status)).reduce((t,b)=>t+b.episode_dates.filter(d=>next4.includes(d)).length,0);
- const pend=all.filter(b=>b.status==='pending');
+ const pend=all.filter(b=>b.status==='pending'),refs=all.filter(b=>b.status==='refund_requested');
  pane.innerHTML=`<div class="stats">
-  <div class="card stat ${pend.length?'hot':''}"><div class="l">Waiting for review</div><div class="v">${pend.length}</div></div>
+  <div class="card stat ${pend.length+refs.length?'hot':''}"><div class="l">Waiting for review</div><div class="v">${pend.length+refs.length}</div></div>
   <div class="card stat"><div class="l">Approved, awaiting payment</div><div class="v">${money(sumOf(['approved']))}</div></div>
   <div class="card stat"><div class="l">Paid and booked</div><div class="v">${money(sumOf(['paid','live','completed']))}</div></div>
   <div class="card stat"><div class="l">Ad spots in the next 4 episodes</div><div class="v">${liveSpots}</div></div>
   <div class="card stat"><div class="l">New guest applications</div><div class="v">${guests.filter(g=>g.status==='new').length}</div></div></div>
  <div class="sh" style="margin-bottom:16px"><h2 style="font-size:32px">Needs your review</h2></div>
  <div class="rev">${pend.length?pend.map(b=>`<div class="card rv"><div><b>${esc(co(b))}</b> · ${esc(title(b))} · ${money(b.amount)}<div class="meta">${esc(detail(b))}</div>${b.notes?`<div class="meta">“${esc(b.notes)}”</div>`:''}</div>
-   <div class="acts"><button class="btn sm solid" data-ap="${esc(b.id)}">Approve</button><button class="btn sm" data-de="${esc(b.id)}">Decline</button><button class="btn sm" data-ed="${esc(b.id)}">Details</button></div></div>`).join(''):'<p class="empty">Nothing waiting. New requests will show up here.</p>'}</div>`;
+   <div class="acts"><button class="btn sm solid" data-ap="${esc(b.id)}">Approve</button><button class="btn sm" data-de="${esc(b.id)}">Decline</button><button class="btn sm" data-ed="${esc(b.id)}">Details</button></div></div>`).join(''):'<p class="empty">Nothing waiting. New requests will show up here.</p>'}</div>
+ ${refs.length?`<div class="sh" style="margin:28px 0 16px"><h2 style="font-size:32px">Refund requests</h2></div><div class="rev">${refs.map(b=>`<div class="card rv"><div><b>${esc(co(b))}</b> · ${esc(title(b))} · paid ${money(b.amount)}
+   <div class="meta">Refund ${money(b.refund?.amount??Math.max(0,(b.amount||0)-HR.REFUND_FEE))} (after the ${money(HR.REFUND_FEE)} fee)${b.refund?.requested_at?' · asked '+fmtDate(String(b.refund.requested_at).slice(0,10)):''}</div>${b.refund?.reason?`<div class="meta">“${esc(b.refund.reason)}”</div>`:''}</div>
+   <div class="acts"><button class="btn sm solid" data-rfd="${esc(b.id)}">Mark refunded</button><button class="btn sm" data-rfn="${esc(b.id)}">Deny, keep booking</button></div></div>`).join('')}</div>`:''}`;
  wire(pane);
+ pane.querySelectorAll('[data-rfd]').forEach(b=>b.onclick=()=>setStatus(b.dataset.rfd,'refunded'));
+ pane.querySelectorAll('[data-rfn]').forEach(b=>b.onclick=()=>setStatus(b.dataset.rfn,'paid'));
 }
 function wire(el){
  el.querySelectorAll('[data-ap]').forEach(b=>b.onclick=()=>{const bk=all.find(x=>x.id===b.dataset.ap);if(bk.amount==null)return edit(bk.id,'approved');setStatus(bk.id,'approved')});

@@ -12,8 +12,9 @@ const iso=d=>d.toISOString().slice(0,10);
 const SLOTS=['pre','mid1','mid2','mid3','post'];
 const PLACE={pre:'Pre-roll',mid1:'Mid-roll 1',mid2:'Mid-roll 2',mid3:'Mid-roll 3',post:'Post-roll'};
 const SLOT_INFO={pre:'Opens the episode, before the conversation starts.',mid1:'First break in the conversation.',mid2:'Second break, in the heart of the episode.',mid3:'Third break, later in the episode.',post:'Closes the episode as listeners wrap up.'};
-const STATUS={pending:'Pending review',approved:'Quote ready, awaiting payment',paid:'Paid',live:'Live',completed:'Completed',declined:'Declined',cancelled:'Cancelled'};
-const TAKEN=['approved','paid','live'];
+const STATUS={pending:'Pending review',approved:'Quote ready, awaiting payment',paid:'Paid',live:'Live',completed:'Completed',refund_requested:'Refund requested',refunded:'Refunded',declined:'Declined',cancelled:'Cancelled'};
+const REFUND_FEE=50;
+const TAKEN=['approved','paid','live','refund_requested'];
 
 const DEF_SETTINGS={rates:{pre:500,mid1:350,mid2:350,mid3:350,post:250},capacity:{pre:1,mid1:1,mid2:1,mid3:1,post:1},annualDiscount:10,weeksAhead:16,releaseDay:1,
  stats:{downloads:'',views:'',followers:''},contactEmail:''};
@@ -39,7 +40,7 @@ function upcoming(n,day){const out=[];const d=new Date();d.setHours(12,0,0,0);d.
  while(d.getDay()!==day)d.setDate(d.getDate()+1);for(let i=0;i<n;i++){out.push(iso(d));d.setDate(d.getDate()+7)}return out}
 
 /* ---------- demo backend (browser storage) ---------- */
-const K='hr-ads-demo-v3';let mem=null;
+const K='hr-ads-demo-v4';let mem=null;
 function seed(){const w=upcoming(6,1);const now=new Date().toISOString();
  return{session:null,settings:DEF_SETTINGS,packages:DEF_PACKAGES,guests:[],messages:[],
  users:[{id:'u-admin',email:'admin@herdreport.com',pw:'herdadmin2026',role:'admin',company:'Herd Report',contact_name:'Scott Beck',phone:'',created_at:now},
@@ -48,6 +49,8 @@ function seed(){const w=upcoming(6,1);const now=new Date().toISOString();
  bookings:[
   {id:'b1',client_id:'u-prairie',package_id:'ads',kind:'ad',placement:'mid1',episode_dates:[w[0],w[1]],amount:700,status:'paid',notes:'Fall mineral program, 60-second read.',creative_url:'',admin_note:'',created_at:now},
   {id:'b2',client_id:'u-bigsky',package_id:'spotlight',kind:'spotlight',placement:null,episode_dates:[],sale_date:w[5],location:'Billings, MT',amount:null,status:'pending',notes:'Bull sale preview, 80 head.',creative_url:'',admin_note:'',created_at:now},
+  {id:'b4',client_id:'u-prairie',package_id:'store',kind:'store',placement:null,episode_dates:[],amount:70,status:'paid',notes:'2 × Black Signature Hat\nShip to: 12 Main St, Hays, KS',creative_url:'',admin_note:'',created_at:now},
+  {id:'b5',client_id:'u-prairie',package_id:'ads',kind:'ad',placement:'post',episode_dates:[w[3]],amount:250,status:'approved',notes:'',creative_url:'',admin_note:'Quote ready. Pay to lock it in.',created_at:now},
   {id:'b3',client_id:'u-bigsky',package_id:'ads',kind:'ad',placement:'pre',episode_dates:[w[2]],amount:500,status:'approved',notes:'Sale reminder.',creative_url:'',admin_note:'Invoice sent.',created_at:now}]}}
 function db(){if(mem)return mem;try{const d=JSON.parse(localStorage.getItem(K));if(d&&d.users){mem=d;if(!d.reviews){d.reviews=seedReviews();put()}return d}}catch(e){}mem=seed();mem.reviews=seedReviews();put();return mem}
 function put(){try{localStorage.setItem(K,JSON.stringify(mem))}catch(e){}}
@@ -93,6 +96,8 @@ const Demo={
  async updateMyBooking(id,patch){const d=db();const b=d.bookings.find(b=>b.id===id&&b.client_id===d.session);if(!b)return fail('Booking not found.');
   if(!EDITABLE.includes(b.status))return fail('This order can no longer be changed.');b.notes=patch.notes??b.notes;b.assets=patch.assets??b.assets;
   try{localStorage.setItem(K,JSON.stringify(mem))}catch(e){return fail('Storage is full. Remove a file and try again.')}return wait(structuredClone(b))},
+ async requestRefund(id,reason){const d=db();const b=d.bookings.find(b=>b.id===id&&b.client_id===d.session);if(!b||!['paid','live'].includes(b.status))return fail('This order can\'t be refunded online. Contact Scott.');
+  b.status='refund_requested';b.refund={reason:reason||'',requested_at:new Date().toISOString(),amount:Math.max(0,Number(b.amount||0)-REFUND_FEE)};put();return wait(structuredClone(b))},
  async changePassword(pw){const d=db();const u=d.users.find(u=>u.id===d.session);u.pw=pw;put();return wait()},
  async payBooking(id){const d=db();const b=d.bookings.find(b=>b.id===id&&b.client_id===d.session);if(!b)return fail('Booking not found.');b.status='paid';put();return wait(b)},
  async cancelBooking(id){const d=db();const b=d.bookings.find(b=>b.id===id&&b.client_id===d.session);if(!b||b.status!=='pending')return fail('Only pending requests can be cancelled.');b.status='cancelled';put();return wait(b)},
@@ -136,6 +141,7 @@ const Live={
   const path=`${me.id}/${Date.now()}-${file.name.replace(/[^\w.-]+/g,'-')}`;ok(await sb.storage.from('creative').upload(path,file,{contentType:file.type}));
   return{name:file.name,type:file.type,size:file.size,url:sb.storage.from('creative').getPublicUrl(path).data.publicUrl}},
  async updateMyBooking(id,patch){return ok(await sb.rpc('update_booking_creative',{bid:id,p_notes:patch.notes??null,p_assets:patch.assets??null}))},
+ async requestRefund(id,reason){return ok(await sb.rpc('request_refund',{bid:id,p_reason:reason||''}))},
  async changePassword(pw){ok(await sb.auth.updateUser({password:pw}))},
  async payBooking(){throw new Error('Card payment opens here once Stripe is connected.')},
  async usage(){const r=ok(await sb.rpc('slot_usage'));const m={};(r||[]).forEach(x=>{m[x.episode_date+'|'+x.placement]=Number(x.n)});return m},
@@ -171,5 +177,5 @@ function chrome(active){
   if(u.role==='admin'){b.textContent='Admin';b.href='admin.html'}else b.textContent='My account'}).catch(()=>{});
 }
 
-window.HR={API,LIVE,EDITABLE,esc,money,fmtDate,shortDate,upcoming,SLOTS,PLACE,SLOT_INFO,STATUS,TAKEN,DEF_SETTINGS,DEF_PACKAGES,chrome};
+window.HR={API,LIVE,EDITABLE,REFUND_FEE,esc,money,fmtDate,shortDate,upcoming,SLOTS,PLACE,SLOT_INFO,STATUS,TAKEN,DEF_SETTINGS,DEF_PACKAGES,chrome};
 })();

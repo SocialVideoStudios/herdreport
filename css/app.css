@@ -71,6 +71,7 @@ input:focus,select:focus,textarea:focus{outline:3px solid color-mix(in srgb,var(
 /* status pills */
 .pill{display:inline-block;border-radius:999px;padding:3px 11px;font-size:13px;font-weight:600;white-space:nowrap;border:1.5px solid currentColor}
 .st-pending{color:var(--warn)}.st-approved{color:var(--red2)}.st-paid,.st-live{color:var(--ok)}
+.st-refund_requested{color:var(--warn)}.st-refunded{color:var(--soft)}
 .st-completed{color:var(--soft)}.st-declined,.st-cancelled{color:var(--soft);text-decoration:line-through}
 
 /* tabs */

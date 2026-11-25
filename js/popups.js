@@ -36,8 +36,16 @@ function inject(){
 .hrp-plat p{grid-column:1/-1;margin:0;font-size:14px;color:var(--soft,#5a5450)}
 .hrp-plat a{font-size:13px}
 .hrp-done{text-align:center;padding:20px 0}
+.hrp-slide{overflow:hidden;margin:0 -2px;padding:0 2px;transition:height .35s cubic-bezier(.4,0,.2,1)}
+.hrp-track{display:flex;align-items:flex-start;width:200%;transition:transform .35s cubic-bezier(.4,0,.2,1)}
+.hrp-track>section{width:50%;flex:none;padding:2px}
+.hrp-track.new{transform:translateX(-50%)}
+.hrp-or{display:flex;align-items:center;gap:12px;color:var(--soft,#5a5450);font-size:14px;margin:18px 0}
+.hrp-or::before,.hrp-or::after{content:"";flex:1;height:1px;background:rgb(11 11 13/.15)}
+.hrp-btn.wide{width:100%}
+.hrp-back{background:none;border:0;padding:0;margin:0 0 10px;font:600 14px "IBM Plex Sans",sans-serif;color:var(--red,#85272C);cursor:pointer}
 @media(max-width:480px){.hrp-2,.hrp-plat{grid-template-columns:1fr}}
-@media (prefers-reduced-motion:reduce){.hrp-wrap.open{animation:none}}`;
+@media (prefers-reduced-motion:reduce){.hrp-wrap.open{animation:none}.hrp-track{transition:none}}`;
  document.head.appendChild(css);
  document.body.insertAdjacentHTML('beforeend','<div class="hrp-wrap" id="hrpop" role="dialog" aria-modal="true" aria-labelledby="hrpT"><div class="hrp" id="hrpBox"></div></div>');
  $('hrpop').addEventListener('click',e=>{if(e.target.id==='hrpop')close()});
@@ -93,14 +101,60 @@ function review(){
   catch(x){er.textContent=x.message;b.disabled=false;b.textContent='Submit review'}};
 }
 
+function login(startNew){
+ show(`<div class="hrp-slide"><div class="hrp-track${startNew?' new':''}" id="hpTrack">
+  <section aria-label="Sign in" id="hpIn">
+   <p class="k">Client login</p><h2 id="hrpT">Welcome back</h2><p class="sub">Sign in to track your bookings and orders.</p>
+   <form id="hpSI" novalidate>
+    <div class="hrp-f"><label for="hpE1">Email</label><input id="hpE1" type="email" autocomplete="email"></div>
+    <div class="hrp-f"><label for="hpP1">Password</label><input id="hpP1" type="password" autocomplete="current-password"></div>
+    <p class="hrp-err" id="hpErr1"></p><button class="hrp-btn solid" type="submit" id="hpGo1">Sign in</button>
+   </form>
+   <div class="hrp-or">Not a client yet?</div>
+   <button class="hrp-btn wide" type="button" id="hpToNew">Create an account</button>
+  </section>
+  <section aria-label="Create an account" id="hpNew">
+   <button class="hrp-back" type="button" id="hpToIn">← Back to sign in</button>
+   <p class="k">New client</p><h2>Create your account</h2><p class="sub">Book ad spots, order hats and track everything in one place.</p>
+   <form id="hpSU" novalidate>
+    <div class="hrp-f"><label for="hpC2">Ranch or company</label><input id="hpC2" autocomplete="organization"></div>
+    <div class="hrp-2"><div class="hrp-f"><label for="hpN2">Your name</label><input id="hpN2" autocomplete="name"></div><div class="hrp-f"><label for="hpPh2">Phone</label><input id="hpPh2" type="tel" autocomplete="tel"></div></div>
+    <div class="hrp-f"><label for="hpE2">Email</label><input id="hpE2" type="email" autocomplete="email"></div>
+    <div class="hrp-f"><label for="hpP2">Password</label><input id="hpP2" type="password" autocomplete="new-password" placeholder="At least 8 characters"></div>
+    <p class="hrp-err" id="hpErr2"></p><button class="hrp-btn solid" type="submit" id="hpGo2">Create account</button>
+   </form>
+  </section></div></div>`);
+ const tr=$('hpTrack'),inS=$('hpIn'),nwS=$('hpNew');
+ const sl=tr.parentElement,fit=()=>{sl.style.height=(tr.classList.contains('new')?nwS:inS).offsetHeight+4+'px'};
+ const sideTo=n=>{tr.classList.toggle('new',n);inS.inert=n;nwS.inert=!n;fit();setTimeout(()=>(n?$('hpC2'):$('hpE1')).focus({preventScroll:true}),360)};
+ inS.inert=!!startNew;nwS.inert=!startNew;fit();new ResizeObserver(fit).observe(tr);
+ $('hpToNew').onclick=()=>sideTo(true);$('hpToIn').onclick=()=>sideTo(false);
+ const done=u=>{location.href=u&&u.role==='admin'?'admin.html':'account.html'};
+ $('hpSI').onsubmit=async e=>{e.preventDefault();const er=$('hpErr1'),b=$('hpGo1');er.textContent='';
+  if(!$('hpE1').value.trim()||!$('hpP1').value){er.textContent='Enter your email and password.';return}
+  b.disabled=true;b.textContent='Signing in…';
+  try{done(await HR.API.signIn($('hpE1').value,$('hpP1').value))}catch(x){er.textContent=x.message;b.disabled=false;b.textContent='Sign in'}};
+ $('hpSU').onsubmit=async e=>{e.preventDefault();const v=id=>$(id).value.trim(),er=$('hpErr2'),b=$('hpGo2');er.textContent='';
+  if(!v('hpC2')||!v('hpN2')||!v('hpE2')){er.textContent='Add your company, name and email.';return}
+  if(!/^\S+@\S+\.\S+$/.test(v('hpE2'))){er.textContent="That email address doesn't look right.";return}
+  if($('hpP2').value.length<8){er.textContent='Use a password with at least 8 characters.';return}
+  b.disabled=true;b.textContent='Creating account…';
+  try{const r=await HR.API.signUp({company:v('hpC2'),contact_name:v('hpN2'),phone:v('hpPh2'),email:v('hpE2'),password:$('hpP2').value});
+   if(r.confirm){$('hrpBox').innerHTML=okMsg('Almost there','Check your email');$('hrpBox').querySelector('.sub').textContent='Confirm your email address, then sign in.';$('hrpDone').onclick=close;return}
+   done(r.user)}catch(x){er.textContent=x.message;b.disabled=false;b.textContent='Create account'}};
+}
+
 document.addEventListener('click',e=>{
  if(e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||!window.HR)return;
  const el=e.target.closest('[data-pop],a[href]');if(!el)return;
- const pop=el.dataset.pop||(/(^|\/)contact\.html(\?|$)/.test(el.getAttribute('href')||'')?'contact':/reviews\/new/.test(el.getAttribute('href')||'')?'review':'');
+ const href=el.getAttribute('href')||'';
+ const pop=el.dataset.pop||(/(^|\/)contact\.html(\?|$)/.test(href)?'contact':/reviews\/new/.test(href)?'review':/(^|\/)account\.html(\?|#|$)/.test(href)?'login':'');
  if(!pop)return;
  if(document.body.dataset.page==='contact'&&pop==='contact')return;
+ if(pop==='login'&&document.body.dataset.page==='account')return;
  e.preventDefault();last=el;
+ if(pop==='login'){HR.API.current().then(u=>{if(u)location.href=u.role==='admin'?'admin.html':href;else login(el.dataset.new==='1')}).catch(()=>login());return}
  if(pop==='review')review();else contact(new URL(el.href||location.href,location.href).searchParams.get('topic'));
 });
-window.HRPop={contact,review};
+window.HRPop={contact,review,login};
 })();

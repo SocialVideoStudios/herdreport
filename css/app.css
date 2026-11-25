@@ -1,9 +1,9 @@
 /* Shared styles for Advertise, client portal and admin. Matches index.html. */
 :root{color-scheme:light;
---bg:light-dark(#F3EFE7,#141012);--ink:light-dark(#0B0B0D,#F3EFE7);--red:#85272C;--red2:light-dark(#85272C,#C4505A);
---card:light-dark(#FFFFFF,#1E181A);--line:light-dark(#0B0B0D,#F3EFE7);--soft:light-dark(#5a5450,#bdb4ab);--cream:#F3EFE7;
---hair:light-dark(rgb(11 11 13/.14),rgb(243 239 231/.16));--ok:light-dark(#2f6b3a,#7cc48a);--warn:light-dark(#8a5a00,#e3b357)}
-:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+--bg:#F3EFE7;--ink:#0B0B0D;--red:#85272C;--red2:#85272C;
+--card:#FFFFFF;--line:#0B0B0D;--soft:#5a5450;--cream:#F3EFE7;
+--hair:rgb(11 11 13/.14);--ok:#2f6b3a;--warn:#8a5a00}
+
 *{box-sizing:border-box;min-width:0}
 html{scroll-behavior:smooth;scroll-padding-top:80px}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "IBM Plex Sans",system-ui,sans-serif;overflow-x:clip}
@@ -44,14 +44,14 @@ header.top .wrap{display:flex;align-items:center;gap:14px;padding:10px max(5vw,1
 .nav{display:flex;gap:4px 18px;flex-wrap:wrap;font-weight:600;font-size:15px}
 .nav a{text-decoration:none;padding:8px 0}.nav a:hover,.nav a.on{color:var(--red2)}
 .dk{display:none}
-@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .lt{display:none}:root:not([data-theme=light]) .dk{display:block}}
-:root[data-theme=dark] .lt{display:none}:root[data-theme=dark] .dk{display:block}
+
+
 footer.foot{background:var(--ink);color:var(--bg)}
 footer.foot .wrap{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center;justify-content:space-between;padding:26px max(5vw,16px)}
 footer.foot nav{display:flex;flex-wrap:wrap;gap:4px 20px;font-size:15px}
 footer.foot a{text-decoration:none;padding:6px 0}footer.foot a:hover{text-decoration:underline}
 footer.foot small{opacity:.7}
-.demo{background:light-dark(#fff3cd,#3a3015);color:light-dark(#5a4500,#f1dc9a);font-size:14px;text-align:center;padding:8px 16px}
+.demo{background:#fff3cd;color:#5a4500;font-size:14px;text-align:center;padding:8px 16px}
 .demo b{font-weight:600}
 @media(max-width:720px){.nav{display:none}.logo b{font-size:17px}}
 
@@ -65,7 +65,7 @@ textarea{min-height:96px;resize:vertical}
 input:focus,select:focus,textarea:focus{outline:3px solid color-mix(in srgb,var(--red2) 45%,transparent);outline-offset:1px}
 .hint{font-size:13px;color:var(--soft);margin-top:6px}
 .row2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:0 16px}
-.err{color:light-dark(#a3141c,#ff8a90);font-size:14px;margin:8px 0 0;min-height:1em}
+.err{color:#a3141c;font-size:14px;margin:8px 0 0;min-height:1em}
 .okmsg{color:var(--ok);font-size:14px;margin:8px 0 0}
 
 /* status pills */

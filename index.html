@@ -14,9 +14,9 @@
    COLOUR and TYPE: Herd Report red, ink, cream; Archivo 900 shouting, IBM Plex Sans talking
    LAYOUT: utility bar, header, hero, merch, host, episodes, closing links, footer (New Heights order) */
 :root{color-scheme:light;
---bg:light-dark(#F3EFE7,#141012);--ink:light-dark(#0B0B0D,#F3EFE7);--red:#85272C;--red2:light-dark(#85272C,#B8414A);
---card:light-dark(#FFFFFF,#1E181A);--line:light-dark(#0B0B0D,#F3EFE7);--soft:light-dark(#5a5450,#bdb4ab);--cream:#F3EFE7}
-:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+--bg:#F3EFE7;--ink:#0B0B0D;--red:#85272C;--red2:#85272C;
+--card:#FFFFFF;--line:#0B0B0D;--soft:#5a5450;--cream:#F3EFE7}
+
 *{box-sizing:border-box;min-width:0}
 html{scroll-behavior:smooth;scroll-padding-top:72px}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "IBM Plex Sans",system-ui,sans-serif;overflow-x:clip}
@@ -42,8 +42,8 @@ header .wrap{display:flex;align-items:center;gap:16px;padding:10px max(5vw,16px)
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none;margin-right:auto}
 .logo img{height:40px;width:auto;flex:none}
 .dk{display:none}
-@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .lt{display:none}:root:not([data-theme=light]) .dk{display:block}}
-:root[data-theme=dark] .lt{display:none}:root[data-theme=dark] .dk{display:block}
+
+
 .flogo img{height:64px;width:auto}
 .logo b{font:900 22px/1 Archivo,sans-serif;text-transform:uppercase;letter-spacing:-.01em}
 .socials{display:flex;gap:4px}
@@ -140,7 +140,7 @@ nav.menu.open{opacity:1;visibility:visible;transform:none;transition:opacity .2s
 /* shop */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:20px}
 .item{background:var(--card);border:2px solid var(--line);border-radius:22px;overflow:hidden;display:flex;flex-direction:column}
-.item .ph{aspect-ratio:5/4;display:grid;place-items:center;background:light-dark(#E9E3D8,#2a2325);border-bottom:2px solid var(--line);position:relative}
+.item .ph{aspect-ratio:5/4;display:grid;place-items:center;background:#E9E3D8;border-bottom:2px solid var(--line);position:relative}
 .item .ph img{width:100%;height:100%;object-fit:contain;background:#fff}
 .item .ph svg{width:82%}
 .item .so{position:absolute;top:12px;left:12px;background:var(--ink);color:var(--bg);border-radius:999px;padding:4px 12px;font-size:13px;font-weight:600}
@@ -165,7 +165,7 @@ body.cart-open .scrim{opacity:1;pointer-events:auto}body.cart-open .drawer{trans
 .x{width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:none;color:inherit;font-size:22px;cursor:pointer}
 .lines{flex:1;overflow:auto;padding:8px 20px}
 .line{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 20%,transparent)}
-.line .th{width:64px;height:52px;border-radius:10px;background:light-dark(#E9E3D8,#2a2325);display:grid;place-items:center;overflow:hidden}
+.line .th{width:64px;height:52px;border-radius:10px;background:#E9E3D8;display:grid;place-items:center;overflow:hidden}
 .line .th svg,.line .th img{width:100%;height:100%;object-fit:cover}
 .line strong{display:block;font-size:15px}.line span{font-size:14px;color:var(--soft)}
 .qty{display:flex;align-items:center;gap:2px}

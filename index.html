@@ -75,6 +75,9 @@ nav.menu a:hover{color:var(--red2)}
 .latest small{display:block;font-size:13px;opacity:.75}
 .latest strong{font:700 17px/1.25 Archivo,sans-serif}
 .latest .t{flex:1 1 260px}
+.latest .lthumb{flex:none;width:clamp(180px,26vw,300px);border-color:var(--bg)}
+.latest .lthumb .pb{width:52px;height:52px;margin:-26px 0 0 -26px}
+@media(max-width:600px){.latest .lthumb{width:100%}}
 
 /* marquee */
 .marquee{background:var(--red);color:var(--cream);overflow:hidden;white-space:nowrap;border-bottom:2px solid var(--line)}
@@ -299,7 +302,10 @@ footer small{opacity:.7}
  </div>
  <div class="wrap">
   <div class="latest">
-   <a class="play" href="https://www.herdreportpodcast.com/107-years-of-angus-genetics-spring-cove-ranch-with-art-butler-josh-mavencamp/" aria-label="Play the latest episode"><svg viewBox="0 0 24 24"><use href="#i-play"/></svg></a>
+   <a class="thumb vid lthumb" href="https://www.youtube.com/watch?v=a0lLocyi3Tk" data-yt="a0lLocyi3Tk" aria-label="Play the latest episode">
+    <span class="ph"><img src="logo-light.png" alt=""></span>
+    <img class="yt" src="https://i.ytimg.com/vi/a0lLocyi3Tk/hqdefault.jpg" alt="">
+    <span class="pb" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-play"/></svg></span></a>
    <div class="t"><small>Latest episode · Nov 16, 2026</small><strong>107 Years of Angus Genetics | Spring Cove Ranch with Art Butler &amp; Josh Mavencamp</strong></div>
    <a class="btn solid" href="https://www.youtube.com/watch?v=a0lLocyi3Tk"><svg><use href="#i-yt"/></svg>Watch</a>
    <a class="btn" style="border-color:var(--bg)" href="#episodes">All episodes</a>
@@ -518,7 +524,7 @@ document.querySelectorAll('.vid').forEach(a=>{const im=a.querySelector('img.yt')
  a.addEventListener('click',e=>{if(!a.classList.contains('ok')||location.protocol==='file:')return;e.preventDefault();
   const f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(a.dataset.yt)+'?autoplay=1&rel=0';
   f.title='Herd Report video';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;
-  const d=document.createElement('div');d.className='thumb';d.appendChild(f);a.replaceWith(d);});});
+  const d=document.createElement('div');d.className=a.classList.contains('lthumb')?'thumb lthumb':'thumb';d.appendChild(f);a.replaceWith(d);});});
 const btn=document.getElementById('menubtn'),menu=document.getElementById('menu');
 btn.addEventListener('click',()=>{const o=menu.classList.toggle('open');btn.setAttribute('aria-expanded',o);btn.textContent=o?'Close':'Menu'});
 menu.addEventListener('click',e=>{if(e.target.closest('a')){menu.classList.remove('open');btn.setAttribute('aria-expanded','false');btn.textContent='Menu'}});

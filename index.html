@@ -423,6 +423,12 @@ html,body{overflow-x:clip}.v2-after{position:relative;z-index:1;background:var(-
 #eps .ep[data-rv]{transform:translateY(60px) rotate(1.5deg)}#eps .ep[data-rv].in{transform:none}
 #eps .ep .thumb img,#eps .ep img{transition:transform 1.4s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--d,0s) + .1s)}
 #eps .ep[data-rv]:not(.in) img{transform:scale(1.15)}
+@media(max-width:760px){
+ .v2bar,.aud.sell::before{display:none}
+ .hero{position:relative;min-height:0}.hero::after{opacity:0}
+ .hero .bg,.hero .wrap,.hero .stamp,.host .portrait img,#episodes .sh h2,#eps .ep img{transform:none!important;opacity:1!important;transition:none!important}
+ [data-rv],[data-rv].in,.rc-row[data-rv]{opacity:1!important;transform:none!important;transition:none!important}
+}
 /* host photo parallax */
 .host .portrait{overflow:hidden}
 .host .portrait img{transform:translateY(calc(var(--hp,0)*-40px)) scale(1.12);will-change:transform}
@@ -826,7 +832,7 @@ addEventListener('DOMContentLoaded',()=>{
  document.querySelectorAll('#eps .ep').forEach((el,i)=>{el.dataset.rv='';el.style.setProperty('--d',(i%3)*.12+'s')});
  document.querySelectorAll('.rc-row').forEach((el,i)=>{el.dataset.rv='right';el.style.setProperty('--d',(0.15+i*.09)+'s')});
  // count up the proof numbers once
- const cu=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;cu.unobserve(e.target);const el=e.target,txt=el.textContent,m=txt.match(/[\d.]+/);if(!m||reduce)return;
+ const cu=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;cu.unobserve(e.target);const el=e.target,txt=el.textContent,m=txt.match(/[\d.]+/);if(!m||reduce||innerWidth<=760)return;
   const end=parseFloat(m[0]),dec=(m[0].split('.')[1]||'').length,t0=performance.now(),dur=1400;
   const step=t=>{const k=Math.min(1,(t-t0)/dur),v=end*(1-Math.pow(1-k,3));el.textContent=txt.replace(m[0],v.toFixed(dec));if(k<1)requestAnimationFrame(step);else el.textContent=txt};requestAnimationFrame(step)}),{threshold:.6});
  setTimeout(()=>document.querySelectorAll('.proof b').forEach(b=>cu.observe(b)),400);

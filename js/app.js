@@ -126,7 +126,7 @@ function chrome(active){
   <a class="btn sm ${active==='account'?'solid':''}" href="account.html" id="acctbtn">Client login</a>
  </div></header>`;
  if(f)f.innerHTML=`<footer class="foot"><div class="wrap">
-  <nav aria-label="Footer"><a href="index.html">Home</a><a href="index.html#episodes">Episodes</a><a href="advertise.html">Advertise</a><a href="guest.html">Be a guest</a><a href="account.html">Client login</a><a href="#review" data-pop="review">Leave a review</a><a href="contact.html">Contact</a></nav>
+  <nav aria-label="Footer"><a href="index.html">Home</a><a href="index.html#episodes">Episodes</a><a href="advertise.html">Advertise</a><a href="guest.html">Be a guest</a><a href="account.html">Client login</a><a href="#review" data-pop="review">Leave a review</a><a href="blog.html">Blog</a><a href="guests.html">Past guests</a><a href="contact.html">Contact</a><a href="admin.html">Admin login</a></nav>
   <small>© ${new Date().getFullYear()} Herd Report Podcast</small></div></footer>`;
  API.current().then(u=>{const b=document.getElementById('acctbtn');if(!b||!u)return;
   if(u.role==='admin'){b.textContent='Admin';b.href='admin.html'}else b.textContent='My account'}).catch(()=>{});

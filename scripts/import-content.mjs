@@ -95,8 +95,8 @@ async function guests() {
     try {
       const d = parse(await get(h));
       const slug = h.split('/')[2];
-      const body = d.querySelector('.content-body') || d.querySelector('.post-content-body');
-      const bioHtml = body ? clean(body).replace(/^<p>\s*1 \/ 1\s*/, '<p>') : '';
+      const body = d.querySelector('.bio') || d.querySelector('.content-body');
+      const bioHtml = body ? clean(body).replace(/<p>\s*\d+ \/ \d+\s*<\/p>/g, '').replace(/([a-z])\.([A-Z][a-z])/g, '$1. $2').replace(/\s{2,}/g, ' ').trim() : '';
       const eps = [...new Set(d.querySelectorAll('a').map(a => (a.getAttribute('href') || '').replace(BASE, ''))
         .filter(x => /^\/[a-z0-9-]+\/$/.test(x) && !/^\/(guests|blog|episodes|contact|about|follow|reviews|search)\//.test(x)))];
       const episodes = [];

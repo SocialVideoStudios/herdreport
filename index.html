@@ -313,17 +313,16 @@ body.cart-open .scrim{opacity:1;pointer-events:auto}body.cart-open .drawer{trans
 .revs .sh{display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap;margin-bottom:28px}
 .revs .avg{display:flex;align-items:center;gap:12px;font:900 18px Archivo,sans-serif;text-transform:uppercase}
 .revs .avg .rst{color:var(--red2);letter-spacing:2px;font-size:22px}
-.rtick{overflow:hidden;max-width:1240px;margin:0 auto}
-.rtrack{display:flex;gap:18px;width:max-content;animation:rtick 48s linear infinite}
-.rtick:hover .rtrack,.rtick:focus-within .rtrack{animation-play-state:paused}
-@keyframes rtick{to{transform:translateX(calc(-50% - 9px))}}
+.rtick{overflow-x:auto;overflow-y:hidden;max-width:1240px;margin:0 auto;scrollbar-width:none;cursor:grab;overscroll-behavior-x:contain}.rtick::-webkit-scrollbar{display:none}.rtick.drag{cursor:grabbing;user-select:none}
+.rtrack{display:flex;gap:18px;width:max-content}
+.rnav{display:flex;justify-content:center;gap:12px;margin-top:20px}
 .rvc{width:clamp(270px,30vw,360px);flex:none;background:var(--card);border:2px solid var(--line);border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:12px;margin:0}
 .rvc .rst{color:var(--red2);letter-spacing:2px;font-size:18px}
 .rvc blockquote{margin:0;font-size:17px;line-height:1.5;flex:1}
 .rvc figcaption{font-size:14px;color:var(--soft)}.rvc figcaption b{display:block;color:var(--ink);font:900 15px Archivo,sans-serif;text-transform:uppercase}
 .rvc .tag{display:inline-block;margin-left:6px;font:700 11px Archivo,sans-serif;text-transform:uppercase;border:1.5px solid currentColor;border-radius:999px;padding:1px 7px;vertical-align:middle}
-@media (prefers-reduced-motion:reduce){.rtrack{animation:none}.rtick{overflow-x:auto}}
-@media(max-width:600px){.rtrack{animation-duration:36s}.rvc{width:78vw;padding:18px}.rvc blockquote{font-size:16px}}
+
+@media(max-width:600px){.rvc{width:78vw;padding:18px}.rvc blockquote{font-size:16px}}
 /* closing */
 .closing{border-top:0;padding:0 max(5vw,16px)}
 .big{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:2px solid var(--line);max-width:1240px;margin:0 auto}
@@ -595,7 +594,8 @@ html,body{overflow-x:clip}.v2-after{position:relative;z-index:1;background:var(-
   <div class="sh"><div><p class="kick">Listener reviews</p><h2>Straight from the herd</h2></div>
    <div class="btns" style="align-items:center"><span class="avg"><span class="rst" id="ravgS"></span><span id="ravg"></span></span><a class="btn" href="#review" data-pop="review">Leave a review</a></div></div>
  </div>
- <div class="rtick" aria-label="Listener reviews"><div class="rtrack" id="rtrack"></div></div>
+ <div class="rtick" id="rtick" aria-label="Listener reviews"><div class="rtrack" id="rtrack"></div></div>
+ <div class="rnav"><button class="arw" id="revPrev" type="button" aria-label="Previous reviews"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><button class="arw" id="revNext" type="button" aria-label="More reviews"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button></div>
 </section>
 
 <section class="closing">
@@ -721,14 +721,14 @@ const onAdd=e=>{const b=e.target.closest('.add');if(!b||b.disabled||!window.Cart
 document.getElementById('grid').addEventListener('click',onAdd);
 document.getElementById('ticker').addEventListener('click',onAdd);
 /* hat ticker: auto-scrolls, stops when touched/hovered/dragged, scrolls either way, then resumes */
-{const tk=document.getElementById('ticker'),tr=document.getElementById('track');
+window.makeTicker=function(tk,tr,pv,nx,speed){speed=speed||0.035;
  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
  let hold=false,hover=false,idleUntil=0,pos=0,last=0;
  const half=()=>tr.scrollWidth/2;
  const wrap=()=>{const h=half();if(h<=0)return;if(tk.scrollLeft>=h)tk.scrollLeft-=h;else if(tk.scrollLeft<=0)tk.scrollLeft+=h};
  const pause=(ms=2500)=>{idleUntil=performance.now()+ms};
  function tick(t){const dt=last?Math.min(64,t-last):16;last=t;
-  if(!reduce&&!hold&&!hover&&t>idleUntil&&!document.hidden){pos=(pos||tk.scrollLeft)+dt*0.035;tk.scrollLeft=pos;wrap();pos=tk.scrollLeft}else pos=tk.scrollLeft;
+  if(!reduce&&!hold&&!hover&&t>idleUntil&&!document.hidden){pos=(pos||tk.scrollLeft)+dt*speed;tk.scrollLeft=pos;wrap();pos=tk.scrollLeft}else pos=tk.scrollLeft;
   requestAnimationFrame(tick)}
  requestAnimationFrame(tick);
  tk.addEventListener('scroll',()=>{if(hold||hover||performance.now()<idleUntil)wrap()},{passive:true});
@@ -740,9 +740,10 @@ document.getElementById('ticker').addEventListener('click',onAdd);
  addEventListener('pointermove',e=>{if(!down)return;const dx=e.clientX-sx;if(Math.abs(dx)>4){moved=true;tk.classList.add('drag')}tk.scrollLeft=sl-dx;wrap();if(tk.scrollLeft!==sl-dx){sl=tk.scrollLeft+dx}});
  addEventListener('pointerup',()=>{if(!down)return;down=false;hold=false;pause();setTimeout(()=>tk.classList.remove('drag'),0)});
  tk.addEventListener('click',e=>{if(moved){e.preventDefault();e.stopPropagation();moved=false}},true);
- const step=d=>{pause(5000);const w=(tr.firstElementChild?.offsetWidth||280)+20;if(d<0&&tk.scrollLeft<w)tk.scrollLeft+=half();tk.scrollBy({left:d*w,behavior:'smooth'})};
- document.getElementById('hatPrev').onclick=()=>step(-1);document.getElementById('hatNext').onclick=()=>step(1);
- requestAnimationFrame(()=>{tk.scrollLeft=1})}
+ const step=d=>{pause(5000);const w=(tr.firstElementChild?.offsetWidth||280)+parseFloat(getComputedStyle(tr).columnGap||20);if(d<0&&tk.scrollLeft<w)tk.scrollLeft+=half();tk.scrollBy({left:d*w,behavior:'smooth'})};
+ if(pv)pv.onclick=()=>step(-1);if(nx)nx.onclick=()=>step(1);
+ requestAnimationFrame(()=>{tk.scrollLeft=1})};
+makeTicker(document.getElementById('ticker'),document.getElementById('track'),document.getElementById('hatPrev'),document.getElementById('hatNext'));
 document.getElementById('cartbtn').addEventListener('click',()=>window.Cart&&Cart.open());
 const mainEl=document.querySelector('main'),storeEl=document.getElementById('store');
 const route=()=>{const st=location.hash==='#store';mainEl.hidden=st;storeEl.hidden=!st;
@@ -804,7 +805,7 @@ addEventListener('DOMContentLoaded',()=>{if(!window.HR)return;const {esc}=HR;
   const card=(r,dup)=>`<figure class="rvc"${dup?' aria-hidden="true"':''}><span class="rst" aria-label="${r.rating} out of 5 stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span>
    <blockquote>${esc(r.text)}</blockquote><figcaption>${r.sample?`<b>${esc(r.place||'Listener')}<span class="tag">Sample</span></b>`:`<b>${esc(r.name)}</b>${esc(r.place||'')}`}</figcaption></figure>`;
   let list=rs;while(list.length<6)list=list.concat(rs);
-  tr.innerHTML=list.map(r=>card(r)).join('')+list.map(r=>card(r,1)).join('');el.hidden=false}).catch(()=>{});
+  tr.innerHTML=list.map(r=>card(r)).join('')+list.map(r=>card(r,1)).join('');el.hidden=false;window.makeTicker&&makeTicker(document.getElementById('rtick'),tr,document.getElementById('revPrev'),document.getElementById('revNext'),0.03)}).catch(()=>{});
 });
 </script>
 <script>

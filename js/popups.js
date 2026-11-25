@@ -19,6 +19,12 @@ function inject(){
 .hrp-f input,.hrp-f textarea{width:100%;box-sizing:border-box;font:16px "IBM Plex Sans",sans-serif;color:inherit;background:var(--bg,#F3EFE7);border:2px solid var(--line,#0B0B0D);border-radius:12px;padding:10px 14px;min-height:46px}
 .hrp-f textarea{min-height:120px;resize:vertical}
 .hrp-2{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.hrp-opt{font:700 13px Archivo,sans-serif;text-transform:uppercase;color:var(--soft,#5a5450);border-top:2px solid rgb(11 11 13/.12);padding-top:14px;margin:6px 0 12px}
+.hrp-chips{display:flex;flex-wrap:wrap;gap:6px}.hrp-chips label{position:relative;margin:0;cursor:pointer}
+.hrp-chips input{position:absolute;opacity:0;width:1px;height:1px}
+.hrp-chips span{display:inline-flex;align-items:center;min-height:36px;padding:0 12px;border:2px solid var(--line,#0B0B0D);border-radius:999px;font-weight:600;font-size:14px}
+.hrp-chips input:checked+span{background:var(--red,#85272C);border-color:var(--red,#85272C);color:#F3EFE7}
+.hrp-chips input:focus-visible+span{outline:3px solid var(--red2,#85272C);outline-offset:2px}
 .hrp-chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
 .hrp-chips label{position:relative;display:inline-flex;align-items:center;border:2px solid var(--line,#0B0B0D);border-radius:999px;padding:6px 12px;font-weight:600;font-size:14px;cursor:pointer;min-height:40px}
 .hrp-chips input{position:absolute;inset:0;width:1px;height:1px;opacity:0;pointer-events:none}
@@ -108,6 +114,12 @@ function guest(){
   <div class="hrp-2"><div class="hrp-f"><label for="gE">Email</label><input id="gE" type="email" autocomplete="email"></div><div class="hrp-f"><label for="gP">Phone</label><input id="gP" type="tel" autocomplete="tel"></div></div>
   <div class="hrp-f"><label for="gL">Where are you located?</label><input id="gL" placeholder="Town, state"></div>
   <div class="hrp-f"><label for="gT">What would you like to talk about?</label><textarea id="gT" placeholder="Your cattle, your program, a sale coming up, your story."></textarea></div>
+  <p class="hrp-opt">Optional</p>
+  <div class="hrp-f"><span class="hrp-l" id="gBL">Breeds you raise</span><div class="hrp-chips" role="group" aria-labelledby="gBL" id="gB">${['Angus','Simmental','Charolais','Hereford','Gelbvieh','Limousin','Red Angus','Other'].map(b=>`<label><input type="checkbox" value="${b}"><span>${b}</span></label>`).join('')}</div></div>
+  <div class="hrp-f"><span class="hrp-l" id="gHL">Your operation</span><div class="hrp-chips" role="radiogroup" aria-labelledby="gHL" id="gH">${['Registered seedstock','Commercial','Both'].map(b=>`<label><input type="radio" name="gH" value="${b}"><span>${b}</span></label>`).join('')}</div></div>
+  <div class="hrp-2"><div class="hrp-f"><label for="gR">Your role</label><input id="gR" placeholder="Owner, manager, etc."></div><div class="hrp-f"><label for="gS">Upcoming sale date</label><input id="gS" type="date"></div></div>
+  <div class="hrp-2"><div class="hrp-f"><label for="gW">Website</label><input id="gW" type="url" placeholder="https://"></div><div class="hrp-f"><label for="gSo">Social handles</label><input id="gSo" placeholder="@yourranch"></div></div>
+  <div class="hrp-2"><div class="hrp-f"><label for="gPh">Link to a photo</label><input id="gPh" type="url" placeholder="https://"></div><div class="hrp-f"><label for="gHd">How did you hear about us?</label><input id="gHd"></div></div>
   <p class="hrp-err" id="gErr"></p><button class="hrp-btn solid" type="submit" id="gGo">Send</button>
  </form>`);
  $('hrpG').onsubmit=async e=>{e.preventDefault();const v=id=>$(id).value.trim(),er=$('gErr');er.textContent='';
@@ -115,7 +127,7 @@ function guest(){
   if(miss.length){er.textContent='Please add '+miss.map(m=>m[1]).join(', ')+'.';$(miss[0][0]).focus();return}
   if(!/^\S+@\S+\.\S+$/.test(v('gE'))){er.textContent="That email address doesn't look right.";return}
   const b=$('gGo');b.disabled=true;b.textContent='Sending…';
-  try{await HR.API.submitGuest({name:v('gN'),operation:v('gO'),email:v('gE'),phone:v('gP'),location:v('gL'),topics:v('gT'),breeds:[],herd_type:'',role:'',website:'',socials:'',sale_date:null,photo_url:'',heard_from:''});
+  try{await HR.API.submitGuest({name:v('gN'),operation:v('gO'),email:v('gE'),phone:v('gP'),location:v('gL'),topics:v('gT'),breeds:[...document.querySelectorAll('#gB input:checked')].map(i=>i.value),herd_type:(document.querySelector('#gH input:checked')||{}).value||'',role:v('gR'),website:v('gW'),socials:v('gSo'),sale_date:v('gS')||null,photo_url:v('gPh'),heard_from:v('gHd')});
    $('hrpBox').innerHTML=okMsg('Thanks!',`Got it, ${esc(v('gN').split(' ')[0])}`,"Scott will reach out if it's a fit. Let's get to it!!");$('hrpDone').onclick=close}
   catch(x){er.textContent=x.message;b.disabled=false;b.textContent='Send'}};
 }

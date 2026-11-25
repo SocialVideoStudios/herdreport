@@ -58,6 +58,44 @@
 .logo-box{aspect-ratio:1;border:2px solid var(--line);border-radius:18px;background:#fff;display:grid;place-items:center;overflow:hidden;margin-bottom:10px;color:#5a5450;font-size:14px}
 .logo-box img{width:100%;height:100%;object-fit:contain}
 @media(max-width:700px){.brand{grid-template-columns:minmax(0,1fr)}.brand .logo-box{max-width:160px}.hi .btns{width:100%}.todo .ti{flex-direction:column;align-items:flex-start}.ord{padding:18px}}
+
+body.adm{background:light-dark(#f5f4f1,#0f0d0e);font:14px/1.45 "IBM Plex Sans",system-ui,sans-serif}
+body.adm #hdr,body.adm #ftr{display:none}body.adm main.band{padding:0}body.adm main.band>.wrap{max-width:none}
+.adm h1,.adm h2,.adm h3{font-family:"IBM Plex Sans",system-ui,sans-serif;text-transform:none;letter-spacing:0;font-weight:600;line-height:1.25}
+.adm h1{font-size:22px}.adm h2,.adm h3{font-size:16px}
+.adm .card{background:var(--card);border:1px solid var(--hair);border-radius:10px;padding:16px}
+.adm .btn{min-height:32px;padding:0 12px;border-width:1px;border-radius:8px;font:600 13px "IBM Plex Sans",sans-serif;text-transform:none}
+.adm .btn.sm{min-height:28px;padding:0 9px;font-size:12.5px}
+.adm .btn.solid{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.adm input,.adm textarea{font-size:14px;border-width:1px;border-color:color-mix(in srgb,var(--ink) 25%,transparent);border-radius:8px;padding:7px 10px;min-height:36px;background:var(--card)}
+.adm label{font-size:13px}.adm .field{margin-bottom:12px}
+.adm .pill{font-size:12px;padding:1px 8px;border-width:1px;white-space:nowrap}
+.adm table{font-size:13.5px;width:100%;border-collapse:collapse}.adm th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--soft);font-weight:600;text-align:left;padding:7px 8px;border-bottom:1px solid var(--hair)}
+.adm td{padding:8px;border-bottom:1px solid var(--hair);vertical-align:top}.adm tr:last-child td{border-bottom:0}.adm td.acts{white-space:nowrap;text-align:right}.adm td.acts .btn+.btn{margin-left:6px}
+.adm .num{text-align:right}
+.atop{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;padding:10px 20px;background:var(--ink);color:var(--bg)}
+.atop img{height:26px}.atop b{font-weight:600;font-size:15px;margin-right:auto}
+.atop a,.atop button{color:var(--bg);background:none;border:1px solid rgb(243 239 231/.3);border-radius:8px;padding:5px 10px;font:500 13px "IBM Plex Sans",sans-serif;text-decoration:none;cursor:pointer}
+.amain{max-width:1240px;margin:0 auto;padding:20px 24px 40px}
+.ah{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}.ah .soft{display:block}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.kpi{background:var(--card);border:1px solid var(--hair);border-radius:10px;padding:10px 12px}
+.kpi .v{font-size:22px;font-weight:600;line-height:1.2}.kpi .l{font-size:12px;color:var(--soft)}
+.kpi.hot{border-color:var(--red);box-shadow:inset 3px 0 0 var(--red)}.kpi.hot .v{color:var(--red2)}
+.wgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:start}
+.wd{padding:14px 16px;min-width:0}.wd.wide{grid-column:span 2}
+.wd h2{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:8px}.wd h2 .soft{font-weight:400;font-size:12.5px;text-align:right}
+.wr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;align-items:center;padding:8px 0;border-top:1px solid var(--hair)}
+.wr .w{min-width:0}.wr .w b{font-weight:600}.sub{color:var(--soft);font-size:12.5px}
+.wr .r{font-weight:600;white-space:nowrap;display:flex;gap:6px;align-items:center}.wr .a{grid-column:1/-1;display:flex;gap:6px;flex-wrap:wrap}
+.done{color:var(--soft);padding:8px 0;margin:0}
+.lg{width:40px;height:40px;border-radius:8px;border:1px solid var(--hair);background:#fff;display:grid;place-items:center;overflow:hidden;font-size:10px;color:#5a5450;flex:none}.lg img{width:100%;height:100%;object-fit:contain}
+.help{color:var(--soft);font-size:13px;margin-top:16px}
+.adm .modal{position:fixed;inset:0;background:rgb(0 0 0/.5);display:none;place-items:center;z-index:50;padding:16px}.adm .modal.open{display:grid}
+.adm .modal .card{width:min(620px,100%);max-height:90vh;overflow:auto}
+.adm .brand{grid-template-columns:150px minmax(0,1fr);gap:18px}
+@media(max-width:1100px){.wgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.wgrid{grid-template-columns:minmax(0,1fr)}.wd.wide{grid-column:auto}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.amain{padding:16px 14px 32px}.atop b{font-size:14px}.hide-m{display:none}.adt thead{display:none}.adt tr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;padding:8px 0;border-top:1px solid var(--hair)}.adt td{border:0!important;padding:0!important}.adt td:nth-child(2){grid-column:1/-1;grid-row:2;color:var(--soft);font-size:12.5px}.adt td:nth-child(3){grid-column:2;grid-row:1;font-weight:600}.adt td:nth-child(4){grid-column:2;grid-row:2;justify-self:end}.adt td.acts{grid-column:1/-1;text-align:left;margin-top:6px}.adm .brand{grid-template-columns:minmax(0,1fr)}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="js/config.js"></script>
@@ -105,98 +143,95 @@ function authView(msg){
  $('gIn').onclick=()=>HRPop.login(false);$('gNew').onclick=()=>HRPop.login(true);
  HRPop.login(qs.get('new')==='1');
 }
-/* ---------- dashboard (one simple page) ---------- */
-const STEP={
- pending:['⏳','Waiting for Scott to approve your order.'],
- approved:['✅','Approved! Pay to lock in your spot.'],
- paid:['✅','Approved and paid. You\'re on the schedule.'],
- live:['🎙','On air now.'],
- completed:['🏁','All done. Thanks for advertising!'],
- refund_requested:['↩','Refund requested.'],
- refunded:['💵','Refunded.'],
- declined:['✕','Scott wasn\'t able to take this one.'],
- cancelled:['✕','Cancelled.']};
-const HATSTEP={paid:['📦','Paid. Getting your order ready to ship.'],completed:['🚚','Shipped.']};
+/* ---------- dashboard: simple widgets, admin-style ---------- */
+const PST={pending:'Quote requested',approved:'Quote ready',paid:'Paid',live:'Paid · on air',completed:'Paid · done',refund_requested:'Refund requested',refunded:'Refunded',declined:'Declined',cancelled:'Cancelled'};
+const HPST={paid:'Paid · preparing to ship',completed:'Paid · shipped'};
+const lab=b=>(b.kind==='store'&&HPST[b.status])||PST[b.status]||STATUS[b.status]||b.status;
+const PAID=['paid','live','completed'];
 const canRefund=b=>['paid','live'].includes(b.status)&&(b.kind==='store'||!(b.episode_dates||[]).length||(b.episode_dates||[]).some(d=>d>=today));
-function statusLine(b){const [ic,t]=(b.kind==='store'&&HATSTEP[b.status])||STEP[b.status]||['•',STATUS[b.status]||b.status];let extra='';
- if(b.status==='refund_requested'&&b.refund)extra=` You'll get ${money(b.refund.amount)} back (${money(b.amount)} minus the ${money(HR.REFUND_FEE)} fee). Scott will confirm soon.`;
- if(b.status==='refunded')extra=` ${money(b.refund?.amount??Math.max(0,b.amount-HR.REFUND_FEE))} was sent back to your card.`;
- return `<p class="stl st-${esc(b.status)}"><span aria-hidden="true">${ic}</span> ${esc(t+extra)}</p>`}
-function dates(b){const ds=b.episode_dates||[];if(!ds.length)return'';const next=ds.find(d=>d>=today);
- return `<div class="dates"><span class="dl">${b.kind==='presenting'?'Starts':'Airs on'}</span>${ds.map(d=>`<span class="dt ${d<today?'past':d===next?'next':''}">${shortDate(d)}${d<today?' · aired':d===next&&live(b)?' · next':''}</span>`).join('')}</div>`}
-function orderCard(b){const hat=b.kind==='store',lines=String(b.notes||'').split('\n');
- return `<article class="ord" data-id="${esc(b.id)}">
-  <div class="oh"><div><h3>${esc(title(b))}</h3><p class="soft">${hat?esc(lines.filter(l=>!l.startsWith('Ship to')).join(', ')):esc(b.kind==='ad'?PLACE[b.placement]+' · read by Scott':detail(b))}</p></div><b class="pr">${money(b.amount)}</b></div>
-  ${statusLine(b)}${hat?'':dates(b)}
-  ${b.admin_note?`<p class="scott"><b>From Scott:</b> ${esc(b.admin_note)}</p>`:''}
-  <div class="oa">
-   ${b.status==='approved'?`<button class="btn sm solid" data-pay>Pay ${money(b.amount)}</button>`:''}
-   ${!hat&&EDITABLE.includes(b.status)?`<button class="btn sm" data-ed aria-expanded="false">${needsCreative(b)?'Add your ad details':'Edit ad details'}</button>`:''}
-   ${b.status==='pending'?`<button class="btn sm" data-cancel>Cancel order</button>`:''}
-   ${canRefund(b)?`<button class="lnk" data-rf>Request a refund</button>`:''}
-  </div>
-  <div class="panel" data-panel hidden></div>
- </article>`}
-async function home(){
- list=await API.myBookings();
- const ads=list.filter(isAd),hats=list.filter(b=>b.kind==='store');
- const todo=[...ads.filter(b=>b.status==='approved').map(b=>[b,`Pay for your ${title(b)}`,'Pay now','pay']),...ads.filter(needsCreative).map(b=>[b,`Tell Scott what to say in your ${title(b)}`,'Add details','ed'])];
- app.innerHTML=`<div class="hi"><div><p class="kick">My dashboard</p><h1>Hi, ${esc((me.contact_name||'').split(' ')[0]||'there')}</h1><p class="soft">${esc(me.company||'')}</p></div>
-  <div class="btns"><a class="btn solid" href="advertise.html#shop">Book ads</a><a class="btn" href="index.html#store">Shop hats</a><button class="btn" id="out">Sign out</button></div></div>
- ${todo.length?`<div class="todo"><h2>To do</h2>${todo.map(([b,t,l,k])=>`<div class="ti"><span>${esc(t)}</span><button class="btn sm" data-jump="${esc(b.id)}" data-k="${k}">${l}</button></div>`).join('')}</div>`:''}
- <section class="blk"><h2>My ads</h2>${ads.length?ads.map(orderCard).join(''):`<div class="none"><p>No ads yet.</p><a class="btn sm solid" href="advertise.html#shop">Book an ad</a></div>`}</section>
- <section class="blk"><h2>My merch</h2>${hats.length?hats.map(orderCard).join(''):`<div class="none"><p>No hat orders yet.</p><a class="btn sm" href="index.html#store">Shop hats</a></div>`}</section>
- <section class="blk"><h2>My info</h2>
-  <details class="more" id="dBrand"><summary>Logo and ad info <span class="soft">${me.brand?.logo?'Logo uploaded':'Add your logo once, Scott uses it for every ad'}</span></summary><div id="brandPane"></div></details>
-  <details class="more" id="dAcct"><summary>Contact details and password</summary><div id="acctPane"></div></details>
- </section>
- <p class="help">Questions? <a href="contact.html">Contact Scott</a>. Refunds are the order total minus a ${money(HR.REFUND_FEE)} fee.</p>`;
- $('out').onclick=async()=>{await API.signOut();me=null;HR.chrome('account');authView()};
- brandView();accountView();
- app.querySelectorAll('[data-jump]').forEach(x=>x.onclick=()=>{const c=app.querySelector(`.ord[data-id="${x.dataset.jump}"]`);c.scrollIntoView({behavior:'smooth',block:'center'});
-  if(x.dataset.k==='ed')openEdit(c);else c.querySelector('[data-pay]')?.focus()});
- app.querySelectorAll('.ord').forEach(wire);
-}
-function wire(card){
- const b=list.find(x=>x.id===card.dataset.id),panel=card.querySelector('[data-panel]');
- card.querySelector('[data-pay]')?.addEventListener('click',async e=>{e.target.disabled=true;e.target.textContent='Paying…';try{await API.payBooking(b.id);home()}catch(x){e.target.disabled=false;e.target.textContent='Pay '+money(b.amount);panelMsg(card,x.message)}});
- card.querySelector('[data-cancel]')?.addEventListener('click',()=>{panel.hidden=false;panel.innerHTML=`<p><b>Cancel this order?</b> Nothing has been charged yet.</p><div class="btns"><button class="btn sm solid" data-yes>Yes, cancel it</button><button class="btn sm" data-no>Keep it</button></div><p class="err"></p>`;
-  panel.querySelector('[data-no]').onclick=()=>{panel.hidden=true};panel.querySelector('[data-yes]').onclick=async()=>{try{await API.cancelBooking(b.id);home()}catch(x){panel.querySelector('.err').textContent=x.message}}});
- card.querySelector('[data-rf]')?.addEventListener('click',()=>{const back=Math.max(0,Number(b.amount||0)-HR.REFUND_FEE);panel.hidden=false;
-  panel.innerHTML=`<p><b>Request a refund</b><br>You'll get <b>${money(back)}</b> back (${money(b.amount)} minus the ${money(HR.REFUND_FEE)} fee).${b.kind==='store'?'':' Your spots will be released.'}</p>
-   <div class="field"><label for="rr-${esc(b.id)}">Reason (optional)</label><textarea id="rr-${esc(b.id)}" rows="2" placeholder="Let Scott know why"></textarea></div>
-   <div class="btns"><button class="btn sm solid" data-yes>Request refund</button><button class="btn sm" data-no>Never mind</button></div><p class="err"></p>`;
-  panel.querySelector('[data-no]').onclick=()=>{panel.hidden=true};
-  panel.querySelector('[data-yes]').onclick=async e=>{e.target.disabled=true;try{await API.requestRefund(b.id,panel.querySelector('textarea').value.trim());home()}catch(x){e.target.disabled=false;panel.querySelector('.err').textContent=x.message}}});
- card.querySelector('[data-ed]')?.addEventListener('click',()=>openEdit(card));
-}
-function panelMsg(card,t){const p=card.querySelector('[data-panel]');p.hidden=false;p.innerHTML=`<p class="err">${esc(t)}</p>`}
-function openEdit(card){
- const b=list.find(x=>x.id===card.dataset.id),panel=card.querySelector('[data-panel]'),btn=card.querySelector('[data-ed]');
- if(!panel.hidden&&panel.dataset.mode==='ed'){panel.hidden=true;btn.setAttribute('aria-expanded','false');return}
- panel.dataset.mode='ed';panel.hidden=false;btn?.setAttribute('aria-expanded','true');
- const draw=()=>{const fs=b.assets||[];
-  panel.innerHTML=`<div class="field"><label for="tp-${esc(b.id)}">What should Scott say?</label><textarea id="tp-${esc(b.id)}" rows="4" placeholder="Products, sale dates, offers, your website or phone number.">${esc(b.notes||'')}</textarea>
-   ${me.brand?.points&&!b.notes?`<button type="button" class="lnk" data-fill>Use my saved talking points</button>`:''}</div>
-   <p style="font-weight:600;margin:0 0 8px">Files <span class="soft" style="font-weight:400;font-size:14px">(optional: logo, script, images)</span></p>
-   ${fs.length?`<div class="files">${fs.map((f,i)=>fileChip(f,i,'data-rmf')).join('')}</div>`:''}
-   ${dropZone('dz-'+b.id,'Add a file','image/*,.pdf,.doc,.docx,.txt,.mp3,.wav,.m4a')}
-   <div class="btns" style="margin-top:14px"><button class="btn sm solid" data-save>Save</button><button class="btn sm" data-close>Close</button></div><p class="err" data-msg></p>`;
-  const msg=panel.querySelector('[data-msg]'),say=(t,ok)=>{msg.textContent=t;msg.className=ok?'okmsg':'err'};
-  const save=async patch=>{try{Object.assign(b,await API.updateMyBooking(b.id,patch));return true}catch(x){say(x.message);return false}};
-  panel.querySelector('[data-fill]')?.addEventListener('click',e=>{panel.querySelector('textarea').value=me.brand.points;e.target.remove()});
-  panel.querySelector('[data-close]').onclick=()=>{panel.hidden=true;btn?.setAttribute('aria-expanded','false')};
-  panel.querySelector('[data-save]').onclick=async()=>{if(await save({notes:panel.querySelector('textarea').value.trim()})){say('Saved. Scott can see it now.',true);setTimeout(home,900)}};
-  panel.querySelectorAll('[data-rmf]').forEach(x=>x.onclick=async()=>{const a=[...(b.assets||[])];a.splice(+x.dataset.rmf,1);if(await save({assets:a}))draw()});
-  wireDrop(panel.querySelector('.drop'),async files=>{say('Uploading…',true);const a=[...(b.assets||[])];
-   for(const f of files){try{a.push(await API.uploadFile(f))}catch(x){say(x.message);return}}
-   if(await save({assets:a,notes:panel.querySelector('textarea').value.trim()}))draw()});
- };draw();
-}
+const pill=b=>`<span class="pill st-${esc(b.status)}">${esc(lab(b))}</span>`;
 function detail(b){
+ if(b.kind==='ad')return (b.episode_dates||[]).map(shortDate).join(', ');
  if(b.kind==='presenting')return 'Pre-roll on 52 episodes';
  if(b.kind==='spotlight')return `Sale ${fmtDate(b.sale_date)}${b.location?' · '+b.location:''}`;
+ if(b.kind==='store')return String(b.notes||'').split('\n').filter(l=>!l.startsWith('Ship to')).join(', ');
  return b.sale_date?`Event ${fmtDate(b.sale_date)}`:'Merch partnership';
+}
+const modal=()=>$('cmodal'),mbody=()=>$('cmbody');
+function openModal(html){mbody().innerHTML=html;modal().classList.add('open');mbody().querySelector('input,textarea,button')?.focus()}
+function closeModal(){modal().classList.remove('open')}
+async function home(){
+ list=await API.myBookings();document.body.classList.add('adm');
+ const ads=list.filter(b=>isAd(b)&&!['pending','approved'].includes(b.status)),hats=list.filter(b=>b.kind==='store');
+ const quotes=list.filter(b=>isAd(b)&&['pending','approved'].includes(b.status));
+ const refunds=list.filter(b=>['refund_requested','refunded'].includes(b.status));
+ const airs=ads.filter(b=>['paid','live'].includes(b.status)).flatMap(b=>(b.episode_dates||[]).filter(d=>d>=today).map(d=>({d,b}))).sort((x,y)=>x.d.localeCompare(y.d));
+ const paid=list.filter(b=>PAID.includes(b.status)).reduce((t,b)=>t+Number(b.amount||0),0);
+ const missing=ads.filter(b=>['paid','live'].includes(b.status)&&!String(b.notes||'').trim());
+ const W=(t,sub,body,cls='')=>`<section class="card wd ${cls}"><h2><span>${t}</span><span class="soft">${sub}</span></h2>${body}</section>`;
+ const row=(l,r,act='')=>`<div class="wr"><div class="w">${l}</div><div class="r">${r}</div>${act?`<div class="a">${act}</div>`:''}</div>`;
+ const none=t=>`<p class="done">${t}</p>`,sub=t=>`<div class="sub">${t}</div>`;
+ const br=me.brand||{};
+ app.innerHTML=`<div class="atop"><img src="mark-light.png" alt=""><b><span class="hide-m">Herd Report · </span>My dashboard</b><a href="index.html">View site</a><button id="out">Sign out</button></div>
+ <main class="amain">
+  <div class="ah"><div><h1>Hi, ${esc((me.contact_name||'').split(' ')[0]||'there')}</h1><span class="soft">${esc(me.company||'')}</span></div>
+   <div class="btns"><a class="btn solid" href="advertise.html#shop">Book ads</a><a class="btn" href="index.html#store">Shop hats</a></div></div>
+  <div class="kpis">
+   <div class="kpi"><div class="v">${airs.length}</div><div class="l">Upcoming airings</div></div>
+   <div class="kpi"><div class="v">${airs[0]?shortDate(airs[0].d):'—'}</div><div class="l">Next air date</div></div>
+   <div class="kpi"><div class="v">${money(paid)}</div><div class="l">Paid</div></div>
+   <div class="kpi ${missing.length?'hot':''}"><div class="v">${missing.length}</div><div class="l">Ads missing talking points</div></div></div>
+  <div class="wgrid">
+   ${W('Coming up','Your next airings',airs.length?airs.slice(0,6).map(a=>row(`<b>${fmtDate(a.d)}</b>${sub(esc(PLACE[a.b.placement]||title(a.b)))}`,`<span class="pill st-paid">Paid</span>`)).join(''):none('Nothing scheduled. <a href="advertise.html#shop">Book an ad</a>.'))}
+   ${W('My ads',`${ads.length} paid`,ads.length?`<div class="scroll"><table class="adt"><thead><tr><th>Ad</th><th>Air dates</th><th class="num">Paid</th><th>Status</th><th></th></tr></thead><tbody>${ads.map(b=>`<tr>
+     <td><b>${esc(title(b))}</b>${!String(b.notes||'').trim()&&EDITABLE.includes(b.status)?sub('<span style="color:var(--warn)">Add talking points</span>'):''}</td><td>${esc(detail(b))}</td><td class="num">${money(b.amount)}</td><td>${pill(b)}</td>
+     <td class="acts">${EDITABLE.includes(b.status)?`<button class="btn sm" data-ed="${esc(b.id)}">Ad details</button>`:''}${canRefund(b)?`<button class="btn sm" data-rf="${esc(b.id)}">Refund</button>`:''}</td></tr>`).join('')}</tbody></table></div>`:none('No ads yet.'),'wide')}
+   ${W('My merch',`${hats.length} order${hats.length===1?'':'s'}`,hats.length?hats.map(b=>row(`<b>${esc(detail(b))}</b>${sub('Ordered '+shortDate(String(b.created_at).slice(0,10))+' · '+money(b.amount))}`,pill(b),canRefund(b)?`<button class="btn sm" data-rf="${esc(b.id)}">Refund</button>`:'')).join(''):none('No hat orders. <a href="index.html#store">Shop hats</a>.'))}
+   ${W('Custom quotes','Sponsorships Scott prices for you',quotes.length?quotes.map(b=>row(`<b>${esc(title(b))}</b>${sub(esc(detail(b)))}${b.admin_note?sub('Scott: '+esc(b.admin_note)):''}`,b.status==='approved'?money(b.amount):pill(b),
+     b.status==='approved'?`<button class="btn sm solid" data-pay="${esc(b.id)}">Pay ${money(b.amount)}</button>`:`<button class="btn sm" data-cancel="${esc(b.id)}">Cancel request</button>`)).join(''):none('No quote requests.'))}
+   ${W('Refunds',`${money(HR.REFUND_FEE)} fee per refund`,refunds.length?refunds.map(b=>row(`<b>${esc(title(b))}</b>${sub(b.status==='refunded'?'Sent back to your card':'Scott will confirm soon')}`,`${money(b.refund?.amount??Math.max(0,(b.amount||0)-HR.REFUND_FEE))} ${pill(b)}`)).join(''):none('No refunds.'))}
+   ${W('My info',esc(me.email),`<div class="wr"><div class="w" style="display:flex;gap:10px;align-items:center"><span class="lg">${br.logo?`<img src="${esc(br.logo.url)}" alt="">`:'Logo'}</span><div><b>Logo and ad info</b>${sub(br.logo?'Logo uploaded':'Add your logo once, Scott uses it for every ad')}</div></div><div class="r"><button class="btn sm" id="eBrand">Edit</button></div></div>
+     ${row(`<b>${esc(me.contact_name||'')}</b>${sub(esc([me.company,me.phone].filter(Boolean).join(' · ')))}`,`<button class="btn sm" id="eAcct">Edit</button>`)}`)}
+  </div>
+  <p class="help">Questions? <a href="contact.html">Contact Scott</a>.</p>
+ </main>
+ <div class="modal" id="cmodal" role="dialog" aria-modal="true"><div class="card" id="cmbody"></div></div>`;
+ $('out').onclick=async()=>{await API.signOut();me=null;document.body.classList.remove('adm');HR.chrome('account');authView()};
+ $('cmodal').addEventListener('click',e=>{if(e.target.id==='cmodal')closeModal()});
+ $('eBrand').onclick=()=>{openModal('<h3 style="margin-bottom:12px">Logo and ad info</h3><div id="brandPane"></div><div class="btns" style="margin-top:8px"><button class="btn sm" data-x>Close</button></div>');brandView();mbody().querySelector('[data-x]').onclick=()=>{closeModal();home()}};
+ $('eAcct').onclick=()=>{openModal('<h3 style="margin-bottom:12px">Contact details and password</h3><div id="acctPane"></div><div class="btns" style="margin-top:8px"><button class="btn sm" data-x>Close</button></div>');accountView();mbody().querySelector('[data-x]').onclick=()=>{closeModal();home()}};
+ app.querySelectorAll('[data-ed]').forEach(x=>x.onclick=()=>editAd(list.find(b=>b.id===x.dataset.ed)));
+ app.querySelectorAll('[data-rf]').forEach(x=>x.onclick=()=>refund(list.find(b=>b.id===x.dataset.rf)));
+ app.querySelectorAll('[data-pay]').forEach(x=>x.onclick=async()=>{x.disabled=true;try{await API.payBooking(x.dataset.pay);home()}catch(e){x.disabled=false;alertMsg(e.message)}});
+ app.querySelectorAll('[data-cancel]').forEach(x=>x.onclick=()=>{const b=list.find(y=>y.id===x.dataset.cancel);
+  openModal(`<h3>Cancel this quote request?</h3><p class="soft">${esc(title(b))}. Nothing has been charged.</p><div class="btns"><button class="btn sm solid" data-yes>Yes, cancel</button><button class="btn sm" data-x>Keep it</button></div><p class="err"></p>`);
+  mbody().querySelector('[data-x]').onclick=closeModal;mbody().querySelector('[data-yes]').onclick=async()=>{try{await API.cancelBooking(b.id);closeModal();home()}catch(e){mbody().querySelector('.err').textContent=e.message}}});
+}
+function alertMsg(t){openModal(`<p class="err">${esc(t)}</p><button class="btn sm" data-x>Close</button>`);mbody().querySelector('[data-x]').onclick=closeModal}
+function refund(b){const back=Math.max(0,Number(b.amount||0)-HR.REFUND_FEE);
+ openModal(`<h3 style="margin-bottom:6px">Request a refund</h3><p>${esc(title(b))}: you'll get <b>${money(back)}</b> back (${money(b.amount)} minus the ${money(HR.REFUND_FEE)} fee).${b.kind==='store'?'':' Your spots will be released.'}</p>
+  <div class="field"><label for="rr">Reason (optional)</label><textarea id="rr" rows="2"></textarea></div>
+  <div class="btns"><button class="btn sm solid" data-yes>Request refund</button><button class="btn sm" data-x>Never mind</button></div><p class="err"></p>`);
+ mbody().querySelector('[data-x]').onclick=closeModal;
+ mbody().querySelector('[data-yes]').onclick=async e=>{e.target.disabled=true;try{await API.requestRefund(b.id,$('rr').value.trim());closeModal();home()}catch(x){e.target.disabled=false;mbody().querySelector('.err').textContent=x.message}};
+}
+function editAd(b){
+ const draw=()=>{const fs=b.assets||[];
+  openModal(`<h3 style="margin-bottom:4px">${esc(title(b))}</h3><p class="soft" style="margin-bottom:12px">${esc(detail(b))}</p>
+   <div class="field"><label for="tp">What should Scott say?</label><textarea id="tp" rows="4" placeholder="Products, sale dates, offers, your website or phone number.">${esc(b.notes||'')}</textarea>
+   ${me.brand?.points&&!b.notes?`<button type="button" class="lnk" data-fill>Use my saved talking points</button>`:''}</div>
+   <p style="font-weight:600;margin:0 0 6px">Files <span class="soft" style="font-weight:400">(optional)</span></p>
+   ${fs.length?`<div class="files">${fs.map((f,i)=>fileChip(f,i,'data-rmf')).join('')}</div>`:''}${dropZone('dz','Add a file','image/*,.pdf,.doc,.docx,.txt,.mp3,.wav,.m4a')}
+   <div class="btns" style="margin-top:12px"><button class="btn sm solid" data-save>Save</button><button class="btn sm" data-x>Close</button></div><p class="err" data-msg></p>`);
+  const msg=mbody().querySelector('[data-msg]'),say=(t,ok)=>{msg.textContent=t;msg.className=ok?'okmsg':'err'};
+  const save=async patch=>{try{Object.assign(b,await API.updateMyBooking(b.id,patch));return true}catch(x){say(x.message);return false}};
+  mbody().querySelector('[data-fill]')?.addEventListener('click',e=>{$('tp').value=me.brand.points;e.target.remove()});
+  mbody().querySelector('[data-x]').onclick=()=>{closeModal();home()};
+  mbody().querySelector('[data-save]').onclick=async()=>{if(await save({notes:$('tp').value.trim()})){closeModal();home()}};
+  mbody().querySelectorAll('[data-rmf]').forEach(x=>x.onclick=async()=>{const a=[...(b.assets||[])];a.splice(+x.dataset.rmf,1);if(await save({assets:a,notes:$('tp').value.trim()}))draw()});
+  wireDrop($('dz'),async files=>{say('Uploading…',true);const a=[...(b.assets||[])];for(const f of files){try{a.push(await API.uploadFile(f))}catch(x){say(x.message);return}}
+   if(await save({assets:a,notes:$('tp').value.trim()}))draw()});
+ };draw();
 }
 const fileChip=(f,i,rm)=>`<div class="file"><span class="th">${isImg(f)?`<img src="${esc(f.url)}" alt="">`:esc((f.name.split('.').pop()||'file').slice(0,4).toUpperCase())}</span>
  <span><a href="${esc(f.url)}" target="_blank" rel="noopener" download="${esc(f.name)}">${esc(f.name)}</a><br><span class="soft" style="font-size:12px">${f.size?size(f.size):''}</span></span>${rm?`<button type="button" ${rm}="${i}" aria-label="Remove ${esc(f.name)}">×</button>`:''}</div>`;
@@ -220,7 +255,7 @@ function brandView(){
    <button class="btn sm solid" type="submit">Save</button><p class="err" id="bmsg"></p></div></div></form>`;
  const say=(t,ok)=>{$('bmsg').textContent=t;$('bmsg').className=ok?'okmsg':'err'};
  const persist=async()=>{try{me=await API.saveBrand(br);return true}catch(x){say(x.message);return false}};
- const reopen=()=>{brandView();$('dBrand').open=true;$('dBrand').querySelector('summary .soft').textContent=me.brand?.logo?'Logo uploaded':'Add your logo once, Scott uses it for every ad'};
+ const reopen=()=>brandView();
  wireDrop($('dzl'),async files=>{const f=files[0];if(!f)return;say('Uploading…',true);try{br.logo=await API.uploadFile(f)}catch(x){say(x.message);return}if(await persist())reopen()});
  if($('rml'))$('rml').onclick=async()=>{delete br.logo;if(await persist())reopen()};
  $('bf').addEventListener('submit',async e=>{e.preventDefault();Object.assign(br,{website:$('bw').value.trim(),points:$('bp').value.trim(),notes:$('bn').value.trim()});if(await persist())say('Saved.',true)});

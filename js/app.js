@@ -40,7 +40,7 @@ function upcoming(n,day){const out=[];const d=new Date();d.setHours(12,0,0,0);d.
  while(d.getDay()!==day)d.setDate(d.getDate()+1);for(let i=0;i<n;i++){out.push(iso(d));d.setDate(d.getDate()+7)}return out}
 
 /* ---------- demo backend (browser storage) ---------- */
-const K='hr-ads-demo-v4';let mem=null;
+const K='hr-ads-demo-v5';let mem=null;
 function seed(){const w=upcoming(6,1);const now=new Date().toISOString();
  return{session:null,settings:DEF_SETTINGS,packages:DEF_PACKAGES,guests:[],messages:[],
  users:[{id:'u-admin',email:'admin@herdreport.com',pw:'herdadmin2026',role:'admin',company:'Herd Report',contact_name:'Scott Beck',phone:'',created_at:now},
@@ -50,8 +50,8 @@ function seed(){const w=upcoming(6,1);const now=new Date().toISOString();
   {id:'b1',client_id:'u-prairie',package_id:'ads',kind:'ad',placement:'mid1',episode_dates:[w[0],w[1]],amount:700,status:'paid',notes:'Fall mineral program, 60-second read.',creative_url:'',admin_note:'',created_at:now},
   {id:'b2',client_id:'u-bigsky',package_id:'spotlight',kind:'spotlight',placement:null,episode_dates:[],sale_date:w[5],location:'Billings, MT',amount:null,status:'pending',notes:'Bull sale preview, 80 head.',creative_url:'',admin_note:'',created_at:now},
   {id:'b4',client_id:'u-prairie',package_id:'store',kind:'store',placement:null,episode_dates:[],amount:70,status:'paid',notes:'2 × Black Signature Hat\nShip to: 12 Main St, Hays, KS',creative_url:'',admin_note:'',created_at:now},
-  {id:'b5',client_id:'u-prairie',package_id:'ads',kind:'ad',placement:'post',episode_dates:[w[3]],amount:250,status:'approved',notes:'',creative_url:'',admin_note:'Quote ready. Pay to lock it in.',created_at:now},
-  {id:'b3',client_id:'u-bigsky',package_id:'ads',kind:'ad',placement:'pre',episode_dates:[w[2]],amount:500,status:'approved',notes:'Sale reminder.',creative_url:'',admin_note:'Invoice sent.',created_at:now}]}}
+  {id:'b5',client_id:'u-prairie',package_id:'ads',kind:'ad',placement:'post',episode_dates:[w[3]],amount:250,status:'paid',notes:'',creative_url:'',admin_note:'',created_at:now},
+  {id:'b3',client_id:'u-bigsky',package_id:'ads',kind:'ad',placement:'pre',episode_dates:[w[2]],amount:500,status:'paid',notes:'Sale reminder.',creative_url:'',admin_note:'',created_at:now}]}}
 function db(){if(mem)return mem;try{const d=JSON.parse(localStorage.getItem(K));if(d&&d.users){mem=d;if(!d.reviews){d.reviews=seedReviews();put()}return d}}catch(e){}mem=seed();mem.reviews=seedReviews();put();return mem}
 function put(){try{localStorage.setItem(K,JSON.stringify(mem))}catch(e){}}
 const strip=u=>u&&({id:u.id,email:u.email,role:u.role,company:u.company,contact_name:u.contact_name,phone:u.phone,brand:structuredClone(u.brand||{}),created_at:u.created_at});

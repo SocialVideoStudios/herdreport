@@ -1,5 +1,5 @@
 /* Shared styles for Advertise, client portal and admin. Matches index.html. */
-:root{color-scheme:light dark;
+:root{color-scheme:light;
 --bg:light-dark(#F3EFE7,#141012);--ink:light-dark(#0B0B0D,#F3EFE7);--red:#85272C;--red2:light-dark(#85272C,#C4505A);
 --card:light-dark(#FFFFFF,#1E181A);--line:light-dark(#0B0B0D,#F3EFE7);--soft:light-dark(#5a5450,#bdb4ab);--cream:#F3EFE7;
 --hair:light-dark(rgb(11 11 13/.14),rgb(243 239 231/.16));--ok:light-dark(#2f6b3a,#7cc48a);--warn:light-dark(#8a5a00,#e3b357)}

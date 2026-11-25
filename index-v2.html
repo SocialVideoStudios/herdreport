@@ -419,12 +419,17 @@ html,body{overflow-x:clip}.v2-after{position:relative;z-index:1;background:var(-
 }
 .rc-row[data-rv]{transform:translateX(40px)}.rc-row[data-rv].in{transform:none}
 .proof b{font-variant-numeric:tabular-nums}
+/* episodes: heading glides in, cards deal in one after another, thumbnails settle */
+#episodes .sh h2{transform:translateX(calc((1 - var(--eh,1))*-120px));opacity:calc(.25 + var(--eh,1)*.75)}
+#eps .ep[data-rv]{transform:translateY(60px) rotate(1.5deg)}#eps .ep[data-rv].in{transform:none}
+#eps .ep .thumb img,#eps .ep img{transition:transform 1.4s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--d,0s) + .1s)}
+#eps .ep[data-rv]:not(.in) img{transform:scale(1.15)}
 /* host photo parallax */
 .host .portrait{overflow:hidden}
 .host .portrait img{transform:translateY(calc(var(--hp,0)*-40px)) scale(1.12);will-change:transform}
 /* closing: giant sign-off grows in */
 .signoff{transform:scale(calc(.7 + var(--cp,0)*.3));opacity:calc(.2 + var(--cp,0)*.8);transform-origin:50% 100%}
-@media (prefers-reduced-motion:reduce){.ratecard{transform:rotate(1.2deg)!important;box-shadow:12px 12px 0 #e9a9ad!important}.hero{position:relative}.hero .bg,.hero .wrap,.hero .stamp,.host .portrait img,.signoff{transform:none!important;opacity:1!important}[data-rv]{opacity:1;transform:none;transition:none}}
+@media (prefers-reduced-motion:reduce){#episodes .sh h2{transform:none!important;opacity:1!important}#eps .ep img{transform:none!important}.ratecard{transform:rotate(1.2deg)!important;box-shadow:12px 12px 0 #e9a9ad!important}.hero{position:relative}.hero .bg,.hero .wrap,.hero .stamp,.host .portrait img,.signoff{transform:none!important;opacity:1!important}[data-rv]{opacity:1;transform:none;transition:none}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" defer></script>
 <script src="js/config.js" defer></script>
@@ -814,11 +819,12 @@ addEventListener('DOMContentLoaded',()=>{
  const R=document.documentElement,hero=document.querySelector('.hero'),bar=document.getElementById('v2bar');
  // reveals
  const mark=(sel,type,stagger)=>document.querySelectorAll(sel).forEach((el,i)=>{el.dataset.rv=type||'';if(stagger)el.style.setProperty('--d',(i%6)*.08+'s')});
- mark('.sh h2, .sh .kick, .sh p','');mark('.aud .why li','left',1);mark('.nums .st','zoom',1);mark('.ticker','right');mark('.host .portrait','left');mark('.host .wrap > div:last-child','right');
+ mark('.sh h2, .sh .kick, .sh p','');document.querySelector('#episodes .sh h2')?.removeAttribute('data-rv');mark('.aud .why li','left',1);mark('.nums .st','zoom',1);mark('.ticker','right');mark('.host .portrait','left');mark('.host .wrap > div:last-child','right');
  mark('.revs .sh','');mark('.spitch .kick, .spitch h2, .spitch .lede','',1);mark('.proof > div','zoom',1);mark('.spitch .btns','');mark('.big a','',1);mark('#episodes .more, .shop .more','');
  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{rootMargin:'0px 0px -12% 0px'});
  const watch=()=>document.querySelectorAll('[data-rv]:not(.in)').forEach(el=>io.observe(el));watch();
- new MutationObserver(()=>{document.querySelectorAll('.rc-row:not([data-rv])').forEach((el,i)=>{el.dataset.rv='right';el.style.setProperty('--d',(0.15+i*.09)+'s')});watch()}).observe(document.body,{childList:true,subtree:true});
+ new MutationObserver(()=>{document.querySelectorAll('.rc-row:not([data-rv])').forEach((el,i)=>{el.dataset.rv='right';el.style.setProperty('--d',(0.15+i*.09)+'s')});document.querySelectorAll('#eps .ep:not([data-rv])').forEach((el,i)=>{el.dataset.rv='';el.style.setProperty('--d',(i%3)*.12+'s')});watch()}).observe(document.body,{childList:true,subtree:true});
+ document.querySelectorAll('#eps .ep').forEach((el,i)=>{el.dataset.rv='';el.style.setProperty('--d',(i%3)*.12+'s')});
  document.querySelectorAll('.rc-row').forEach((el,i)=>{el.dataset.rv='right';el.style.setProperty('--d',(0.15+i*.09)+'s')});
  // count up the proof numbers once
  const cu=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;cu.unobserve(e.target);const el=e.target,txt=el.textContent,m=txt.match(/[\d.]+/);if(!m||reduce)return;
@@ -830,6 +836,7 @@ addEventListener('DOMContentLoaded',()=>{
   const y=scrollY,vh=innerHeight;
   bar.style.transform=`scaleX(${clamp(y/(R.scrollHeight-vh))})`;
   if(!reduce){hero.style.setProperty('--p',clamp(y/(hero.offsetHeight||vh)).toFixed(3));
+   const eh=document.querySelector('#episodes .sh h2');if(eh){const r=eh.getBoundingClientRect();document.getElementById('episodes').style.setProperty('--eh',clamp((vh-r.top)/(vh*.55)).toFixed(3))}
    const ad=document.getElementById('advertise');if(ad){const r=ad.getBoundingClientRect();ad.style.setProperty('--ap',clamp((vh-r.top)/(vh*.75)).toFixed(3));ad.style.setProperty('--af',clamp(-r.top/Math.max(1,r.height)).toFixed(3))}
    const hp=document.querySelector('.host .portrait');if(hp){const r=hp.getBoundingClientRect();hp.style.setProperty('--hp',clamp((vh-r.top)/(vh+r.height)).toFixed(3))}
    const so=document.querySelector('.signoff');if(so){const r=so.getBoundingClientRect();so.style.setProperty('--cp',clamp((vh-r.top)/(vh*.6)).toFixed(3))}}

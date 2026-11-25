@@ -742,7 +742,7 @@ addEventListener('DOMContentLoaded',()=>{if(!window.HR)return;const {esc}=HR;
 addEventListener('DOMContentLoaded',()=>{if(!window.HR)return;HR.API.current().then(u=>{if(!u)return;
  const box=document.getElementById('acct'),lnk=document.getElementById('acctLink');box.hidden=false;
  if(u.role==='admin'){lnk.textContent='Admin';lnk.href='admin.html'}
- document.querySelectorAll('#menu a[href="account.html"]').forEach(a=>{a.textContent=u.role==='admin'?'Admin dashboard':'My dashboard';if(u.role==='admin')a.href='admin.html';
+ document.querySelectorAll('#menu a[href="account.html"]').forEach(a=>{if(u.role!=='admin')a.textContent='My dashboard';
   a.parentElement.insertAdjacentHTML('afterend','<li><a href="#" id="menuSignout">Sign out</a></li>')});
  const out=async e=>{e.preventDefault();await HR.API.signOut();location.reload()};
  document.getElementById('signout').onclick=out;document.getElementById('menuSignout')?.addEventListener('click',out);

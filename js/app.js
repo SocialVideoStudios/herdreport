@@ -174,7 +174,7 @@ function chrome(active){
   <nav aria-label="Footer"><a href="index.html">Home</a><a href="index.html#episodes">Episodes</a><a href="advertise.html">Advertise</a><a href="guest.html">Be a guest</a><a href="account.html">Client login</a><a href="#review" data-pop="review">Leave a review</a><a href="blog.html">Blog</a><a href="guests.html">Past guests</a><a href="contact.html">Contact</a><a href="admin.html">Admin login</a></nav>
   <small>© ${new Date().getFullYear()} Herd Report Podcast</small></div></footer>`;
  API.current().then(u=>{const b=document.getElementById('acctbtn');if(!b||!u)return;
-  if(u.role==='admin'){b.textContent='Admin';b.href='admin.html'}else b.textContent='My dashboard';
+  if(u.role!=='admin')b.textContent='My dashboard';
   const so=document.getElementById('soBtn');if(so){so.hidden=false;so.onclick=async()=>{await API.signOut();location.href='index.html'}}}).catch(()=>{});
 }
 

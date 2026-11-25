@@ -130,7 +130,7 @@ function login(startNew){
  const sideTo=n=>{tr.classList.toggle('new',n);inS.inert=n;nwS.inert=!n;fit();setTimeout(()=>(n?$('hpC2'):$('hpE1')).focus({preventScroll:true}),360)};
  inS.inert=!!startNew;nwS.inert=!startNew;fit();new ResizeObserver(fit).observe(tr);
  $('hpToNew').onclick=()=>sideTo(true);$('hpToIn').onclick=()=>sideTo(false);
- const done=u=>{const to=u&&u.role==='admin'?'admin.html':'account.html';if(document.body.dataset.page==='account'&&to==='account.html')location.reload();else location.href=to};
+ const done=()=>{if(document.body.dataset.page==='account')location.reload();else location.href='account.html'};
  $('hpSI').onsubmit=async e=>{e.preventDefault();const er=$('hpErr1'),b=$('hpGo1');er.textContent='';
   if(!$('hpE1').value.trim()||!$('hpP1').value){er.textContent='Enter your email and password.';return}
   b.disabled=true;b.textContent='Signing in…';
@@ -155,7 +155,7 @@ document.addEventListener('click',e=>{
  if(document.body.dataset.page==='contact'&&pop==='contact')return;
  if(pop==='login'&&document.body.dataset.page==='account')return;
  e.preventDefault();last=el;
- if(pop==='login'){HR.API.current().then(u=>{if(u)location.href=u.role==='admin'?'admin.html':href;else login(el.dataset.new==='1')}).catch(()=>login());return}
+ if(pop==='login'){HR.API.current().then(u=>{if(u)location.href='account.html';else login(el.dataset.new==='1')}).catch(()=>login());return}
  if(pop==='review')review();else contact(new URL(el.href||location.href,location.href).searchParams.get('topic'));
 });
 window.HRPop={contact,review,login};

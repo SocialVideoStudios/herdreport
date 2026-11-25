@@ -16,9 +16,8 @@
 .count b{display:block;font:900 clamp(38px,5vw,60px)/1 Archivo,sans-serif}
 .count span{font:700 13px Archivo,sans-serif;text-transform:uppercase;color:var(--soft)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
-.g{position:relative;border:2px solid var(--line);border-radius:22px;overflow:hidden;background:var(--ink);color:var(--cream);cursor:pointer;text-align:left;padding:0;font:inherit;aspect-ratio:4/5;display:block;width:100%}
+.g{position:relative;border:2px solid var(--line);border-radius:22px;overflow:hidden;background:var(--ink);color:var(--cream);text-align:left;padding:0;font:inherit;aspect-ratio:4/5;display:block;width:100%}
 .g img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
-.g:hover img,.g:focus-visible img{transform:scale(1.04)}
 .g .ph{position:absolute;inset:0;display:grid;place-items:center;font:900 72px Archivo,sans-serif;background:var(--red)}
 .g .cap{position:absolute;left:0;right:0;bottom:0;padding:60px 18px 18px;background:linear-gradient(transparent,rgb(11 11 13/.92))}
 .g .cap b{display:block;font:900 26px/1 Archivo,sans-serif;text-transform:uppercase}
@@ -54,7 +53,7 @@ dialog.gd::backdrop{background:rgb(11 11 13/.6)}
  <div class="wrap">
   <div class="ghero">
    <div><p class="kick">Past guests</p><h1>The people behind the herds</h1>
-   <p class="lede">Seedstock breeders, family operations and the cattle people shaping the industry. Tap a guest to read their story and hear their episode.</p></div>
+   <p class="lede">Seedstock breeders, family operations and the cattle people shaping the industry. Hear their stories on the show.</p></div>
    <div class="count"><div><b id="cg">–</b><span>Guests</span></div><div><b id="co">–</b><span>Operations</span></div></div>
   </div>
   <div class="grid" id="grid"></div>
@@ -74,11 +73,11 @@ const meta=g=>{let [name,op]=g.name.split(/\s+-\s+/);const o=OPS[g.slug]||[op||'
 const grid=document.getElementById('grid'),dlg=document.getElementById('gd');let list=[];
 fetch('data/guests.json').then(r=>r.json()).then(d=>{list=d;
  document.getElementById('cg').textContent=d.length;document.getElementById('co').textContent=new Set(d.map(g=>meta(g).op||g.slug)).size;
- grid.innerHTML=d.map((g,i)=>{const m=meta(g);return `<button class="g" data-i="${i}" aria-label="${esc(m.name)}${m.op?', '+esc(m.op):''}">
+ grid.innerHTML=d.map((g,i)=>{const m=meta(g);return `<div class="g">
   ${g.photo?`<img src="${esc(g.photo)}" alt="" loading="lazy">`:`<span class="ph">${esc(m.name[0])}</span>`}
   ${g.episodes.length?`<span class="ep">${g.episodes.length} episode${g.episodes.length>1?'s':''}</span>`:''}
-  <span class="cap"><b>${esc(m.name)}</b><span>${esc(m.op)}</span></span></button>`}).join('');
- const h=location.hash.slice(1),i=d.findIndex(g=>g.slug===h);if(i>=0)open(i);
+  <span class="cap"><b>${esc(m.name)}</b><span>${esc(m.op)}</span></span></div>`}).join('');
+ 
 }).catch(()=>{grid.innerHTML='<p>Guests are loading slowly. Refresh in a moment.</p>'});
 function open(i){const g=list[i],m=meta(g);
  document.getElementById('gp').innerHTML=g.photo?`<img src="${esc(g.photo)}" alt="${esc(m.name)}">`:'';
@@ -86,7 +85,7 @@ function open(i){const g=list[i],m=meta(g);
   <div class="bio">${g.bio||'<p>'+esc(g.summary)+'</p>'}</div>
   ${g.episodes.length?`<h3>Hear ${esc(m.name.split(' ')[0])} on the show</h3><ul class="eps">${g.episodes.map(e=>`<li><a href="${esc(e.url)}" target="_blank" rel="noopener"><span>${esc(e.title)}</span><span aria-hidden="true">▶</span></a></li>`).join('')}</ul>`:''}`;
  dlg.showModal();history.replaceState(null,'','#'+g.slug);document.getElementById('gt').scrollTop=0}
-grid.addEventListener('click',e=>{const b=e.target.closest('.g');if(b)open(+b.dataset.i)});
+
 document.getElementById('gx').onclick=()=>dlg.close();
 dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close()});
 dlg.addEventListener('close',()=>history.replaceState(null,'',location.pathname));

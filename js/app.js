@@ -41,7 +41,7 @@ function upcoming(n,day){const out=[];const d=new Date();d.setHours(12,0,0,0);d.
 /* ---------- demo backend (browser storage) ---------- */
 const K='hr-ads-demo-v3';let mem=null;
 function seed(){const w=upcoming(6,1);const now=new Date().toISOString();
- return{session:null,settings:DEF_SETTINGS,packages:DEF_PACKAGES,guests:[],
+ return{session:null,settings:DEF_SETTINGS,packages:DEF_PACKAGES,guests:[],messages:[],
  users:[{id:'u-admin',email:'admin@herdreport.com',pw:'herdadmin2026',role:'admin',company:'Herd Report',contact_name:'Scott Beck',phone:'',created_at:now},
   {id:'u-prairie',email:'demo@prairieline.co',pw:'sponsor2026',role:'client',company:'Prairie Line Feed Co.',contact_name:'Demo Sponsor',phone:'',created_at:now},
   {id:'u-bigsky',email:'demo@bigskygenetics.com',pw:'sponsor2026',role:'client',company:'Big Sky Genetics',contact_name:'Demo Buyer',phone:'',created_at:now}],
@@ -77,6 +77,9 @@ const Demo={
  async clients(){return wait(db().users.filter(u=>u.role==='client').map(strip))},
  async submitGuest(g){const d=db();d.guests=d.guests||[];const ng={...g,id:'g-'+uid(),status:'new',admin_note:'',created_at:new Date().toISOString()};d.guests.push(ng);put();return wait(ng)},
  async guests(){return wait(structuredClone(db().guests||[]).reverse())},
+ async submitMessage(m){const d=db();d.messages=d.messages||[];const nm={...m,id:'m-'+uid(),status:'new',created_at:new Date().toISOString()};d.messages.push(nm);put();return wait(nm)},
+ async messages(){return wait(structuredClone(db().messages||[]).reverse())},
+ async updateMessage(id,patch){const d=db();const m=(d.messages||[]).find(x=>x.id===id);Object.assign(m,patch);put();return wait(m)},
  async updateGuest(id,patch){const d=db();const g=(d.guests||[]).find(x=>x.id===id);Object.assign(g,patch);put();return wait(g)},
  reset(){mem=seed();put()}
 };
@@ -105,6 +108,9 @@ const Live={
  async clients(){return ok(await sb.from('profiles').select('*').eq('role','client').order('created_at',{ascending:false}))},
  async submitGuest(g){ok(await sb.from('guest_requests').insert({...g,status:'new'}));return g},
  async guests(){return ok(await sb.from('guest_requests').select('*').order('created_at',{ascending:false}))},
+ async submitMessage(m){ok(await sb.from('contact_messages').insert({...m,status:'new'}));return m},
+ async messages(){return ok(await sb.from('contact_messages').select('*').order('created_at',{ascending:false}))},
+ async updateMessage(id,patch){return ok(await sb.from('contact_messages').update(patch).eq('id',id).select().single())},
  async updateGuest(id,patch){return ok(await sb.from('guest_requests').update(patch).eq('id',id).select().single())}
 };
 if(LIVE)sb=window.supabase.createClient(C.supabaseUrl,C.supabaseAnonKey);
@@ -120,7 +126,7 @@ function chrome(active){
   <a class="btn sm ${active==='account'?'solid':''}" href="account.html" id="acctbtn">Client login</a>
  </div></header>`;
  if(f)f.innerHTML=`<footer class="foot"><div class="wrap">
-  <nav aria-label="Footer"><a href="index.html">Home</a><a href="index.html#episodes">Episodes</a><a href="advertise.html">Advertise</a><a href="guest.html">Be a guest</a><a href="account.html">Client login</a><a href="https://www.herdreportpodcast.com/contact/">Contact</a></nav>
+  <nav aria-label="Footer"><a href="index.html">Home</a><a href="index.html#episodes">Episodes</a><a href="advertise.html">Advertise</a><a href="guest.html">Be a guest</a><a href="account.html">Client login</a><a href="#review" data-pop="review">Leave a review</a><a href="contact.html">Contact</a></nav>
   <small>© ${new Date().getFullYear()} Herd Report Podcast</small></div></footer>`;
  API.current().then(u=>{const b=document.getElementById('acctbtn');if(!b||!u)return;
   if(u.role==='admin'){b.textContent='Admin';b.href='admin.html'}else b.textContent='My account'}).catch(()=>{});

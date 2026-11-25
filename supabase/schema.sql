@@ -111,6 +111,21 @@ create table if not exists public.guest_requests (
   created_at timestamptz not null default now()
 );
 
+-- Contact form messages
+create table if not exists public.contact_messages (
+  id uuid primary key default gen_random_uuid(),
+  topic text, rating int check (rating between 1 and 5), name text not null, company text, email text not null, phone text, message text not null,
+  status text not null default 'new' check (status in ('new','replied','closed')),
+  created_at timestamptz not null default now()
+);
+alter table public.contact_messages enable row level security;
+drop policy if exists "contact send" on public.contact_messages;
+create policy "contact send" on public.contact_messages for insert to anon, authenticated with check (status = 'new');
+drop policy if exists "contact admin" on public.contact_messages;
+create policy "contact admin read" on public.contact_messages for select using (public.is_admin());
+drop policy if exists "contact admin update" on public.contact_messages;
+create policy "contact admin update" on public.contact_messages for update using (public.is_admin()) with check (public.is_admin());
+
 -- Row-level security ------------------------------------------------------
 alter table public.guest_requests enable row level security;
 drop policy if exists "guest apply" on public.guest_requests;

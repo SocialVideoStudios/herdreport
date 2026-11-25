@@ -47,8 +47,8 @@ td .who{font-weight:600}td .sub{color:var(--soft);font-size:14px}
 const {API,LIVE,esc,money,fmtDate,shortDate,upcoming,SLOTS,PLACE,STATUS,TAKEN}=HR;
 HR.chrome('admin');
 const app=document.getElementById('app');
-let me=null,pkgs=[],st=null,all=[],guests=[],tab=location.hash.slice(1)||'overview';
-const TABS=[['overview','Overview'],['bookings','Bookings'],['calendar','Calendar'],['guests','Guests'],['clients','Clients'],['packages','Packages'],['settings','Settings']];
+let me=null,pkgs=[],st=null,all=[],guests=[],msgs=[],tab=location.hash.slice(1)||'overview';
+const TABS=[['overview','Overview'],['bookings','Bookings'],['calendar','Calendar'],['guests','Guests'],['messages','Messages'],['clients','Clients'],['packages','Packages'],['settings','Settings']];
 const pkgName=id=>(pkgs.find(p=>p.id===id)||{}).name||id;
 const title=b=>b.kind==='store'?'Hat order':b.kind==='ad'?(PLACE[b.placement]||'Episode ad')+' ad':pkgName(b.package_id);
 const co=b=>b.client?.company||b.client?.email||'Unknown client';
@@ -60,7 +60,7 @@ async function start(){
   document.getElementById('out').onclick=async()=>{await API.signOut();location.reload()};return}
  await load();shell();
 }
-async function load(){[pkgs,st,all,guests]=await Promise.all([API.packages(),API.settings(),API.allBookings(),API.guests()])}
+async function load(){[pkgs,st,all,guests]=await Promise.all([API.packages(),API.settings(),API.allBookings(),API.guests()]);msgs=await API.messages()}
 
 function login(msg){
  app.innerHTML=`<form class="card" id="lf" style="max-width:460px;margin:0 auto" novalidate>
@@ -75,10 +75,10 @@ function login(msg){
 }
 
 function shell(){
- const pend=all.filter(b=>b.status==='pending').length,gnew=guests.filter(g=>g.status==='new').length;
+ const pend=all.filter(b=>b.status==='pending').length,gnew=guests.filter(g=>g.status==='new').length,mnew=msgs.filter(m=>m.status==='new').length;
  app.innerHTML=`<div class="top2"><div><p class="kick">Admin dashboard</p><h1 style="font-size:clamp(36px,5vw,64px)">Sponsors &amp; ads</h1></div>
   <div class="btns"><a class="btn" href="advertise.html">View Advertise page</a><button class="btn" id="out">Sign out</button></div></div>
-  <div class="tabs" role="tablist">${TABS.map(([k,n])=>`<button role="tab" data-t="${k}">${n}${k==='bookings'&&pend?`<span class="n">${pend}</span>`:''}${k==='guests'&&gnew?`<span class="n">${gnew}</span>`:''}</button>`).join('')}</div>
+  <div class="tabs" role="tablist">${TABS.map(([k,n])=>`<button role="tab" data-t="${k}">${n}${k==='bookings'&&pend?`<span class="n">${pend}</span>`:''}${k==='guests'&&gnew?`<span class="n">${gnew}</span>`:''}${k==='messages'&&mnew?`<span class="n">${mnew}</span>`:''}</button>`).join('')}</div>
   <div id="pane"></div>`;
  document.getElementById('out').onclick=async()=>{await API.signOut();HR.chrome('admin');login()};
  app.querySelector('.tabs').addEventListener('click',e=>{const b=e.target.closest('button[data-t]');if(b){tab=b.dataset.t;history.replaceState(null,'','#'+tab);show()}});
@@ -87,7 +87,7 @@ function shell(){
 function show(){
  if(!TABS.some(t=>t[0]===tab))tab='overview';
  app.querySelectorAll('.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===tab));
- ({overview,bookings,calendar,guests:guestsView,clients,packages,settings})[tab]();
+ ({overview,bookings,calendar,guests:guestsView,messages:messagesView,clients,packages,settings})[tab]();
 }
 async function refresh(){await load();shell()}
 
@@ -221,6 +221,20 @@ function openGuest(id){
   try{await API.updateGuest(g.id,{status:document.getElementById('ges').value,admin_note:document.getElementById('gen').value.trim()});close();await refresh()}
   catch(x){document.getElementById('geerr').textContent=x.message}});
  modal.classList.add('open');document.getElementById('ges').focus();
+}
+
+/* ---------- messages ---------- */
+const MST={new:'New',replied:'Replied',closed:'Closed'},mcls={new:'pending',replied:'paid',closed:'completed'};
+function messagesView(){
+ const pane=document.getElementById('pane');
+ pane.innerHTML=msgs.length?`<div class="rev">${msgs.map(m=>`<div class="card rv"><div><b>${esc(m.name)}</b>${m.company?' · '+esc(m.company):''} · <span class="soft">${esc(m.topic||'General')}</span>${m.rating?` <span style="color:var(--red2);letter-spacing:1px">${'★'.repeat(m.rating)}${'☆'.repeat(5-m.rating)}</span>`:''}
+   <div class="meta">${esc(m.email)}${m.phone?' · '+esc(m.phone):''} · ${fmtDate(String(m.created_at).slice(0,10))}</div>
+   <p style="margin:10px 0 0;white-space:pre-wrap">${esc(m.message)}</p></div>
+   <div class="acts" style="flex-direction:column;align-items:flex-end"><span class="pill st-${mcls[m.status]||'pending'}">${esc(MST[m.status]||m.status)}</span>
+    <a class="btn sm solid" href="mailto:${esc(m.email)}?subject=${encodeURIComponent('Re: Herd Report')}">Reply by email</a>
+    <select data-m="${esc(m.id)}" aria-label="Message status" style="min-height:36px;width:auto">${Object.keys(MST).map(k=>`<option value="${k}" ${k===m.status?'selected':''}>${MST[k]}</option>`).join('')}</select></div></div>`).join('')}</div>`
+  :'<p class="empty">No messages yet. They show up here as soon as someone uses the Contact page.</p>';
+ pane.querySelectorAll('select[data-m]').forEach(sel=>sel.onchange=async()=>{await API.updateMessage(sel.dataset.m,{status:sel.value});await refresh()});
 }
 
 /* ---------- clients ---------- */

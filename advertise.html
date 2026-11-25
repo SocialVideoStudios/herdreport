@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Advertise | Herd Report</title>
+<meta name="description" content="Sponsor the Herd Report podcast: Spotlight Series episodes, presenting sponsorships and host-read ads for the cattle industry.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app.css">
+<style>
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:clamp(24px,4vw,64px);align-items:center}
+.hero .lede{font-size:18px;max-width:34em;margin:20px 0 26px}
+.ratecard{background:var(--red);color:var(--cream);border:2px solid var(--line);border-radius:28px;padding:clamp(22px,3vw,36px);box-shadow:10px 10px 0 var(--ink);transform:rotate(1.2deg)}
+.ratecard h3{font-size:clamp(22px,2.4vw,30px);margin-bottom:6px}
+.ratecard .sub{opacity:.8;font-size:14px;margin-bottom:18px}
+.rc-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:12px 0;border-top:1.5px dashed rgb(243 239 231/.45)}
+.rc-row b{font:900 20px Archivo,sans-serif;text-transform:uppercase}
+.rc-row span{font:900 22px Archivo,sans-serif;white-space:nowrap}
+.rc-row small{display:block;font-size:13px;opacity:.8;font-weight:400;font-family:"IBM Plex Sans",sans-serif;text-transform:none}
+.aud{background:var(--ink);color:var(--bg)}
+.aud .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:28px}
+.aud .big{font:900 clamp(34px,4vw,52px)/1 Archivo,sans-serif;text-transform:uppercase;color:#e9a9ad;margin-bottom:8px}
+.aud p{margin:0;opacity:.85}
+.pkgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr));gap:20px}
+.pkg{display:flex;flex-direction:column;gap:12px}
+.pkg.feature{background:var(--red);color:var(--cream);border-color:var(--red)}
+.pkg .pr{font:900 30px Archivo,sans-serif}
+.pkg .pr small{font:500 14px "IBM Plex Sans",sans-serif;opacity:.75;margin-left:4px}
+.pkg ul{margin:0;padding-left:18px}.pkg li{margin:4px 0}
+.pkg .btn{margin-top:auto}
+.pkg.feature .btn{background:var(--cream);color:#85272C;border-color:var(--cream)}
+.pkg .tag{align-self:flex-start;background:var(--ink);color:var(--bg);border-radius:999px;padding:3px 12px;font-size:13px;font-weight:600}
+.pkg.feature .tag{background:var(--cream);color:#85272C}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:20px}
+.steps .card{border-radius:18px}
+.steps h3{font-size:20px;margin-bottom:8px;color:var(--red2)}
+details{border-top:2px solid var(--line);padding:16px 0}
+details:last-child{border-bottom:2px solid var(--line)}
+summary{font:700 18px Archivo,sans-serif;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::after{content:"+";font-size:24px;line-height:1}
+details[open] summary::after{content:"–"}
+details p{margin:10px 0 0;max-width:62em;color:var(--soft)}
+.cta{background:var(--red);color:var(--cream);text-align:center}
+.cta h2{margin-bottom:16px}.cta .btn{border-color:var(--cream)}
+.cta .btn.solid{background:var(--cream);color:#85272C}
+@media(max-width:860px){.hero .wrap{grid-template-columns:minmax(0,1fr)}.ratecard{transform:none;box-shadow:6px 6px 0 var(--ink)}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/app.js"></script>
+</head>
+<body>
+<div id="hdr"></div>
+<main>
+<section class="hero band">
+ <div class="wrap">
+  <div>
+   <p class="kick">Advertise with Herd Report</p>
+   <h1>Reach the cattlemen who buy</h1>
+   <p class="lede">Herd Report goes inside the operations shaping the cattle business, every week on YouTube and every podcast app. Put your sale, your genetics or your product in front of breeders, producers and buyers who listen start to finish.</p>
+   <div class="btns"><a class="btn solid" href="#packages">See packages</a><a class="btn" href="account.html">Client login</a></div>
+  </div>
+  <aside class="ratecard" aria-label="Episode ad rates">
+   <h3>Episode ad rates</h3>
+   <div class="sub">Host-read by Scott Beck. Price per episode.</div>
+   <div id="rates"></div>
+  </aside>
+ </div>
+</section>
+
+<section class="aud band" aria-label="Audience">
+ <div class="wrap grid" id="aud"></div>
+</section>
+
+<section class="band" id="packages">
+ <div class="wrap">
+  <div class="sh"><h2>Packages</h2><p>Pick a package and book it online. Scott reviews every request, and you'll see its status in your client account.</p></div>
+  <div class="pkgs" id="pkgs"></div>
+ </div>
+</section>
+
+<section class="band" style="padding-top:0">
+ <div class="wrap">
+  <div class="sh"><h2>How booking works</h2></div>
+  <div class="steps">
+   <div class="card"><h3>Create an account</h3><p class="soft">Set up a free client login for your ranch or company in under a minute.</p></div>
+   <div class="card"><h3>Choose your weeks</h3><p class="soft">Pick a package and the open episode dates that line up with your sale or campaign.</p></div>
+   <div class="card"><h3>Scott approves</h3><p class="soft">Scott reviews the request, confirms the details and sends your invoice.</p></div>
+   <div class="card"><h3>You go live</h3><p class="soft">Your spot airs on the dates you booked. Track everything from your account.</p></div>
+  </div>
+ </div>
+</section>
+
+<section class="band" style="padding-top:0">
+ <div class="wrap">
+  <div class="sh"><h2>Questions</h2></div>
+  <details><summary>Who reads the ad?</summary><p>Scott reads every spot himself, in his own words, from the talking points you provide. Host-read ads sound like part of the show, which is why listeners trust them.</p></details>
+  <details><summary>What's the difference between pre-roll, mid-roll and post-roll?</summary><p>Pre-roll plays at the start of the episode, mid-roll in the middle of the conversation and post-roll at the end. Each episode has a limited number of slots, and the booking calendar only shows dates that are still open.</p></details>
+  <details><summary>How far ahead should I book a Spotlight Series episode?</summary><p>Give Scott as much lead time as you can before your sale so the episode can be recorded, edited and released with time for buyers to watch. Add your sale date when you request it.</p></details>
+  <details><summary>How do I pay?</summary><p>Once Scott approves your booking, you'll receive an invoice. Online card payment is coming soon.</p></details>
+  <details><summary>Can I change or cancel a request?</summary><p>You can cancel any request that's still pending from your client account. For changes after approval, contact Scott directly.</p></details>
+ </div>
+</section>
+
+<section class="cta band">
+ <div class="wrap">
+  <h2>Ready to get in front of the herd?</h2>
+  <div class="btns" style="justify-content:center"><a class="btn solid" href="account.html?new=1">Start a booking</a><a class="btn" href="https://www.herdreportpodcast.com/contact/">Talk to Scott</a></div>
+ </div>
+</section>
+</main>
+<div id="ftr"></div>
+<script>
+{
+const {API,esc,money,chrome}=HR;
+chrome('advertise');
+Promise.all([API.packages(),API.settings()]).then(([pk,st])=>{
+ const r=st.rates;
+ document.getElementById('rates').innerHTML=[['pre','Pre-roll','Opens the episode'],['mid','Mid-roll','Middle of the conversation'],['post','Post-roll','Closes the episode']]
+  .map(([k,n,s])=>`<div class="rc-row"><b>${n}<small>${s}</small></b><span>${money(r[k])}</span></div>`).join('');
+ const s=st.stats||{};
+ const facts=[
+  s.downloads?[s.downloads,'Average downloads per episode']:['Weekly','New episodes every week, on YouTube and every podcast app'],
+  s.views?[s.views,'YouTube views']:['Coast to coast','Ranch visits and sale previews from operations across the country'],
+  s.followers?[s.followers,'Followers across social']:['Every breed','Angus, Simmental, Charolais, Hereford, Gelbvieh and Limousin, registered or crossbred'],
+  ['Host-read','Every spot is read by Scott Beck, in his own words']];
+ document.getElementById('aud').innerHTML=facts.map(([b,p])=>`<div><div class="big">${esc(b)}</div><p>${esc(p)}</p></div>`).join('');
+ const minAd=Math.min(r.pre,r.mid,r.post);
+ document.getElementById('pkgs').innerHTML=pk.filter(p=>p.active).map((p,i)=>{
+  const price=p.kind==='ad'?`<span class="soft" style="font:500 14px 'IBM Plex Sans'">from</span> ${money(minAd)}<small>per episode</small>`:p.price!=null&&p.price!==''?`${money(p.price)}<small>${esc(p.unit)}</small>`:`Custom quote`;
+  return `<article class="card pkg${i===0?' feature':''}">${i===0?'<span class="tag">Signature package</span>':''}
+   <h3>${esc(p.name)}</h3><div class="pr">${price}</div><p style="margin:0">${esc(p.description)}</p>
+   <ul>${(p.features||[]).map(f=>`<li>${esc(f)}</li>`).join('')}</ul>
+   <a class="btn ${i===0?'':'solid'}" href="account.html?book=${encodeURIComponent(p.id)}">Book ${esc(p.name)}</a></article>`}).join('');
+}).catch(e=>{document.getElementById('pkgs').innerHTML=`<p class="err">Couldn't load packages: ${esc(e.message)}</p>`});
+}
+</script>
+</body>
+</html>

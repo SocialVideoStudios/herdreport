@@ -153,8 +153,9 @@ body.cart-open .scrim{opacity:1;pointer-events:auto}body.cart-open .drawer{trans
 .host{background:var(--ink);color:var(--bg)}
 .host .wrap{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(24px,4vw,64px);align-items:center}
 .portrait{aspect-ratio:4/5;border-radius:28px;background:var(--red);position:relative;overflow:hidden;display:grid;place-items:end start;padding:24px}
-.portrait svg{position:absolute;inset:0;width:100%;height:100%}
-.portrait .nm{position:relative;font:900 clamp(44px,6vw,80px)/.9 Archivo,sans-serif;text-transform:uppercase;color:var(--cream)}
+.portrait>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.portrait::after{content:"";position:absolute;inset:auto 0 0 0;height:45%;background:linear-gradient(transparent,rgb(11 11 13/.75))}
+.portrait .nm{position:relative;z-index:1;font:900 clamp(34px,4.2vw,56px)/.9 Archivo,sans-serif;text-transform:uppercase;color:var(--cream)}
 .host h2{font-size:clamp(40px,5.5vw,68px);margin-bottom:18px}
 .host p{font-size:17px;max-width:36em}
 .breeds{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;padding:0;list-style:none}
@@ -240,7 +241,7 @@ footer small{opacity:.7}
 
 <div class="util"><div class="wrap">
  <a href="#store">Shop</a>
- <a href="https://www.herdreportpodcast.com/contact/">Partner with us</a>
+ <a href="advertise.html">Advertise with us</a>
  <a href="https://www.herdreportpodcast.com/guests/intake/">Be a guest</a>
  <a href="https://www.herdreportpodcast.com/reviews/new/">Leave a review</a>
 </div></div>
@@ -269,6 +270,8 @@ footer small{opacity:.7}
    <li><a href="#store">Shop</a></li>
    <li><a href="https://www.herdreportpodcast.com/guests/">Guests</a></li>
    <li><a href="https://www.herdreportpodcast.com/blog/">Blog</a></li>
+   <li><a href="advertise.html">Advertise</a></li>
+   <li><a href="account.html">Client login</a></li>
    <li><a href="https://www.herdreportpodcast.com/contact/">Contact</a></li>
   </ul>
  </nav>
@@ -328,14 +331,8 @@ footer small{opacity:.7}
 
 <section class="host band" id="host">
  <div class="wrap">
-  <div class="portrait" aria-hidden="true">
-   <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice">
-    <g fill="none" stroke="#F3EFE7" stroke-width="2" opacity=".18">
-     <circle cx="300" cy="140" r="60"/><circle cx="300" cy="140" r="100"/><circle cx="300" cy="140" r="140"/><circle cx="300" cy="140" r="180"/><circle cx="300" cy="140" r="220"/>
-    </g>
-    <path d="M0 360Q120 320 220 350T400 330V500H0Z" fill="#0B0B0D" opacity=".35"/>
-    <path d="M0 400Q140 370 260 395T400 385V500H0Z" fill="#0B0B0D" opacity=".45"/>
-   </svg>
+  <div class="portrait">
+   <img src="img/host.jpg" alt="Scott Beck in a pasture with Angus cattle, wearing a Herd Report hat">
    <span class="nm">Scott<br>Beck</span>
   </div>
   <div>
@@ -366,7 +363,7 @@ footer small{opacity:.7}
 <section class="closing">
  <div class="big">
   <a href="#store"><b>Shop</b><span>Hats and gear<svg viewBox="0 0 34 34"><path d="M6 17h22M19 8l9 9-9 9"/></svg></span></a>
-  <a href="https://www.herdreportpodcast.com/contact/"><b>Partner with us</b><span>Sponsor an episode<svg viewBox="0 0 34 34"><path d="M6 17h22M19 8l9 9-9 9"/></svg></span></a>
+  <a href="advertise.html"><b>Partner with us</b><span>Sponsor an episode<svg viewBox="0 0 34 34"><path d="M6 17h22M19 8l9 9-9 9"/></svg></span></a>
   <a href="https://www.herdreportpodcast.com/guests/intake/"><b>Be a guest</b><span>Tell us about your program<svg viewBox="0 0 34 34"><path d="M6 17h22M19 8l9 9-9 9"/></svg></span></a>
  </div>
  <div class="signoff">Let's get to it!!</div>
@@ -404,6 +401,7 @@ footer small{opacity:.7}
    <a href="https://www.herdreportpodcast.com/episodes/">Episodes</a>
    <a href="https://www.herdreportpodcast.com/blog/">Blog</a>
    <a href="https://www.herdreportpodcast.com/follow/">Follow</a>
+   <a href="advertise.html">Advertise</a>
    <a href="https://www.herdreportpodcast.com/contact/">Contact</a>
   </nav>
   <div class="socials" style="display:flex">

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin | Herd Report</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app.css">
+<style>
+.top2{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:16px;margin-bottom:26px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:16px;margin-bottom:28px}
+.stat{border-radius:18px}
+.stat .v{font:900 clamp(32px,3.6vw,46px)/1 Archivo,sans-serif;margin:8px 0 4px}
+.stat .l{font-size:14px;color:var(--soft)}
+.stat.hot{background:var(--red);color:var(--cream);border-color:var(--red)}.stat.hot .l{color:#f1dcdc}
+.rev{display:grid;gap:12px}
+.rv{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 16px;align-items:center;border-radius:16px;padding:16px 18px}
+.rv .meta{color:var(--soft);font-size:14px}
+.rv .acts{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.cal td{min-width:150px}
+.cal .open{color:var(--soft)}
+.cal .slot{display:block;font-weight:600}
+.cal .slot.pend{font-weight:400;font-style:italic;color:var(--warn)}
+.cal .full{background:color-mix(in srgb,var(--red) 8%,transparent)}
+.filters{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px}
+.filters select,.filters input{width:auto;min-width:180px;flex:1 1 180px}
+.pk{display:grid;gap:16px}
+.chk{display:flex;align-items:center;gap:10px;font-weight:600}
+.chk input{width:22px;height:22px;min-height:0;accent-color:var(--red)}
+.set h3{margin:4px 0 14px;font-size:20px}
+.set .card+.card{margin-top:20px}
+td .who{font-weight:600}td .sub{color:var(--soft);font-size:14px}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/app.js"></script>
+</head>
+<body>
+<div id="hdr"></div>
+<main class="band"><div class="wrap" id="app"><p class="soft">Loading…</p></div></main>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mt"><div class="card" id="mbody"></div></div>
+<div id="ftr"></div>
+<script>
+{
+const {API,LIVE,esc,money,fmtDate,shortDate,upcoming,PLACE,STATUS,TAKEN}=HR;
+HR.chrome('admin');
+const app=document.getElementById('app');
+let me=null,pkgs=[],st=null,all=[],tab=location.hash.slice(1)||'overview';
+const TABS=[['overview','Overview'],['bookings','Bookings'],['calendar','Calendar'],['clients','Clients'],['packages','Packages'],['settings','Settings']];
+const pkgName=id=>(pkgs.find(p=>p.id===id)||{}).name||id;
+const co=b=>b.client?.company||b.client?.email||'Unknown client';
+
+async function start(){
+ me=await API.current();
+ if(!me)return login();
+ if(me.role!=='admin'){app.innerHTML=`<div class="card" style="max-width:560px"><h2 style="font-size:32px;margin-bottom:12px">Admins only</h2><p>This dashboard is for the Herd Report team. You're signed in as ${esc(me.email)}.</p><div class="btns"><a class="btn solid" href="account.html">Go to my account</a><button class="btn" id="out">Sign out</button></div></div>`;
+  document.getElementById('out').onclick=async()=>{await API.signOut();location.reload()};return}
+ await load();shell();
+}
+async function load(){[pkgs,st,all]=await Promise.all([API.packages(),API.settings(),API.allBookings()])}
+
+function login(msg){
+ app.innerHTML=`<form class="card" id="lf" style="max-width:460px;margin:0 auto" novalidate>
+  <p class="kick">Herd Report admin</p><h2 style="font-size:36px;margin-bottom:20px">Sign in</h2>
+  <div class="field"><label for="le">Email</label><input id="le" type="email" autocomplete="email"></div>
+  <div class="field"><label for="lp">Password</label><input id="lp" type="password" autocomplete="current-password"></div>
+  <button class="btn solid" type="submit">Sign in</button><p class="err" id="lerr">${msg?esc(msg):''}</p>
+  ${LIVE?'':'<p class="hint">Demo admin: admin@herdreport.com / herdadmin2026</p>'}</form>`;
+ document.getElementById('lf').addEventListener('submit',async e=>{e.preventDefault();
+  try{await API.signIn(document.getElementById('le').value,document.getElementById('lp').value);HR.chrome('admin');start()}
+  catch(x){document.getElementById('lerr').textContent=x.message}});
+}
+
+function shell(){
+ const pend=all.filter(b=>b.status==='pending').length;
+ app.innerHTML=`<div class="top2"><div><p class="kick">Admin dashboard</p><h1 style="font-size:clamp(36px,5vw,64px)">Sponsors &amp; ads</h1></div>
+  <div class="btns"><a class="btn" href="advertise.html">View Advertise page</a><button class="btn" id="out">Sign out</button></div></div>
+  <div class="tabs" role="tablist">${TABS.map(([k,n])=>`<button role="tab" data-t="${k}">${n}${k==='bookings'&&pend?`<span class="n">${pend}</span>`:''}</button>`).join('')}</div>
+  <div id="pane"></div>`;
+ document.getElementById('out').onclick=async()=>{await API.signOut();HR.chrome('admin');login()};
+ app.querySelector('.tabs').addEventListener('click',e=>{const b=e.target.closest('button[data-t]');if(b){tab=b.dataset.t;history.replaceState(null,'','#'+tab);show()}});
+ show();
+}
+function show(){
+ if(!TABS.some(t=>t[0]===tab))tab='overview';
+ app.querySelectorAll('.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===tab));
+ ({overview,bookings,calendar,clients,packages,settings})[tab]();
+}
+async function refresh(){await load();shell()}
+
+function detail(b){
+ if(b.kind==='ad')return `${PLACE[b.placement]||''}: ${b.episode_dates.map(shortDate).join(', ')}`;
+ if(b.kind==='presenting')return `Pre-roll × 52, from ${fmtDate(b.episode_dates[0])}`;
+ if(b.kind==='spotlight')return `Sale ${fmtDate(b.sale_date)}${b.location?' · '+b.location:''}`;
+ return b.sale_date?`Event ${fmtDate(b.sale_date)}`:'Merch';
+}
+async function setStatus(id,status){await API.updateBooking(id,{status});await refresh()}
+
+/* ---------- overview ---------- */
+function overview(){
+ const pane=document.getElementById('pane');
+ const sumOf=s=>all.filter(b=>s.includes(b.status)).reduce((t,b)=>t+(Number(b.amount)||0),0);
+ const next4=upcoming(4,st.releaseDay??1);
+ const liveSpots=all.filter(b=>TAKEN.includes(b.status)).reduce((t,b)=>t+b.episode_dates.filter(d=>next4.includes(d)).length,0);
+ const pend=all.filter(b=>b.status==='pending');
+ pane.innerHTML=`<div class="stats">
+  <div class="card stat ${pend.length?'hot':''}"><div class="l">Waiting for review</div><div class="v">${pend.length}</div></div>
+  <div class="card stat"><div class="l">Approved, awaiting payment</div><div class="v">${money(sumOf(['approved']))}</div></div>
+  <div class="card stat"><div class="l">Paid and booked</div><div class="v">${money(sumOf(['paid','live','completed']))}</div></div>
+  <div class="card stat"><div class="l">Ad spots in the next 4 episodes</div><div class="v">${liveSpots}</div></div></div>
+ <div class="sh" style="margin-bottom:16px"><h2 style="font-size:32px">Needs your review</h2></div>
+ <div class="rev">${pend.length?pend.map(b=>`<div class="card rv"><div><b>${esc(co(b))}</b> · ${esc(pkgName(b.package_id))} · ${money(b.amount)}<div class="meta">${esc(detail(b))}</div>${b.notes?`<div class="meta">“${esc(b.notes)}”</div>`:''}</div>
+   <div class="acts"><button class="btn sm solid" data-ap="${esc(b.id)}">Approve</button><button class="btn sm" data-de="${esc(b.id)}">Decline</button><button class="btn sm" data-ed="${esc(b.id)}">Details</button></div></div>`).join(''):'<p class="empty">Nothing waiting. New requests will show up here.</p>'}</div>`;
+ wire(pane);
+}
+function wire(el){
+ el.querySelectorAll('[data-ap]').forEach(b=>b.onclick=()=>{const bk=all.find(x=>x.id===b.dataset.ap);if(bk.amount==null)return edit(bk.id,'approved');setStatus(bk.id,'approved')});
+ el.querySelectorAll('[data-de]').forEach(b=>b.onclick=()=>setStatus(b.dataset.de,'declined'));
+ el.querySelectorAll('[data-ed]').forEach(b=>b.onclick=()=>edit(b.dataset.ed));
+}
+
+/* ---------- booking editor ---------- */
+const modal=document.getElementById('modal'),mbody=document.getElementById('mbody');
+function close(){modal.classList.remove('open')}
+modal.addEventListener('click',e=>{if(e.target===modal)close()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+function edit(id,nextStatus){
+ const b=all.find(x=>x.id===id);
+ mbody.innerHTML=`<h3 id="mt" style="margin-bottom:4px">${esc(pkgName(b.package_id))}</h3>
+  <p class="soft" style="margin-bottom:16px">${esc(co(b))} · ${esc(b.client?.contact_name||'')} · ${esc(b.client?.email||'')}${b.client?.phone?' · '+esc(b.client.phone):''}</p>
+  <p><b>Details:</b> ${esc(detail(b))}</p>
+  ${b.notes?`<p><b>Talking points:</b><br>${esc(b.notes).replace(/\n/g,'<br>')}</p>`:''}
+  ${b.creative_url?`<p><b>Files:</b> <a href="${esc(b.creative_url)}" target="_blank" rel="noopener">${esc(b.creative_url)}</a></p>`:''}
+  <form id="ef" novalidate><div class="row2">
+   <div class="field"><label for="es">Status</label><select id="es">${Object.keys(STATUS).map(s=>`<option value="${s}">${STATUS[s]}</option>`).join('')}</select></div>
+   <div class="field"><label for="ea">Amount ($)</label><input id="ea" type="number" min="0" step="1" inputmode="numeric" value="${b.amount??''}" placeholder="Set a quote"></div></div>
+   <div class="field"><label for="en">Note to client</label><textarea id="en" placeholder="Shown on the client's booking">${esc(b.admin_note||'')}</textarea></div>
+   <div class="btns"><button class="btn solid" type="submit">Save</button><button class="btn" type="button" id="ec">Close</button></div><p class="err" id="eerr"></p></form>`;
+ document.getElementById('es').value=nextStatus||b.status;
+ document.getElementById('ec').onclick=close;
+ document.getElementById('ef').addEventListener('submit',async e=>{e.preventDefault();const a=document.getElementById('ea').value;
+  const s=document.getElementById('es').value;
+  if(['approved','paid','live'].includes(s)&&a===''){document.getElementById('eerr').textContent='Set an amount before approving.';return}
+  try{await API.updateBooking(b.id,{status:s,amount:a===''?null:Number(a),admin_note:document.getElementById('en').value.trim()});close();await refresh()}
+  catch(x){document.getElementById('eerr').textContent=x.message}});
+ modal.classList.add('open');document.getElementById('es').focus();
+}
+
+/* ---------- bookings ---------- */
+let fStatus='all',fText='';
+function bookings(){
+ const pane=document.getElementById('pane');
+ pane.innerHTML=`<div class="filters"><select id="fs" aria-label="Filter by status"><option value="all">All statuses</option>${Object.keys(STATUS).map(s=>`<option value="${s}">${STATUS[s]}</option>`).join('')}</select>
+  <input id="ft" type="search" placeholder="Search client or package" aria-label="Search bookings" value="${esc(fText)}"></div><div id="bt"></div>`;
+ const fs=document.getElementById('fs');fs.value=fStatus;
+ const draw=()=>{const q=fText.toLowerCase();
+  const rows=all.filter(b=>(fStatus==='all'||b.status===fStatus)&&(!q||(co(b)+' '+pkgName(b.package_id)+' '+(b.client?.email||'')).toLowerCase().includes(q)));
+  document.getElementById('bt').innerHTML=rows.length?`<div class="card" style="padding:8px 16px"><table class="stack"><thead><tr><th>Client</th><th>Package</th><th>Details</th><th class="num">Amount</th><th>Status</th><th></th></tr></thead><tbody>
+   ${rows.map(b=>`<tr><td data-l="Client"><div class="who">${esc(co(b))}</div><div class="sub">${esc(b.client?.email||'')}</div></td><td data-l="Package">${esc(pkgName(b.package_id))}</td>
+    <td data-l="Details">${esc(detail(b))}</td><td data-l="Amount" class="num">${money(b.amount)}</td><td data-l="Status"><span class="pill st-${esc(b.status)}">${esc(STATUS[b.status]||b.status)}</span></td>
+    <td data-l=""><button class="btn sm" data-ed="${esc(b.id)}">Manage</button></td></tr>`).join('')}</tbody></table></div>`:'<p class="empty">No bookings match.</p>';
+  wire(document.getElementById('bt'))};
+ fs.onchange=()=>{fStatus=fs.value;draw()};
+ document.getElementById('ft').oninput=e=>{fText=e.target.value;draw()};
+ draw();
+}
+
+/* ---------- calendar ---------- */
+function calendar(){
+ const pane=document.getElementById('pane');const weeks=upcoming(st.weeksAhead||16,st.releaseDay??1);
+ const cell=(d,p)=>{const hits=all.filter(b=>b.placement===p&&b.episode_dates.includes(d)&&[...TAKEN,'pending'].includes(b.status));
+  const taken=hits.filter(b=>TAKEN.includes(b.status)).length,cap=st.capacity[p]||0;
+  return `<td data-l="${PLACE[p]}" class="${taken>=cap?'full':''}">${hits.map(b=>`<span class="slot ${b.status==='pending'?'pend':''}">${esc(co(b))}${b.status==='pending'?' (pending)':''}</span>`).join('')}${taken<cap?`<span class="open">${cap-taken} open</span>`:''}</td>`};
+ pane.innerHTML=`<p class="soft" style="margin-bottom:14px">Ad slots for the next ${weeks.length} weekly episodes. Pending requests are shown in italics and don't hold a slot until approved.</p>
+  <div class="card scroll" style="padding:8px 16px"><table class="stack cal"><thead><tr><th>Episode</th><th>Pre-roll</th><th>Mid-roll</th><th>Post-roll</th></tr></thead><tbody>
+  ${weeks.map(d=>`<tr><td data-l="Episode"><b>${fmtDate(d)}</b></td>${cell(d,'pre')}${cell(d,'mid')}${cell(d,'post')}</tr>`).join('')}</tbody></table></div>`;
+}
+
+/* ---------- clients ---------- */
+async function clients(){
+ const pane=document.getElementById('pane');pane.innerHTML='<p class="soft">Loading…</p>';
+ const cs=await API.clients();
+ pane.innerHTML=cs.length?`<div class="card" style="padding:8px 16px"><table class="stack"><thead><tr><th>Company</th><th>Contact</th><th>Phone</th><th class="num">Bookings</th><th class="num">Booked</th></tr></thead><tbody>
+  ${cs.map(c=>{const mine=all.filter(b=>b.client_id===c.id);const tot=mine.filter(b=>['approved','paid','live','completed'].includes(b.status)).reduce((t,b)=>t+(Number(b.amount)||0),0);
+   return `<tr><td data-l="Company"><div class="who">${esc(c.company||'–')}</div></td><td data-l="Contact">${esc(c.contact_name||'')}<div class="sub">${esc(c.email)}</div></td><td data-l="Phone">${esc(c.phone||'')}</td><td data-l="Bookings" class="num">${mine.length}</td><td data-l="Booked" class="num">${money(tot)}</td></tr>`}).join('')}
+  </tbody></table></div>`:'<p class="empty">No client accounts yet.</p>';
+}
+
+/* ---------- packages ---------- */
+function packages(){
+ const pane=document.getElementById('pane');
+ pane.innerHTML=`<p class="soft" style="margin-bottom:16px">Edit what appears on the Advertise page. Leave the price blank to show "Custom quote". Episode ad prices are set in Settings.</p><div class="pk">${pkgs.map(p=>`<form class="card" data-id="${esc(p.id)}" novalidate>
+  <div class="row2"><div class="field"><label>Name</label><input name="name" value="${esc(p.name)}"></div>
+  ${p.kind==='ad'?'<div class="field"><label>Price</label><input disabled value="Set per position in Settings"></div>':`<div class="field"><label>Price ($)</label><input name="price" type="number" min="0" inputmode="numeric" value="${p.price??''}" placeholder="Custom quote"></div>`}
+  <div class="field"><label>Price label</label><input name="unit" value="${esc(p.unit||'')}"></div></div>
+  <div class="field"><label>Description</label><textarea name="description">${esc(p.description||'')}</textarea></div>
+  <div class="field"><label>Highlights (one per line)</label><textarea name="features">${esc((p.features||[]).join('\n'))}</textarea></div>
+  <div class="btns" style="align-items:center"><label class="chk"><input type="checkbox" name="active" ${p.active?'checked':''}> Show on Advertise page</label><button class="btn solid sm" type="submit">Save</button><span class="okmsg"></span></div></form>`).join('')}</div>`;
+ pane.querySelectorAll('form').forEach(f=>f.addEventListener('submit',async e=>{e.preventDefault();const p=pkgs.find(x=>x.id===f.dataset.id);const v=n=>f.elements[n]?.value;
+  const np={...p,name:v('name').trim(),unit:v('unit').trim(),description:v('description').trim(),features:v('features').split('\n').map(s=>s.trim()).filter(Boolean),active:f.elements.active.checked};
+  if(p.kind!=='ad'){const pr=v('price');np.price=pr===''?null:Number(pr)}
+  const m=f.querySelector('.okmsg');try{await API.savePackage(np);Object.assign(p,np);m.textContent='Saved.'}catch(x){m.textContent=x.message}}));
+}
+
+/* ---------- settings ---------- */
+function settings(){
+ const pane=document.getElementById('pane');const s=st;const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+ pane.innerHTML=`<form class="set" id="sf" novalidate style="max-width:860px">
+  <div class="card"><h3>Episode ad prices</h3><div class="row2">
+   ${['pre','mid','post'].map(k=>`<div class="field"><label for="r-${k}">${PLACE[k]} ($ per episode)</label><input id="r-${k}" type="number" min="0" inputmode="numeric" value="${s.rates[k]}"></div>`).join('')}</div></div>
+  <div class="card"><h3>Ad slots per episode</h3><div class="row2">
+   ${['pre','mid','post'].map(k=>`<div class="field"><label for="c-${k}">${PLACE[k]}</label><input id="c-${k}" type="number" min="0" max="10" inputmode="numeric" value="${s.capacity[k]}"></div>`).join('')}</div>
+   <div class="row2"><div class="field"><label for="rd">Episodes release on</label><select id="rd">${days.map((d,i)=>`<option value="${i}" ${i===Number(s.releaseDay)?'selected':''}>${d}</option>`).join('')}</select></div>
+   <div class="field"><label for="wa">Weeks open for booking</label><input id="wa" type="number" min="4" max="52" inputmode="numeric" value="${s.weeksAhead}"></div></div></div>
+  <div class="card"><h3>Audience numbers on the Advertise page</h3><p class="hint" style="margin:-6px 0 14px">Leave blank to hide a number. Use what Scott's hosting and YouTube dashboards report, like "4,800".</p><div class="row2">
+   <div class="field"><label for="sd">Avg downloads per episode</label><input id="sd" value="${esc(s.stats?.downloads||'')}"></div>
+   <div class="field"><label for="sv">YouTube views</label><input id="sv" value="${esc(s.stats?.views||'')}"></div>
+   <div class="field"><label for="sfw">Social followers</label><input id="sfw" value="${esc(s.stats?.followers||'')}"></div></div></div>
+  <div class="btns" style="margin-top:20px;align-items:center"><button class="btn solid" type="submit">Save settings</button><span class="okmsg" id="sok"></span>
+   ${LIVE?'':'<button class="btn" type="button" id="reset">Reset demo data</button>'}</div></form>`;
+ const n=id=>Number(document.getElementById(id).value)||0;
+ document.getElementById('sf').addEventListener('submit',async e=>{e.preventDefault();
+  const ns={...s,rates:{pre:n('r-pre'),mid:n('r-mid'),post:n('r-post')},capacity:{pre:n('c-pre'),mid:n('c-mid'),post:n('c-post')},releaseDay:n('rd'),weeksAhead:Math.min(52,Math.max(4,n('wa'))),
+   stats:{downloads:document.getElementById('sd').value.trim(),views:document.getElementById('sv').value.trim(),followers:document.getElementById('sfw').value.trim()}};
+  try{st=await API.saveSettings(ns);document.getElementById('sok').textContent='Saved.'}catch(x){document.getElementById('sok').textContent=x.message}});
+ const r=document.getElementById('reset');if(r)r.onclick=()=>{API.reset();location.reload()};
+}
+
+start().catch(e=>{app.innerHTML=`<p class="err">Something went wrong: ${esc(e.message)}</p>`});
+}
+</script>
+</body>
+</html>

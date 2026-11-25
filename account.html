@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Client account | Herd Report</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app.css">
+<style>
+.auth{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:24px;align-items:start}
+.auth .card.alt{background:var(--red);color:var(--cream);border-color:var(--red)}
+.auth .card.alt input{background:var(--cream);color:#0B0B0D;border-color:var(--cream)}
+.auth .card.alt .hint{color:#f1dcdc}
+.auth .card.alt .btn{background:var(--cream);color:#85272C;border-color:var(--cream)}
+.who{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:16px;margin-bottom:28px}
+.who p{margin:6px 0 0}
+.place{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));gap:10px}
+.place label{margin:0;border:2px solid var(--line);border-radius:14px;padding:12px 14px;cursor:pointer;display:flex;flex-direction:column;gap:2px;font-weight:600}
+.place label span{font-weight:400;color:var(--soft);font-size:14px}
+.place input{position:absolute;opacity:0;pointer-events:none}
+.place label:has(input:checked){background:var(--red);border-color:var(--red);color:var(--cream)}
+.place label:has(input:checked) span{color:#f1dcdc}
+.place label:has(input:focus-visible){outline:3px solid var(--red2);outline-offset:3px}
+.book{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:24px;align-items:start}
+.sum{position:sticky;top:90px;background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.sum .tot{font:900 40px Archivo,sans-serif;margin:6px 0 4px}
+.sum .ln{display:flex;justify-content:space-between;gap:12px;font-size:15px;padding:6px 0;border-bottom:1px solid rgb(243 239 231/.15)}
+.sum .btn{width:100%;margin-top:18px;background:var(--red);border-color:var(--red);color:var(--cream)}
+.blist{display:grid;gap:16px}
+.bk{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 20px;align-items:start}
+.bk h3{font-size:22px}
+.bk .meta{color:var(--soft);font-size:15px;margin:6px 0 0}
+.bk .amt{font:900 24px Archivo,sans-serif;text-align:right;white-space:nowrap}
+.bk .note{grid-column:1/-1;background:var(--bg);border-radius:12px;padding:10px 14px;font-size:15px}
+.bk .acts{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+@media(max-width:860px){.book{grid-template-columns:minmax(0,1fr)}.sum{position:static}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/app.js"></script>
+</head>
+<body>
+<div id="hdr"></div>
+<main class="band"><div class="wrap" id="app"><p class="soft">Loading…</p></div></main>
+<div id="ftr"></div>
+<script>
+{
+const {API,LIVE,esc,money,fmtDate,shortDate,upcoming,PLACE,STATUS}=HR;
+chrome('account');
+const app=document.getElementById('app');
+const qs=new URLSearchParams(location.search);
+let me=null,pkgs=[],st=null,tab=qs.has('book')||qs.has('new')?'new':'bookings';
+const pkgName=id=>(pkgs.find(p=>p.id===id)||{}).name||id;
+
+async function start(){
+ [pkgs,st]=await Promise.all([API.packages(),API.settings()]);
+ me=await API.current();
+ me?home():authView();
+}
+
+/* ---------- sign in / create account ---------- */
+function authView(msg){
+ app.innerHTML=`<div class="sh"><div><p class="kick">Client account</p><h1>Sign in to book</h1></div>
+  <p>Book Spotlight episodes and ads, track approvals and see your invoices in one place.</p></div>
+ <div class="auth">
+  <form class="card" id="fin" novalidate>
+   <h3 style="margin-bottom:18px">Sign in</h3>
+   <div class="field"><label for="ie">Email</label><input id="ie" type="email" autocomplete="email" required></div>
+   <div class="field"><label for="ip">Password</label><input id="ip" type="password" autocomplete="current-password" required></div>
+   <button class="btn solid" type="submit">Sign in</button>
+   <p class="err" id="ierr">${msg?esc(msg):''}</p>
+   ${LIVE?'':`<p class="hint">Demo client: demo@prairieline.co / sponsor2026<br>Demo admin: admin@herdreport.com / herdadmin2026</p>`}
+  </form>
+  <form class="card alt" id="fup" novalidate>
+   <h3 style="margin-bottom:18px">Create an account</h3>
+   <div class="row2">
+    <div class="field"><label for="uc">Ranch or company</label><input id="uc" autocomplete="organization" required></div>
+    <div class="field"><label for="un">Your name</label><input id="un" autocomplete="name" required></div>
+   </div>
+   <div class="row2">
+    <div class="field"><label for="ue">Email</label><input id="ue" type="email" autocomplete="email" required></div>
+    <div class="field"><label for="uph">Phone</label><input id="uph" type="tel" autocomplete="tel"></div>
+   </div>
+   <div class="field"><label for="upw">Password</label><input id="upw" type="password" autocomplete="new-password" minlength="8" required><div class="hint">At least 8 characters.</div></div>
+   <button class="btn" type="submit">Create account</button>
+   <p class="err" id="uerr" style="color:#fff"></p>
+  </form>
+ </div>`;
+ document.getElementById('fin').addEventListener('submit',async e=>{e.preventDefault();const er=document.getElementById('ierr');er.textContent='';
+  try{me=await API.signIn(ie.value,ip.value);if(me.role==='admin'&&!qs.has('book')&&!qs.has('new')){location.href='admin.html';return}home()}catch(x){er.textContent=x.message}});
+ document.getElementById('fup').addEventListener('submit',async e=>{e.preventDefault();const er=document.getElementById('uerr');er.textContent='';
+  if(!uc.value.trim()||!un.value.trim()||!ue.value.trim()){er.textContent='Fill in your company, name and email.';return}
+  if(upw.value.length<8){er.textContent='Use a password with at least 8 characters.';return}
+  try{const r=await API.signUp({company:uc.value.trim(),contact_name:un.value.trim(),email:ue.value,phone:uph.value.trim(),password:upw.value});
+   if(r.confirm){authView('Check your email to confirm your account, then sign in.');return}
+   me=r.user;tab='new';home()}catch(x){er.textContent=x.message}});
+}
+
+/* ---------- signed in ---------- */
+function home(){
+ chrome('account');
+ app.innerHTML=`<div class="who"><div><p class="kick">${esc(me.company||'Client account')}</p><h1>Howdy, ${esc((me.contact_name||'').split(' ')[0]||'partner')}</h1>
+   <p class="soft">${esc(me.email)}</p></div>
+  <div class="btns">${me.role==='admin'?'<a class="btn solid" href="admin.html">Admin dashboard</a>':''}<button class="btn" id="out">Sign out</button></div></div>
+ <div class="tabs" role="tablist">
+  <button role="tab" data-t="new">New booking</button><button role="tab" data-t="bookings">My bookings</button><button role="tab" data-t="profile">Profile</button>
+ </div><div id="pane"></div>`;
+ document.getElementById('out').onclick=async()=>{await API.signOut();me=null;chrome('account');authView()};
+ app.querySelector('.tabs').addEventListener('click',e=>{const b=e.target.closest('button[data-t]');if(b){tab=b.dataset.t;show()}});
+ show();
+}
+function show(){
+ app.querySelectorAll('.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===tab));
+ ({new:newView,bookings:listView,profile:profileView})[tab]();
+}
+
+/* ---------- new booking ---------- */
+async function newView(){
+ const pane=document.getElementById('pane');
+ const active=pkgs.filter(p=>p.active);
+ let pick=active.find(p=>p.id===qs.get('book'))||active[0];
+ const usage=await API.usage();
+ const weeks=upcoming(st.weeksAhead||16,st.releaseDay??1);
+ let place='mid',dates=new Set();
+ pane.innerHTML=`<form class="book" id="bf" novalidate>
+  <div class="card">
+   <div class="field"><label for="pk">Package</label><select id="pk">${active.map(p=>`<option value="${esc(p.id)}">${esc(p.name)}</option>`).join('')}</select><div class="hint" id="pdesc"></div></div>
+   <div id="opts"></div>
+   <div class="field"><label for="nt">Talking points and details</label><textarea id="nt" placeholder="What should Scott know? Products, sale details, offers, website."></textarea></div>
+   <div class="field"><label for="cu">Link to logos or files (optional)</label><input id="cu" type="url" placeholder="https://"><div class="hint">A Dropbox, Google Drive or website link.</div></div>
+  </div>
+  <aside class="card sum" aria-live="polite"><div class="soft" style="color:inherit;opacity:.75">Estimated total</div><div class="tot" id="tot">–</div><div id="lines"></div>
+   <button class="btn" type="submit" id="send">Send request</button><p class="err" id="berr" style="color:#ffb4b8"></p>
+   <p style="font-size:13px;opacity:.75;margin:10px 0 0">Nothing is charged now. Scott reviews your request and sends an invoice once it's approved.</p></aside>
+ </form>`;
+ const pk=document.getElementById('pk');pk.value=pick.id;
+ const left=(d,p)=>(st.capacity[p]||0)-(usage[d+'|'+p]||0);
+ function opts(){
+  pick=pkgs.find(p=>p.id===pk.value);document.getElementById('pdesc').textContent=pick.description||'';
+  const o=document.getElementById('opts');
+  if(pick.kind==='ad'){
+   o.innerHTML=`<div class="field"><label>Ad position</label><div class="place" id="pl">${['pre','mid','post'].map(k=>`<label><input type="radio" name="pl" value="${k}" ${k===place?'checked':''}>${PLACE[k]}<span>${money(st.rates[k])} per episode</span></label>`).join('')}</div></div>
+    <div class="field"><label>Episode dates</label><div class="chips" id="ch"></div><div class="hint">New episodes release weekly. Greyed-out weeks are already booked for this position.</div></div>`;
+   o.querySelector('#pl').addEventListener('change',e=>{place=e.target.value;[...dates].forEach(d=>{if(left(d,place)<=0)dates.delete(d)});chips();sum()});
+   chips();
+  }else if(pick.kind==='presenting'){
+   o.innerHTML=`<div class="field"><label for="sw">First episode</label><select id="sw">${weeks.map(w=>`<option value="${w}">${fmtDate(w)}</option>`).join('')}</select>
+    <div class="hint">Runs 52 weekly episodes in the pre-roll position.</div></div><p class="hint" id="conf"></p>`;
+   o.querySelector('#sw').addEventListener('change',sum);
+  }else if(pick.kind==='spotlight'){
+   o.innerHTML=`<div class="row2"><div class="field"><label for="sd">Sale date</label><input id="sd" type="date"></div>
+    <div class="field"><label for="lc">Ranch location</label><input id="lc" placeholder="Town, state"></div></div>`;
+  }else{
+   o.innerHTML=`<div class="row2"><div class="field"><label for="ev">Event or sale date (optional)</label><input id="ev" type="date"></div>
+    <div class="field"><label for="qty">Estimated hats</label><input id="qty" type="number" min="1" inputmode="numeric"></div></div>`;
+  }
+  sum();
+ }
+ function chips(){
+  document.getElementById('ch').innerHTML=weeks.map(w=>{const l=left(w,place);const on=dates.has(w);
+   return `<button type="button" class="chip" data-d="${w}" aria-pressed="${on}" ${l<=0?'disabled':''}>${shortDate(w)}<small>${l<=0?'Booked':l===1?'1 open':l+' open'}</small></button>`}).join('');
+ }
+ function presentDates(){const s=document.getElementById('sw').value;const out=[];const d=new Date(s+'T12:00:00');for(let i=0;i<52;i++){out.push(d.toISOString().slice(0,10));d.setDate(d.getDate()+7)}return out}
+ function calc(){
+  if(pick.kind==='ad'){const n=dates.size;return{amount:n?n*st.rates[place]:null,lines:[[PLACE[place],money(st.rates[place])+' × '+n]]}}
+  if(pick.kind==='presenting'){const ds=presentDates();const clash=ds.filter(d=>(st.capacity.pre||0)-(usage[d+'|pre']||0)<=0).length;
+   const c=document.getElementById('conf');if(c)c.textContent=clash?`${clash} of these weeks already have a pre-roll booked. Scott will confirm availability.`:'';
+   return{amount:pick.price??null,lines:[['52 episodes','Pre-roll'],['Starts',shortDate(ds[0])]]}}
+  return{amount:pick.price??null,lines:[['Package',pick.name]]};
+ }
+ function sum(){const c=calc();document.getElementById('tot').textContent=c.amount==null?'Quote':money(c.amount);
+  document.getElementById('lines').innerHTML=c.lines.map(([a,b])=>`<div class="ln"><span>${esc(a)}</span><span>${esc(b)}</span></div>`).join('')+(c.amount==null?'<div class="ln"><span>Pricing</span><span>Scott will quote</span></div>':'');}
+ pk.addEventListener('change',()=>{dates.clear();opts()});
+ pane.addEventListener('click',e=>{const c=e.target.closest('.chip');if(!c||c.disabled)return;const d=c.dataset.d;dates.has(d)?dates.delete(d):dates.add(d);c.setAttribute('aria-pressed',dates.has(d));sum()});
+ document.getElementById('bf').addEventListener('submit',async e=>{e.preventDefault();const er=document.getElementById('berr');er.textContent='';
+  const b={package_id:pick.id,kind:pick.kind,placement:null,episode_dates:[],notes:nt.value.trim(),creative_url:cu.value.trim(),amount:calc().amount};
+  if(pick.kind==='ad'){if(!dates.size){er.textContent='Pick at least one episode date.';return}b.placement=place;b.episode_dates=[...dates].sort()}
+  if(pick.kind==='presenting'){b.placement='pre';b.episode_dates=presentDates()}
+  if(pick.kind==='spotlight'){const sd=document.getElementById('sd').value,lc=document.getElementById('lc').value.trim();if(!sd){er.textContent='Add your sale date.';return}b.sale_date=sd;b.location=lc}
+  if(pick.kind==='merch'){b.sale_date=document.getElementById('ev').value||null;const q=document.getElementById('qty').value;if(q)b.notes=`Estimated hats: ${q}\n`+b.notes}
+  const btn=document.getElementById('send');btn.disabled=true;btn.textContent='Sending…';
+  try{await API.createBooking(b);history.replaceState(null,'','account.html');tab='bookings';show();
+   setTimeout(()=>{const p=document.getElementById('pane');p.insertAdjacentHTML('afterbegin','<p class="okmsg" style="margin:0 0 16px">Request sent. Scott will review it and you\'ll see the status here.</p>')},50)}
+  catch(x){er.textContent=x.message;btn.disabled=false;btn.textContent='Send request'}});
+ opts();
+}
+
+/* ---------- my bookings ---------- */
+function detail(b){
+ if(b.kind==='ad')return `${PLACE[b.placement]||''} · ${b.episode_dates.length} episode${b.episode_dates.length===1?'':'s'}: ${b.episode_dates.map(shortDate).join(', ')}`;
+ if(b.kind==='presenting')return `Pre-roll on 52 episodes, starting ${fmtDate(b.episode_dates[0])}`;
+ if(b.kind==='spotlight')return `Sale ${fmtDate(b.sale_date)}${b.location?' · '+b.location:''}`;
+ return b.sale_date?`Event ${fmtDate(b.sale_date)}`:'Merch partnership';
+}
+async function listView(){
+ const pane=document.getElementById('pane');pane.innerHTML='<p class="soft">Loading…</p>';
+ const list=await API.myBookings();
+ if(!list.length){pane.innerHTML=`<div class="card"><p style="margin:0 0 14px">You don't have any bookings yet.</p><button class="btn solid" id="go">Start a booking</button></div>`;
+  document.getElementById('go').onclick=()=>{tab='new';show()};return}
+ pane.innerHTML=`<div class="blist">${list.map(b=>`<article class="card bk">
+  <div><span class="pill st-${esc(b.status)}">${esc(STATUS[b.status]||b.status)}</span><h3 style="margin-top:10px">${esc(pkgName(b.package_id))}</h3><p class="meta">${esc(detail(b))}</p>
+   <p class="meta">Requested ${fmtDate(String(b.created_at).slice(0,10))}</p></div>
+  <div class="amt">${money(b.amount)}</div>
+  ${b.admin_note?`<div class="note"><b>Note from Scott:</b> ${esc(b.admin_note)}</div>`:''}
+  <div class="acts">${b.status==='pending'?`<button class="btn sm" data-cancel="${esc(b.id)}">Cancel request</button>`:''}
+   ${b.status==='approved'?`<button class="btn sm solid" disabled title="Online payment is coming soon">Pay invoice</button><span class="soft" style="font-size:14px">Online payment coming soon. Scott will send your invoice.</span>`:''}</div>
+ </article>`).join('')}</div>`;
+ pane.querySelectorAll('[data-cancel]').forEach(btn=>btn.addEventListener('click',async()=>{btn.disabled=true;try{await API.cancelBooking(btn.dataset.cancel);listView()}catch(x){btn.disabled=false;btn.insertAdjacentHTML('afterend',`<span class="err">${esc(x.message)}</span>`)}}));
+}
+
+/* ---------- profile ---------- */
+function profileView(){
+ const pane=document.getElementById('pane');
+ pane.innerHTML=`<form class="card" id="pf" style="max-width:640px" novalidate>
+  <div class="row2"><div class="field"><label for="pc">Ranch or company</label><input id="pc" value="${esc(me.company)}"></div>
+  <div class="field"><label for="pn">Your name</label><input id="pn" value="${esc(me.contact_name)}"></div></div>
+  <div class="row2"><div class="field"><label for="pe">Email</label><input id="pe" value="${esc(me.email)}" disabled></div>
+  <div class="field"><label for="pp">Phone</label><input id="pp" type="tel" value="${esc(me.phone)}"></div></div>
+  <button class="btn solid" type="submit">Save</button><p class="okmsg" id="pok"></p></form>`;
+ document.getElementById('pf').addEventListener('submit',async e=>{e.preventDefault();
+  try{me=await API.saveProfile({company:pc.value.trim(),contact_name:pn.value.trim(),phone:pp.value.trim()});document.getElementById('pok').textContent='Saved.'}
+  catch(x){document.getElementById('pok').textContent=x.message}});
+}
+function chrome(a){HR.chrome(a)}
+start().catch(e=>{app.innerHTML=`<p class="err">Something went wrong: ${esc(e.message)}</p>`});
+}
+</script>
+</body>
+</html>

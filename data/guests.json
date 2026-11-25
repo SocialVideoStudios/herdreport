@@ -1,0 +1,118 @@
+[
+  {
+    "slug": "brian-palmer",
+    "name": "Brian Palmer",
+    "photo": "img/guests/brian-palmer.webp",
+    "bio": "",
+    "summary": "",
+    "episodes": [
+      {
+        "title": "SAV Beneficial: Genetics, Disposition & Impact on Angus Breeding",
+        "url": "https://www.herdreportpodcast.com/sav-beneficial-genetics-disposition-impact-on-angus-breeding/"
+      }
+    ]
+  },
+  {
+    "slug": "bud-koupal",
+    "name": "Bud Koupal",
+    "photo": "img/guests/bud-koupal.webp",
+    "bio": "",
+    "summary": "",
+    "episodes": [
+      {
+        "title": "Inside Koupal’s B&B Angus: Breeding Strategy, Family Legacy & Future Vision",
+        "url": "https://www.herdreportpodcast.com/inside-koupals-bb-angus-breeding-strategy-family-legacy-future-vision/"
+      }
+    ]
+  },
+  {
+    "slug": "eli-musgrave",
+    "name": "Eli Musgrave",
+    "photo": "img/guests/eli-musgrave.webp",
+    "bio": "",
+    "summary": "",
+    "episodes": [
+      {
+        "title": "Musgrave Angus: Capitalist 316, New Bull Lines & Breeding for the Future",
+        "url": "https://www.herdreportpodcast.com/musgrave-angus-capitalist-316-new-bull-lines-breeding-for-the-future/"
+      },
+      {
+        "title": "Musgrave Angus Legacy: Lady Barbara, Cullinan & Rob Roy",
+        "url": "https://www.herdreportpodcast.com/musgrave-angus-legacy-lady-barbara-cullinan-rob-roy/"
+      }
+    ]
+  },
+  {
+    "slug": "jaclyn-wilson",
+    "name": "Jaclyn Wilson",
+    "photo": "img/guests/jaclyn-wilson.webp",
+    "bio": "",
+    "summary": "",
+    "episodes": [
+      {
+        "title": "Jaclyn Wilson: Flying Diamond Ranch, Uruguay Genetics & Beef Business Insights",
+        "url": "https://www.herdreportpodcast.com/jaclyn-wilson-flying-diamond-ranch-uruguay-genetics-beef-business-insights/"
+      }
+    ]
+  },
+  {
+    "slug": "jason-jagels-the-c",
+    "name": "Jason Jagels - The Cattlemen's Cut",
+    "photo": "img/guests/jason-jagels-the-c.webp",
+    "bio": "",
+    "summary": "",
+    "episodes": [
+      {
+        "title": "The Cattleman’s Cut: Breeding Balance & the Power of “J Signature”",
+        "url": "https://www.herdreportpodcast.com/the-cattlemans-cut-breeding-balance-the-power-of-j-signature/"
+      }
+    ]
+  },
+  {
+    "slug": "kelly-schaff",
+    "name": "Kelly Schaff",
+    "photo": "img/guests/kelly-schaff.webp",
+    "bio": "",
+    "summary": "",
+    "episodes": [
+      {
+        "title": "SAV Beneficial: Genetics, Disposition & Impact on Angus Breeding",
+        "url": "https://www.herdreportpodcast.com/sav-beneficial-genetics-disposition-impact-on-angus-breeding/"
+      }
+    ]
+  },
+  {
+    "slug": "melvin-musgrave",
+    "name": "Melvin Musgrave",
+    "photo": "img/guests/melvin-musgrave.webp",
+    "bio": "",
+    "summary": "",
+    "episodes": [
+      {
+        "title": "Musgrave Angus: Capitalist 316, New Bull Lines & Breeding for the Future",
+        "url": "https://www.herdreportpodcast.com/musgrave-angus-capitalist-316-new-bull-lines-breeding-for-the-future/"
+      },
+      {
+        "title": "Musgrave Angus Legacy: Lady Barbara, Cullinan & Rob Roy",
+        "url": "https://www.herdreportpodcast.com/musgrave-angus-legacy-lady-barbara-cullinan-rob-roy/"
+      }
+    ]
+  },
+  {
+    "slug": "tyler-musgrave",
+    "name": "Tyler Musgrave",
+    "photo": "img/guests/tyler-musgrave.webp",
+    "bio": "",
+    "summary": "",
+    "episodes": [
+      {
+        "title": "Musgrave Angus: Capitalist 316, New Bull Lines & Breeding for the Future",
+        "url": "https://www.herdreportpodcast.com/musgrave-angus-capitalist-316-new-bull-lines-breeding-for-the-future/"
+      },
+      {
+        "title": "Musgrave Angus Legacy: Lady Barbara, Cullinan & Rob Roy",
+        "url": "https://www.herdreportpodcast.com/musgrave-angus-legacy-lady-barbara-cullinan-rob-roy/"
+      }
+    ]
+  }
+]

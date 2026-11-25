@@ -329,6 +329,7 @@ async function submit(){
 Promise.all([API.packages(),API.settings(),API.usage()]).then(([p,s,u])=>{pkgs=p;st=s;usage=u;weeks=upcoming(st.weeksAhead||16,st.releaseDay??1);
  cart=cart.filter(it=>it.type==='slot'?SLOTS.includes(it.slot):pkgs.some(p=>p.id===it.type));
  renderAll();
+ const sp=new URLSearchParams(location.search).get('spot');if(SLOTS.includes(sp)){$('shop').scrollIntoView();pickSlot(sp)}
 }).catch(e=>{$('slots').innerHTML=`<p class="err">Couldn't load the shop: ${esc(e.message)}</p>`});
 }
 </script>

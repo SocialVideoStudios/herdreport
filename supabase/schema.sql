@@ -35,7 +35,7 @@ $$;
 -- Packages and settings -------------------------------------------------
 create table if not exists public.packages (
   id text primary key,
-  kind text not null check (kind in ('spotlight','presenting','ad','merch')),
+  kind text not null check (kind in ('spotlight','presenting','ad','merch','store')),
   name text not null,
   description text,
   features text[] not null default '{}',
@@ -161,6 +161,7 @@ insert into public.packages (id, kind, name, description, features, price, unit,
    array['Pre-roll on 52 weekly episodes','"Brought to you by" from Scott','Logo on the Herd Report website','Annual discount on the weekly rate'], 23400,'per year',true,2),
  ('ads','ad','Episode ads','Host-read spots in the episodes you choose. Book a single week or a run of weeks from open slots.',
    array['Read by Scott, in his own words','Five spots per episode: pre-roll, three mid-rolls and post-roll','Pick your weeks from the live calendar','Great for sale announcements'], null,'per episode',true,3),
+ ('store','store','Hat order','Signature Hat order from the store.',array[]::text[],null,'',false,9),
  ('merch','merch','Merch partnership','Co-branded Herd Report gear for your sale, field day or customer appreciation event.',
    array['Co-branded Signature Hats','Giveaways for sale-day buyers','Mention on the show','Quantities and pricing on request'], null,'custom',true,4)
 on conflict (id) do nothing;

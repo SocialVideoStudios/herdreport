@@ -50,7 +50,7 @@ const app=document.getElementById('app');
 let me=null,pkgs=[],st=null,all=[],guests=[],tab=location.hash.slice(1)||'overview';
 const TABS=[['overview','Overview'],['bookings','Bookings'],['calendar','Calendar'],['guests','Guests'],['clients','Clients'],['packages','Packages'],['settings','Settings']];
 const pkgName=id=>(pkgs.find(p=>p.id===id)||{}).name||id;
-const title=b=>b.kind==='ad'?(PLACE[b.placement]||'Episode ad')+' ad':pkgName(b.package_id);
+const title=b=>b.kind==='store'?'Hat order':b.kind==='ad'?(PLACE[b.placement]||'Episode ad')+' ad':pkgName(b.package_id);
 const co=b=>b.client?.company||b.client?.email||'Unknown client';
 
 async function start(){
@@ -95,6 +95,7 @@ function detail(b){
  if(b.kind==='ad')return `${PLACE[b.placement]||''}: ${b.episode_dates.map(shortDate).join(', ')}`;
  if(b.kind==='presenting')return `Pre-roll × 52, from ${fmtDate(b.episode_dates[0])}`;
  if(b.kind==='spotlight')return `Sale ${fmtDate(b.sale_date)}${b.location?' · '+b.location:''}`;
+ if(b.kind==='store')return String(b.notes||'').split('\n').filter(l=>!l.startsWith('Ship to')).join(', ');
  return b.sale_date?`Event ${fmtDate(b.sale_date)}`:'Merch';
 }
 async function setStatus(id,status){await API.updateBooking(id,{status});await refresh()}
@@ -235,7 +236,7 @@ async function clients(){
 /* ---------- packages ---------- */
 function packages(){
  const pane=document.getElementById('pane');
- pane.innerHTML=`<p class="soft" style="margin-bottom:16px">Edit what appears on the Advertise page. Leave the price blank to show "Custom quote". Prices for the five episode ad spots are set in Settings.</p><div class="pk">${pkgs.map(p=>`<form class="card" data-id="${esc(p.id)}" novalidate>
+ const plist=pkgs.filter(p=>p.kind!=='store');pane.innerHTML=`<p class="soft" style="margin-bottom:16px">Edit what appears on the Advertise page. Leave the price blank to show "Custom quote". Prices for the five episode ad spots are set in Settings.</p><div class="pk">${plist.map(p=>`<form class="card" data-id="${esc(p.id)}" novalidate>
   <div class="row2"><div class="field"><label>Name</label><input name="name" value="${esc(p.name)}"></div>
   ${p.kind==='ad'?'<div class="field"><label>Price</label><input disabled value="Set per position in Settings"></div>':`<div class="field"><label>Price ($)</label><input name="price" type="number" min="0" inputmode="numeric" value="${p.price??''}" placeholder="Custom quote"></div>`}
   <div class="field"><label>Price label</label><input name="unit" value="${esc(p.unit||'')}"></div></div>

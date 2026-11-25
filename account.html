@@ -54,7 +54,7 @@ const qs=new URLSearchParams(location.search);
 if(qs.has('book')||qs.has('new'))location.replace('advertise.html#shop');
 let me=null,pkgs=[],st=null,tab='bookings';
 const pkgName=id=>(pkgs.find(p=>p.id===id)||{}).name||id;
-const title=b=>b.kind==='ad'?(PLACE[b.placement]||'Episode ad')+' ad':pkgName(b.package_id);
+const title=b=>b.kind==='store'?'Hat order':b.kind==='ad'?(PLACE[b.placement]||'Episode ad')+' ad':pkgName(b.package_id);
 
 async function start(){
  [pkgs,st]=await Promise.all([API.packages(),API.settings()]);
@@ -122,6 +122,7 @@ function detail(b){
  if(b.kind==='ad')return `${PLACE[b.placement]||b.placement} · ${b.episode_dates.length} episode${b.episode_dates.length===1?'':'s'}: ${b.episode_dates.map(shortDate).join(', ')}`;
  if(b.kind==='presenting')return `Pre-roll on 52 episodes, starting ${fmtDate(b.episode_dates[0])}`;
  if(b.kind==='spotlight')return `Sale ${fmtDate(b.sale_date)}${b.location?' · '+b.location:''}`;
+ if(b.kind==='store')return String(b.notes||'').split('\n').filter(l=>!l.startsWith('Ship to')).join(', ');
  return b.sale_date?`Event ${fmtDate(b.sale_date)}`:'Merch partnership';
 }
 async function listView(){

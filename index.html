@@ -356,6 +356,7 @@ footer small{opacity:.7}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" defer></script>
 <script src="js/config.js" defer></script>
 <script src="js/app.js" defer></script>
+<script src="js/cart.js" defer></script>
 </head>
 <body>
 
@@ -421,7 +422,7 @@ footer small{opacity:.7}
     <circle cx="258" cy="262" r="238" fill="#0B0B0D" opacity=".9"/>
     <circle cx="250" cy="250" r="238" fill="#85272C"/>
     <circle cx="250" cy="250" r="238" fill="none" stroke="#0B0B0D" stroke-width="4"/>
-    <g class="ring"><text font-family="Archivo" font-weight="900" font-size="31" fill="#F3EFE7" letter-spacing="3"><textPath href="#circ">HERD REPORT ✦ INSIDE THE CATTLE INDUSTRY ✦ LET'S GET TO IT ✦</textPath></text></g>
+    <g class="ring"><text font-family="Archivo" font-weight="900" font-size="28" fill="#F3EFE7"><textPath href="#circ" textLength="1245" lengthAdjust="spacing">HERD REPORT ✦ INSIDE THE CATTLE INDUSTRY ✦ LET'S GET TO IT ✦</textPath></text></g>
     <circle cx="250" cy="250" r="160" fill="#F3EFE7"/>
     <circle cx="250" cy="250" r="146" fill="none" stroke="#85272C" stroke-width="3" stroke-dasharray="2 9" stroke-linecap="round"/>
     <image href="logo.png" x="145" y="161" width="210" height="178"/>
@@ -523,17 +524,7 @@ footer small{opacity:.7}
  </div>
 </section>
 
-<div class="scrim" id="scrim"></div>
-<aside class="drawer" id="drawer" aria-label="Cart" aria-hidden="true">
- <div class="top"><h2>Your cart</h2><button class="x" id="close" aria-label="Close cart">×</button></div>
- <div class="lines" id="lines"></div>
- <div class="foot">
-  <div class="row"><span>Subtotal</span><span id="sub">$0.00</span></div>
-  <small>Shipping and tax are calculated at checkout.</small>
-  <button class="btn solid" id="checkout">Checkout</button>
-  <div class="pending" id="pending">Card checkout is being set up and opens soon. Until then you can <a id="shopify" href="https://herdreport.myshopify.com">finish this order on our Shopify store</a>.</div>
- </div>
-</aside>
+
 
 <footer>
  <div class="wrap">
@@ -626,35 +617,13 @@ const card=(h,dup)=>`
 document.getElementById('grid').innerHTML=HATS.map(h=>card(h)).join('');
 const four=HATS.slice(0,4);
 document.getElementById('track').innerHTML=four.map(h=>card(h)).join('')+four.map(h=>card(h,true)).join('');
-let cart={};
-try{cart=JSON.parse(localStorage.getItem('hr-cart')||'{}')||{}}catch(e){cart={}}
-const save=()=>{try{localStorage.setItem('hr-cart',JSON.stringify(cart))}catch(e){}};
-const drawer=document.getElementById('drawer');
-const openCart=()=>{document.body.classList.add('cart-open');drawer.setAttribute('aria-hidden','false');document.getElementById('close').focus()};
-const closeCart=()=>{document.body.classList.remove('cart-open');drawer.setAttribute('aria-hidden','true');document.getElementById('pending').classList.remove('show')};
-const render=()=>{
- const ids=Object.keys(cart).filter(k=>cart[k]>0&&HATS.some(h=>String(h.id)===k));
- const n=ids.reduce((t,k)=>t+cart[k],0);
- document.getElementById('count').textContent=n||'';
- document.getElementById('cartbtn').setAttribute('aria-label',`Open cart, ${n} item${n===1?'':'s'}`);
- document.getElementById('lines').innerHTML=ids.length?ids.map(k=>{const h=HATS.find(x=>String(x.id)===k);return `
-  <div class="line"><div class="th">${pic(h)}</div>
-   <div><strong>${esc(h.n)}</strong><span>Signature Hat · ${money(PRICE)}</span></div>
-   <div class="qty"><button data-d="-1" data-k="${k}" aria-label="Remove one ${esc(h.n)}">−</button><output>${cart[k]}</output><button data-d="1" data-k="${k}" aria-label="Add one ${esc(h.n)}">+</button></div></div>`}).join(''):'<p class="empty">Your cart is empty. Pick a colorway to get started.</p>';
- document.getElementById('sub').textContent=money(n*PRICE);
- const co=document.getElementById('checkout');co.disabled=!n;co.style.opacity=n?1:.5;
- document.getElementById('shopify').href=n?'https://herdreport.myshopify.com/cart/'+ids.map(k=>k+':'+cart[k]).join(','):'https://herdreport.myshopify.com';
-};
-const onAdd=e=>{const b=e.target.closest('.add');if(!b||b.disabled)return;const k=b.dataset.id;cart[k]=(cart[k]||0)+1;save();render();b.textContent='Added ✓';setTimeout(()=>b.textContent='Add to cart',1200);openCart()};
+const badge=()=>{const n=window.Cart?Cart.count():0;document.getElementById('count').textContent=n||'';document.getElementById('cartbtn').setAttribute('aria-label',`Open cart, ${n} item${n===1?'':'s'}`)};
+window.addEventListener('hr-cart',badge);
+const onAdd=e=>{const b=e.target.closest('.add');if(!b||b.disabled||!window.Cart)return;const h=HATS.find(x=>String(x.id)===b.dataset.id);
+ Cart.addHat({id:h.id,n:h.n,price:PRICE,img:h.img||''});b.textContent='Added ✓';setTimeout(()=>b.textContent='Add to cart',1200);Cart.open()};
 document.getElementById('grid').addEventListener('click',onAdd);
 document.getElementById('ticker').addEventListener('click',onAdd);
-document.getElementById('lines').addEventListener('click',e=>{const b=e.target.closest('button[data-k]');if(!b)return;const k=b.dataset.k;cart[k]=Math.max(0,(cart[k]||0)+Number(b.dataset.d));if(!cart[k])delete cart[k];save();render()});
-document.getElementById('cartbtn').addEventListener('click',openCart);
-document.getElementById('close').addEventListener('click',closeCart);
-document.getElementById('scrim').addEventListener('click',closeCart);
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeCart()});
-document.getElementById('checkout').addEventListener('click',()=>document.getElementById('pending').classList.add('show'));
-render();
+document.getElementById('cartbtn').addEventListener('click',()=>window.Cart&&Cart.open());
 const mainEl=document.querySelector('main'),storeEl=document.getElementById('store');
 const route=()=>{const st=location.hash==='#store';mainEl.hidden=st;storeEl.hidden=!st;
  if(st){window.scrollTo(0,0)}else if(location.hash&&location.hash!=='#top'){const t=document.getElementById(location.hash.slice(1));if(t)t.scrollIntoView()}else{window.scrollTo(0,0)}};

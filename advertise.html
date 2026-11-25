@@ -81,6 +81,7 @@ body.open .scrim{opacity:1;pointer-events:auto}body.open .drawer{transform:none}
 .switch{font-size:14px;margin:12px 0 0}
 .done{text-align:center;padding:30px 0}
 .done h3{font-size:30px;margin-bottom:10px}
+.pick{z-index:70}
 .pick .card{width:min(640px,100%)}
 .pick h3{font-size:28px}
 .quick{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
@@ -92,6 +93,7 @@ body.open .scrim{opacity:1;pointer-events:auto}body.open .drawer{transform:none}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="js/config.js"></script>
 <script src="js/app.js"></script>
+<script src="js/cart.js"></script>
 </head>
 <body>
 <div id="hdr"></div>
@@ -131,12 +133,7 @@ body.open .scrim{opacity:1;pointer-events:auto}body.open .drawer{transform:none}
 <div id="ftr"></div>
 
 <div class="cartbar" id="cartbar" aria-live="polite"><b id="cbCount">0 items</b><span id="cbTot"></span><button class="btn sm" id="cbOpen">Review cart</button></div>
-<div class="scrim" id="scrim"></div>
-<aside class="drawer" id="drawer" aria-label="Ad cart" aria-hidden="true">
- <div class="dtop"><h2 id="dTitle">Your cart</h2><button class="x" id="dClose" aria-label="Close cart">×</button></div>
- <div class="dbody" id="dBody"></div>
- <div class="dfoot" id="dFoot"></div>
-</aside>
+
 <div class="modal pick" id="pick" role="dialog" aria-modal="true" aria-labelledby="pTitle"><div class="card" id="pBody"></div></div>
 
 <script>
@@ -144,26 +141,14 @@ body.open .scrim{opacity:1;pointer-events:auto}body.open .drawer{transform:none}
 const {API,LIVE,esc,money,fmtDate,shortDate,upcoming,SLOTS,PLACE,SLOT_INFO}=HR;
 HR.chrome('advertise');
 let pkgs=[],st=null,usage={},weeks=[],me=null;
-let cart=[];try{cart=JSON.parse(localStorage.getItem('hr-ad-cart')||'[]')||[]}catch(e){cart=[]}
-const save=()=>{try{localStorage.setItem('hr-ad-cart',JSON.stringify(cart))}catch(e){}};
+let cart=Cart.items();
+const save=()=>{Cart.set(cart)};
 const $=id=>document.getElementById(id);
 const pkg=id=>pkgs.find(p=>p.id===id)||{};
 const left=(d,k)=>(st.capacity[k]??1)-(usage[d+'|'+k]||0);
 const presentDates=s=>{const out=[];const d=new Date(s+'T12:00:00');for(let i=0;i<52;i++){out.push(d.toISOString().slice(0,10));d.setDate(d.getDate()+7)}return out};
 
-function price(it){
- if(it.type==='slot')return it.dates.length*st.rates[it.slot];
- const p=pkg(it.type);return p.price==null||p.price===''?null:Number(p.price);
-}
-function label(it){return it.type==='slot'?PLACE[it.slot]:pkg(it.type).name}
-function desc(it){
- if(it.type==='slot')return `${it.dates.length} episode${it.dates.length===1?'':'s'}: ${it.dates.map(shortDate).join(', ')}`;
- if(it.type==='presenting')return `52 weekly episodes starting ${fmtDate(it.start)}`;
- if(it.type==='spotlight')return [it.sale_date?'Sale '+fmtDate(it.sale_date):'Sale date to be confirmed',it.location].filter(Boolean).join(' · ');
- return [it.event?'Event '+fmtDate(it.event):'',it.qty?it.qty+' hats':''].filter(Boolean).join(' · ')||'Details to be confirmed';
-}
-const totals=()=>{let sum=0,quotes=0;cart.forEach(it=>{const p=price(it);p==null?quotes++:sum+=p});return{sum,quotes}};
-
+const price=it=>Cart.price(it);
 function renderRates(){$('rates').innerHTML=SLOTS.map(k=>`<div class="rc-row"><b>${PLACE[k]}</b><span>${money(st.rates[k])}</span></div>`).join('')}
 function renderAud(){const s=st.stats||{};
  const facts=[s.downloads?[s.downloads,'Average downloads per episode']:['Weekly','New episodes every week, on YouTube and every podcast app'],
@@ -191,12 +176,13 @@ function renderPkgs(){
    <button class="btn ${i===0?'':'solid'}" data-pkg="${esc(p.id)}">${inC?'Edit details':'Add to cart'}</button></article>`}).join('');
 }
 function renderBar(){
- const n=cart.length,{sum,quotes}=totals();
+ cart=Cart.items();const n=Cart.count(),{sum,quotes}=Cart.totals();
  $('cbCount').textContent=`${n} item${n===1?'':'s'}`;
  $('cbTot').textContent=sum?money(sum)+(quotes?' + quote':''):(quotes?'Quote':'');
- $('cartbar').classList.toggle('show',n>0&&!document.body.classList.contains('open'));
+ $('cartbar').classList.toggle('show',n>0&&!Cart.isOpen());
 }
-function renderAll(){renderSlots();renderPkgs();renderBar();save()}
+function renderAll(){cart=Cart.items();renderSlots();renderPkgs();renderBar()}
+window.addEventListener('hr-cart',()=>{if(st){cart=Cart.items();renderSlots();renderPkgs();renderBar()}});
 
 const pick=$('pick'),pBody=$('pBody');
 function closePick(){pick.classList.remove('open')}
@@ -215,7 +201,7 @@ function pickSlot(k){
  pBody.onclick=e=>{const c=e.target.closest('.chip');if(c&&!c.disabled){const d=c.dataset.d;sel.has(d)?sel.delete(d):sel.add(d);draw();return}
   const q=e.target.closest('[data-q]');if(q){const n=+q.dataset.q;sel.clear();if(n)weeks.filter(w=>left(w,k)>0).slice(0,n).forEach(w=>sel.add(w));draw()}};
  $('pCancel').onclick=closePick;
- $('pAdd').onclick=()=>{cart=cart.filter(c=>!(c.type==='slot'&&c.slot===k));if(sel.size)cart.push({type:'slot',slot:k,dates:[...sel].sort()});closePick();renderAll();if(document.body.classList.contains('open'))drawCart();else if(sel.size)flash(`${PLACE[k]} added`)};
+ $('pAdd').onclick=()=>{const c=Cart.items().filter(c=>!(c.type==='slot'&&c.slot===k));if(sel.size)c.push({type:'slot',slot:k,dates:[...sel].sort()});Cart.set(c);closePick();renderAll();if(!Cart.isOpen()&&sel.size)flash(`${PLACE[k]} added`)};
  draw();pick.classList.add('open');pBody.querySelector('[data-q="4"]').focus();
 }
 function pickPkg(id){
@@ -230,103 +216,24 @@ function pickPkg(id){
  const clash=()=>{const c=$('clash');if(!c)return;const n=presentDates($('f1').value).filter(d=>left(d,'pre')<=0).length;c.textContent=n?`${n} of these weeks already have a pre-roll booked. Scott will confirm availability.`:''};
  if(p.kind==='presenting'){$('f1').onchange=clash;clash()}
  if($('pCancel'))$('pCancel').onclick=closePick;
- if($('pRem'))$('pRem').onclick=()=>{cart=cart.filter(c=>c.type!==id);closePick();renderAll();if(document.body.classList.contains('open'))drawCart()};
+ if($('pRem'))$('pRem').onclick=()=>{Cart.set(Cart.items().filter(c=>c.type!==id));closePick();renderAll()};
  $('pAdd').onclick=()=>{const it={type:id};
   if(p.kind==='presenting')it.start=$('f1').value;
   if(p.kind==='spotlight'){it.sale_date=$('f1').value;it.location=$('f2').value.trim()}
   if(p.kind==='merch'){it.event=$('f1').value;it.qty=$('f2').value}
-  const i=cart.findIndex(c=>c.type===id);i>=0?cart[i]=it:cart.push(it);closePick();renderAll();if(document.body.classList.contains('open'))drawCart();else flash(`${p.name} added`)};
+  const c=Cart.items();const i=c.findIndex(x=>x.type===id);i>=0?c[i]=it:c.push(it);Cart.set(c);closePick();renderAll();if(!Cart.isOpen())flash(`${p.name} added`)};
  pick.classList.add('open');pBody.querySelector('input,select,button').focus();
 }
 document.addEventListener('click',e=>{const s=e.target.closest('[data-slot]');if(s)return pickSlot(s.dataset.slot);const p=e.target.closest('[data-pkg]');if(p)return pickPkg(p.dataset.pkg)});
 
 let fl;function flash(t){renderBar();$('cbCount').textContent=t+' ✓';clearTimeout(fl);fl=setTimeout(renderBar,1800)}
 
-let step='cart',authMode='new',notes='',files='';
-function openCart(){step='cart';document.body.classList.add('open');$('drawer').setAttribute('aria-hidden','false');renderBar();drawCart();$('dClose').focus()}
-function closeCart(){document.body.classList.remove('open');$('drawer').setAttribute('aria-hidden','true');renderBar()}
-$('cbOpen').onclick=openCart;$('dClose').onclick=closeCart;$('scrim').onclick=closeCart;
-document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(pick.classList.contains('open'))closePick();else closeCart()});
-
-function drawCart(){
- $('dTitle').textContent=step==='done'?'Request sent':step==='account'?'Checkout':'Your cart';
- if(step==='done')return;
- const {sum,quotes}=totals();
- if(step==='cart'){
-  $('dBody').innerHTML=cart.length?cart.map((it,i)=>`<div class="line"><b>${esc(label(it))}</b><span class="p">${price(it)==null?'Quote':money(price(it))}</span>
-    <span class="d">${esc(desc(it))}</span><span class="acts"><button class="link" data-edit="${i}">Edit</button><button class="link" data-rm="${i}">Remove</button></span></div>`).join('')+
-   `<div class="field" style="margin-top:18px"><label for="cn">Talking points for Scott</label><textarea id="cn" placeholder="Products, sale details, offers, website.">${esc(notes)}</textarea></div>
-    <div class="field"><label for="cf">Link to logos or files (optional)</label><input id="cf" type="url" placeholder="https://" value="${esc(files)}"></div>`
-   :'<p class="empty">Your cart is empty. Pick an ad spot or a sponsorship to get started.</p>';
-  $('dFoot').innerHTML=`<div class="tot"><span>Total</span><span>${money(sum)}${quotes?' + quote':''}</span></div>
-   <small style="margin:0 0 12px">${quotes?'Items marked Quote are priced by Scott, and you pay for them once he sends your quote. ':''}Secure card payment at checkout.</small>
-   <button class="btn solid" id="toCheckout" ${cart.length?'':'disabled'}>Checkout</button>`;
-  $('dBody').oninput=e=>{if(e.target.id==='cn')notes=e.target.value;if(e.target.id==='cf')files=e.target.value};
-  $('dBody').onclick=e=>{const r=e.target.closest('[data-rm]');if(r){cart.splice(+r.dataset.rm,1);renderAll();drawCart();return}
-   const ed=e.target.closest('[data-edit]');if(ed){const it=cart[+ed.dataset.edit];it.type==='slot'?pickSlot(it.slot):pickPkg(it.type)}};
-  $('toCheckout').onclick=async()=>{me=await API.current();step=me?'pay':'account';drawCart()};
-  return;
- }
- $('dBody').onclick=null;$('dBody').oninput=null;
- if(step==='pay'){
-  $('dTitle').textContent='Payment';
-  $('dBody').innerHTML=`<p class="soft" style="margin:0 0 12px">Review and pay for your booking.</p>`+cart.map(it=>`<div class="line"><b>${esc(label(it))}</b><span class="p">${price(it)==null?'Quote':money(price(it))}</span><span class="d">${esc(desc(it))}</span></div>`).join('')+
-   (quotes?`<p class="hint" style="margin-top:14px">${quotes===1?'One item is':quotes+' items are'} priced by quote. Scott will send the quote, and you'll pay for ${quotes===1?'it':'them'} from your account.</p>`:'')+
-   `<div class="card" style="margin-top:18px;border-radius:16px;padding:16px"><b>Card payment</b><p class="hint" style="margin:6px 0 0">Secure checkout by Stripe. Your card details go straight to Stripe and are never stored by Herd Report.</p></div>`;
-  $('dFoot').innerHTML=`<div class="tot"><span>Due today</span><span>${money(sum)}</span></div><small style="margin:0 0 12px">${quotes?'Plus quoted items, billed later. ':''}Cancellations are refunded minus a $50 fee.</small>
-   <div class="btns" style="flex-wrap:nowrap"><button class="btn" id="back" style="width:auto">Back</button><button class="btn solid" id="go">${sum?'Pay '+money(sum):'Send request'}</button></div>`;
-  $('back').onclick=()=>{step='cart';drawCart()};$('go').onclick=()=>submit();
-  return;
- }
- $('dBody').innerHTML=`<p class="soft" style="margin:0 0 16px">${authMode==='new'?'Create your free account so Scott can confirm your booking and you can track it.':'Sign in to send this request from your account.'}</p>
-  <form id="af" novalidate>
-   ${authMode==='new'?`<div class="field"><label for="ac">Ranch or company</label><input id="ac" autocomplete="organization"></div>
-   <div class="row2"><div class="field"><label for="an">Your name</label><input id="an" autocomplete="name"></div><div class="field"><label for="aph">Phone</label><input id="aph" type="tel" autocomplete="tel"></div></div>`:''}
-   <div class="field"><label for="ae">Email</label><input id="ae" type="email" autocomplete="email"></div>
-   <div class="field"><label for="ap">Password</label><input id="ap" type="password" autocomplete="${authMode==='new'?'new-password':'current-password'}">${authMode==='new'?'<div class="hint">At least 8 characters.</div>':''}</div>
-   <p class="err" id="aerr"></p><button type="submit" hidden></button>
-  </form>
-  <p class="switch">${authMode==='new'?'Already have an account? <button class="link" id="sw" type="button">Sign in</button>':'New to Herd Report? <button class="link" id="sw" type="button">Create an account</button>'}</p>
-`;
- $('dFoot').innerHTML=`<div class="tot"><span>Total</span><span>${money(sum)}${quotes?' + quote':''}</span></div><small style="margin:0 0 12px">Next: payment.</small>
-  <div class="btns" style="flex-wrap:nowrap"><button class="btn" id="back" style="width:auto">Back</button><button class="btn solid" id="go">${authMode==='new'?'Create account':'Sign in'}</button></div>`;
- $('sw').onclick=()=>{authMode=authMode==='new'?'in':'new';drawCart()};
- $('back').onclick=()=>{step='cart';drawCart()};
- const go=async()=>{const er=$('aerr');er.textContent='';const btn=$('go');
-  try{
-   if(authMode==='new'){
-    if(!$('ac').value.trim()||!$('an').value.trim()||!$('ae').value.trim()){er.textContent='Add your company, name and email.';return}
-    if($('ap').value.length<8){er.textContent='Use a password with at least 8 characters.';return}
-    btn.disabled=true;btn.textContent='Creating account…';
-    const r=await API.signUp({company:$('ac').value.trim(),contact_name:$('an').value.trim(),phone:$('aph').value.trim(),email:$('ae').value,password:$('ap').value});
-    if(r.confirm){step='done';$('dTitle').textContent='Almost there';$('dBody').innerHTML=`<div class="done"><h3>Check your email</h3><p>Confirm your email address, then sign in here to send your request. Your cart is saved.</p></div>`;$('dFoot').innerHTML=`<button class="btn solid" id="again">Sign in</button>`;$('again').onclick=()=>{authMode='in';step='account';drawCart()};return}
-   }else{btn.disabled=true;btn.textContent='Signing in…';await API.signIn($('ae').value,$('ap').value)}
-   HR.chrome('advertise');step='pay';drawCart();
-  }catch(x){er.textContent=x.message;btn.disabled=false;btn.textContent=authMode==='new'?'Create account':'Sign in'}};
- $('go').onclick=go;$('af').onsubmit=e=>{e.preventDefault();go()};
-}
-async function submit(){
- const b=$('go')||$('toCheckout');if(b){b.disabled=true;b.textContent='Sending…'}
- try{
-  for(const it of cart){
-   const base={notes:notes.trim(),creative_url:files.trim(),amount:price(it),placement:null,episode_dates:[],status:price(it)==null?'pending':'paid'};
-   if(it.type==='slot')Object.assign(base,{package_id:'ads',kind:'ad',placement:it.slot,episode_dates:it.dates});
-   else{const p=pkg(it.type);Object.assign(base,{package_id:p.id,kind:p.kind});
-    if(p.kind==='presenting')Object.assign(base,{placement:'pre',episode_dates:presentDates(it.start)});
-    if(p.kind==='spotlight')Object.assign(base,{sale_date:it.sale_date||null,location:it.location||''});
-    if(p.kind==='merch'){base.sale_date=it.event||null;if(it.qty)base.notes=`Estimated hats: ${it.qty}\n`+base.notes}}
-   await API.createBooking(base);
-  }
-  const {sum:paid,quotes:q}=totals();cart=[];notes='';files='';renderAll();step='done';
-  $('dTitle').textContent='You\'re booked';
-  $('dBody').innerHTML=`<div class="done"><h3>Thanks, you're booked</h3><p>${paid?`Payment of ${money(paid)} received. `:''}${q?`Scott will send a quote for ${q===1?'your sponsorship':'your sponsorships'}. `:''}Scott has your talking points and will reach out if he needs anything. Track everything in your account.</p></div>`;
-  $('dFoot').innerHTML=`<a class="btn solid" href="account.html">View my bookings</a>`;
-  usage=await API.usage();renderSlots();
- }catch(x){$('dBody').insertAdjacentHTML('beforeend',`<p class="err">${esc(x.message)}</p>`);if(b){b.disabled=false;b.textContent='Try again'}}
-}
-
+$('cbOpen').onclick=()=>Cart.open();
+Cart.onEdit=it=>{it.type==='slot'?pickSlot(it.slot):pickPkg(it.type)};
+Cart.afterSubmit=()=>{API.usage().then(u=>{usage=u;renderSlots()})};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&pick.classList.contains('open'))closePick()});
 Promise.all([API.packages(),API.settings(),API.usage()]).then(([p,s,u])=>{pkgs=p;st=s;usage=u;weeks=upcoming(st.weeksAhead||16,st.releaseDay??1);
- cart=cart.filter(it=>it.type==='slot'?SLOTS.includes(it.slot):pkgs.some(p=>p.id===it.type));
+ 
  renderAll();
  const sp=new URLSearchParams(location.search).get('spot');if(SLOTS.includes(sp)){$('shop').scrollIntoView();pickSlot(sp)}
 }).catch(e=>{$('slots').innerHTML=`<p class="err">Couldn't load the shop: ${esc(e.message)}</p>`});

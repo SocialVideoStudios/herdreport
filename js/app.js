@@ -27,6 +27,7 @@ const DEF_PACKAGES=[
  {id:'ads',kind:'ad',sort:3,active:true,price:null,unit:'per episode',name:'Episode ads',
   description:'Host-read spots in the episodes you choose. Book a single week or a run of weeks from open slots.',
   features:['Read by Scott, in his own words','Five spots per episode: pre-roll, three mid-rolls and post-roll','Pick your weeks from the live calendar','Great for sale announcements']},
+ {id:'store',kind:'store',sort:9,active:false,price:null,unit:'',name:'Hat order',description:'Signature Hat order from the store.',features:[]},
  {id:'merch',kind:'merch',sort:4,active:true,price:null,unit:'custom',name:'Merch partnership',
   description:'Co-branded Herd Report gear for your sale, field day or customer appreciation event.',
   features:['Co-branded Signature Hats','Giveaways for sale-day buyers','Mention on the show','Quantities and pricing on request']}
@@ -38,7 +39,7 @@ function upcoming(n,day){const out=[];const d=new Date();d.setHours(12,0,0,0);d.
  while(d.getDay()!==day)d.setDate(d.getDate()+1);for(let i=0;i<n;i++){out.push(iso(d));d.setDate(d.getDate()+7)}return out}
 
 /* ---------- demo backend (browser storage) ---------- */
-const K='hr-ads-demo-v2';let mem=null;
+const K='hr-ads-demo-v3';let mem=null;
 function seed(){const w=upcoming(6,1);const now=new Date().toISOString();
  return{session:null,settings:DEF_SETTINGS,packages:DEF_PACKAGES,guests:[],
  users:[{id:'u-admin',email:'admin@herdreport.com',pw:'herdadmin2026',role:'admin',company:'Herd Report',contact_name:'Scott Beck',phone:'',created_at:now},

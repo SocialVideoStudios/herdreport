@@ -89,7 +89,37 @@ language sql stable security definer set search_path = public as $$
    group by d, b.placement;
 $$;
 
+-- Guest applications (no account needed to apply)
+create table if not exists public.guest_requests (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  operation text,
+  role text,
+  email text not null,
+  phone text,
+  location text,
+  website text,
+  socials text,
+  breeds text[] not null default '{}',
+  herd_type text,
+  topics text,
+  sale_date date,
+  photo_url text,
+  heard_from text,
+  status text not null default 'new' check (status in ('new','contacted','scheduled','recorded','declined')),
+  admin_note text,
+  created_at timestamptz not null default now()
+);
+
 -- Row-level security ------------------------------------------------------
+alter table public.guest_requests enable row level security;
+drop policy if exists "guest apply" on public.guest_requests;
+create policy "guest apply" on public.guest_requests for insert to anon, authenticated with check (status = 'new');
+drop policy if exists "guest admin read" on public.guest_requests;
+create policy "guest admin read" on public.guest_requests for select using (public.is_admin());
+drop policy if exists "guest admin update" on public.guest_requests;
+create policy "guest admin update" on public.guest_requests for update using (public.is_admin()) with check (public.is_admin());
+
 alter table public.profiles enable row level security;
 alter table public.packages enable row level security;
 alter table public.settings enable row level security;

@@ -40,7 +40,7 @@ function upcoming(n,day){const out=[];const d=new Date();d.setHours(12,0,0,0);d.
 /* ---------- demo backend (browser storage) ---------- */
 const K='hr-ads-demo-v2';let mem=null;
 function seed(){const w=upcoming(6,1);const now=new Date().toISOString();
- return{session:null,settings:DEF_SETTINGS,packages:DEF_PACKAGES,
+ return{session:null,settings:DEF_SETTINGS,packages:DEF_PACKAGES,guests:[],
  users:[{id:'u-admin',email:'admin@herdreport.com',pw:'herdadmin2026',role:'admin',company:'Herd Report',contact_name:'Scott Beck',phone:'',created_at:now},
   {id:'u-prairie',email:'demo@prairieline.co',pw:'sponsor2026',role:'client',company:'Prairie Line Feed Co.',contact_name:'Demo Sponsor',phone:'',created_at:now},
   {id:'u-bigsky',email:'demo@bigskygenetics.com',pw:'sponsor2026',role:'client',company:'Big Sky Genetics',contact_name:'Demo Buyer',phone:'',created_at:now}],
@@ -73,6 +73,9 @@ const Demo={
  async cancelBooking(id){const d=db();const b=d.bookings.find(b=>b.id===id&&b.client_id===d.session);if(!b||b.status!=='pending')return fail('Only pending requests can be cancelled.');b.status='cancelled';put();return wait(b)},
  async usage(){const m={};db().bookings.filter(b=>TAKEN.includes(b.status)&&b.placement).forEach(b=>b.episode_dates.forEach(dt=>{const k=dt+'|'+b.placement;m[k]=(m[k]||0)+1}));return wait(m)},
  async clients(){return wait(db().users.filter(u=>u.role==='client').map(strip))},
+ async submitGuest(g){const d=db();d.guests=d.guests||[];const ng={...g,id:'g-'+uid(),status:'new',admin_note:'',created_at:new Date().toISOString()};d.guests.push(ng);put();return wait(ng)},
+ async guests(){return wait(structuredClone(db().guests||[]).reverse())},
+ async updateGuest(id,patch){const d=db();const g=(d.guests||[]).find(x=>x.id===id);Object.assign(g,patch);put();return wait(g)},
  reset(){mem=seed();put()}
 };
 
@@ -96,7 +99,10 @@ const Live={
  async updateBooking(id,patch){return ok(await sb.from('bookings').update(patch).eq('id',id).select().single())},
  async cancelBooking(id){return ok(await sb.rpc('cancel_booking',{bid:id}))},
  async usage(){const r=ok(await sb.rpc('slot_usage'));const m={};(r||[]).forEach(x=>{m[x.episode_date+'|'+x.placement]=Number(x.n)});return m},
- async clients(){return ok(await sb.from('profiles').select('*').eq('role','client').order('created_at',{ascending:false}))}
+ async clients(){return ok(await sb.from('profiles').select('*').eq('role','client').order('created_at',{ascending:false}))},
+ async submitGuest(g){ok(await sb.from('guest_requests').insert({...g,status:'new'}));return g},
+ async guests(){return ok(await sb.from('guest_requests').select('*').order('created_at',{ascending:false}))},
+ async updateGuest(id,patch){return ok(await sb.from('guest_requests').update(patch).eq('id',id).select().single())}
 };
 if(LIVE)sb=window.supabase.createClient(C.supabaseUrl,C.supabaseAnonKey);
 const API=LIVE?Live:Demo;
@@ -107,11 +113,11 @@ function chrome(active){
  if(h)h.innerHTML=`${LIVE?'':`<div class="demo"><b>Demo mode.</b> Accounts and bookings are saved only in this browser until the database is connected.</div>`}
  <header class="top"><div class="wrap">
   <a class="logo" href="index.html" aria-label="Herd Report home"><img class="lt" src="mark.png" alt=""><img class="dk" src="mark-light.png" alt=""><b>Herd Report</b></a>
-  <nav class="nav" aria-label="Main"><a href="index.html#episodes">Episodes</a><a href="index.html#store">Shop</a><a href="advertise.html" class="${active==='advertise'?'on':''}">Advertise</a></nav>
+  <nav class="nav" aria-label="Main"><a href="index.html#episodes">Episodes</a><a href="index.html#store">Shop</a><a href="advertise.html" class="${active==='advertise'?'on':''}">Advertise</a><a href="guest.html" class="${active==='guest'?'on':''}">Be a guest</a></nav>
   <a class="btn sm ${active==='account'?'solid':''}" href="account.html" id="acctbtn">Client login</a>
  </div></header>`;
  if(f)f.innerHTML=`<footer class="foot"><div class="wrap">
-  <nav aria-label="Footer"><a href="index.html">Home</a><a href="index.html#episodes">Episodes</a><a href="advertise.html">Advertise</a><a href="account.html">Client login</a><a href="https://www.herdreportpodcast.com/contact/">Contact</a></nav>
+  <nav aria-label="Footer"><a href="index.html">Home</a><a href="index.html#episodes">Episodes</a><a href="advertise.html">Advertise</a><a href="guest.html">Be a guest</a><a href="account.html">Client login</a><a href="https://www.herdreportpodcast.com/contact/">Contact</a></nav>
   <small>© ${new Date().getFullYear()} Herd Report Podcast</small></div></footer>`;
  API.current().then(u=>{const b=document.getElementById('acctbtn');if(!b||!u)return;
   if(u.role==='admin'){b.textContent='Admin';b.href='admin.html'}else b.textContent='My account'}).catch(()=>{});

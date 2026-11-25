@@ -146,7 +146,7 @@ function counts(){return{ads:all.filter(b=>!isHat(b)&&['pending','refund_request
  guests:guests.filter(g=>g.status==='new').length,messages:msgs.filter(m=>m.status==='new').length,reviews:revs.filter(r=>r.status==='pending').length}}
 function shell(){
  const c=counts();
- app.innerHTML=`<div class="atop"><img src="mark-light.png" alt=""><b>Herd Report admin</b><a href="index.html" target="_blank">View site</a><button id="out">Sign out</button></div>
+ app.innerHTML=`<div class="atop"><img src="mark-light.png" alt=""><b>Herd Report admin</b><a href="index.html" target="_blank">View site</a><a href="account.html">Client view</a><button id="out">Sign out</button></div>
  <div class="aframe"><nav class="anav" aria-label="Admin">${TABS.map(([k,n])=>`<button data-t="${k}">${n}${c[k]?`<span class="c">${c[k]}</span>`:''}</button>`).join('')}</nav><main class="amain" id="pane"></main></div>`;
  document.getElementById('out').onclick=async()=>{await API.signOut();login()};
  app.querySelector('.anav').addEventListener('click',e=>{const b=e.target.closest('button[data-t]');if(b)go(b.dataset.t)});

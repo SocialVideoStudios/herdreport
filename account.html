@@ -86,10 +86,17 @@ const size=n=>n>1e6?(n/1e6).toFixed(1)+' MB':Math.max(1,Math.round(n/1e3))+' KB'
 const isImg=f=>/^image\//.test(f.type||'')||/^data:image/.test(f.url||'');
 
 async function start(){pkgs=await API.packages();me=await API.current();
- if(me&&me.role==='admin'){location.replace('admin.html');return}
+ if(me&&me.role==='admin'){adminGate();return}
  me?home():authView()}
 
 /* ---------- sign in ---------- */
+function adminGate(){
+ app.innerHTML=`<div class="gate"><p class="kick">My dashboard</p><h1>You're signed in as the admin</h1>
+  <p class="soft">This page is for clients. ${LIVE?'Sign out, then sign in with a client account to see it.':'Switch to the sample client to see what clients see.'}</p>
+  <div class="btns" style="justify-content:center"><a class="btn solid" href="admin.html">Open admin dashboard</a>${LIVE?'':'<button class="btn" id="asClient">View as sample client</button>'}<button class="btn" id="aOut">Sign out</button></div></div>`;
+ $('aOut').onclick=async()=>{await API.signOut();me=null;HR.chrome('account');authView()};
+ if($('asClient'))$('asClient').onclick=async()=>{await API.signOut();me=await API.signIn('demo@prairieline.co','sponsor2026');HR.chrome('account');home()};
+}
 function authView(msg){
  app.innerHTML=`<div class="gate"><p class="kick">My dashboard</p><h1>Sign in to see your orders</h1>
   <p class="soft">Your ads, air dates, hat orders and refunds, all in one place.</p>

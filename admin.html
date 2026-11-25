@@ -60,6 +60,25 @@ body.adm{background:light-dark(#f5f4f1,#0f0d0e);font:14px/1.45 "IBM Plex Sans",s
 .grid5 th{padding:6px;font-size:11px}.grid5 td{padding:5px 6px;border:1px solid var(--hair)}
 .grid5 td.o{color:var(--soft)}.grid5 td.b{background:color-mix(in srgb,#2f6b3a 12%,transparent);font-weight:600}.grid5 td.p{background:#fff6e0;font-style:italic;color:#7a5200}
 .grid5 td span{display:block;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* widgets */
+.wgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:start}
+.wd{padding:14px 16px;min-width:0}.wd.wide{grid-column:span 2}
+.wd h2{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:10px}
+.wd h2 button{background:none;border:0;padding:0;font:600 15px "IBM Plex Sans",sans-serif;color:inherit;cursor:pointer}
+.wd h2 button::after{content:" →";color:var(--soft)}.wd h2 button:hover{text-decoration:underline}
+.wd h2 .soft{font-weight:400;font-size:12.5px;text-align:right}
+.wss{display:grid;grid-template-columns:repeat(auto-fit,minmax(70px,1fr));gap:6px;margin-bottom:8px}
+.ws{background:color-mix(in srgb,var(--ink) 4%,transparent);border-radius:8px;padding:7px 9px}
+.ws b{display:block;font-size:17px;font-weight:600;line-height:1.2}.ws span{font-size:11.5px;color:var(--soft)}
+.ws.hot{background:color-mix(in srgb,var(--red) 12%,transparent)}.ws.hot b{color:var(--red2)}
+.wr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;align-items:center;padding:7px 0;border-top:1px solid var(--hair)}
+.wr .w{min-width:0}.wr .w b{font-weight:600}.wr .sub{color:var(--soft);font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wr .r{font-weight:600;white-space:nowrap}.wr .a{grid-column:1/-1;display:flex;gap:6px;flex-wrap:wrap}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.chips button{border:1px solid var(--hair);background:var(--card);color:inherit;border-radius:999px;padding:5px 12px;font:500 13px "IBM Plex Sans",sans-serif;cursor:pointer}
+.chips button span{color:var(--soft);margin-left:4px}.chips button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}.chips button[aria-pressed=true] span{color:inherit;opacity:.7}
+@media(max-width:1200px){.wgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.wgrid{grid-template-columns:minmax(0,1fr)}.wd.wide{grid-column:auto}}
 /* lists */
 .rev{display:grid;gap:8px}
 .rv{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 16px;align-items:center;padding:12px 14px}
@@ -121,8 +140,9 @@ function login(msg){
   catch(x){document.getElementById('lerr').textContent=x.message}});
 }
 
-const TABS=[['home','Home'],['bookings','Orders'],['calendar','Ad calendar'],['guests','Guest applications'],['messages','Messages'],['reviews','Reviews'],['clients','Clients'],['packages','Packages'],['settings','Settings']];
-function counts(){return{bookings:all.filter(b=>['pending','refund_requested'].includes(b.status)).length+all.filter(b=>b.kind==='store'&&b.status==='paid').length,
+const TABS=[['home','Home'],['ads','Ad orders'],['merch','Merch orders'],['calendar','Ad calendar'],['guests','Guest applications'],['messages','Messages'],['reviews','Reviews'],['clients','Clients'],['packages','Packages'],['settings','Settings']];
+const isHat=b=>b.kind==='store';
+function counts(){return{ads:all.filter(b=>!isHat(b)&&['pending','refund_requested'].includes(b.status)).length,merch:all.filter(b=>isHat(b)&&['paid','refund_requested'].includes(b.status)).length,
  guests:guests.filter(g=>g.status==='new').length,messages:msgs.filter(m=>m.status==='new').length,reviews:revs.filter(r=>r.status==='pending').length}}
 function shell(){
  const c=counts();
@@ -138,7 +158,7 @@ function show(){
  app.querySelectorAll('.anav button').forEach(b=>b.setAttribute('aria-current',b.dataset.t===tab?'page':'false'));
  const titles=Object.fromEntries(TABS);const pane=document.getElementById('pane');
  if(tab!=='home'){pane.innerHTML=`<div class="ah"><h1>${titles[tab]}</h1></div><div id="sub"></div>`}
- ({home,bookings,calendar,guests:guestsView,messages:messagesView,reviews:reviewsView,clients,packages,settings})[tab]();
+ ({home,ads:()=>bookings('ads'),merch:()=>bookings('merch'),calendar,guests:guestsView,messages:messagesView,reviews:reviewsView,clients,packages,settings})[tab]();
 }
 async function refresh(){await load();const y=scrollY;shell();scrollTo(0,y)}
 function detail(b){
@@ -150,47 +170,53 @@ function detail(b){
 }
 async function setStatus(id,status){await API.updateBooking(id,{status});await refresh()}
 
-/* ---------- home: everything at a glance ---------- */
+/* ---------- home: a widget for every section ---------- */
 function home(){
  const pane=document.getElementById('pane');
- const sumOf=ss=>all.filter(b=>ss.includes(b.status)).reduce((t,b)=>t+(Number(b.amount)||0),0);
- const weeks=upcoming(6,st.releaseDay??1),next4=weeks.slice(0,4);
- const booked4=all.filter(b=>TAKEN.includes(b.status)&&b.placement).reduce((t,b)=>t+b.episode_dates.filter(d=>next4.includes(d)).length,0);
- const ship=all.filter(b=>b.kind==='store'&&b.status==='paid');
- const Q=[];
- all.filter(b=>b.status==='pending').forEach(b=>Q.push({t:'order',l:'New order',who:co(b),s:`${title(b)} · ${detail(b)} · ${money(b.amount)}`,a:`<button class="btn sm go" data-ap="${esc(b.id)}">Approve</button><button class="btn sm" data-de="${esc(b.id)}">Decline</button><button class="btn sm" data-ed="${esc(b.id)}">Open</button>`}));
- all.filter(b=>b.status==='refund_requested').forEach(b=>Q.push({t:'refund',l:'Refund',who:co(b),s:`${title(b)} · refund ${money(b.refund?.amount??Math.max(0,(b.amount||0)-HR.REFUND_FEE))} of ${money(b.amount)}${b.refund?.reason?' · “'+b.refund.reason+'”':''}`,a:`<button class="btn sm go" data-st="${esc(b.id)}" data-v="refunded">Mark refunded</button><button class="btn sm" data-st="${esc(b.id)}" data-v="paid">Deny</button>`}));
- ship.forEach(b=>{const ln=String(b.notes||'').split('\n');Q.push({t:'ship',l:'Ship',who:co(b),s:`${ln.filter(l=>!l.startsWith('Ship to')).join(', ')} · ${(ln.find(l=>l.startsWith('Ship to'))||'').replace('Ship to: ','')}`,a:`<button class="btn sm go" data-st="${esc(b.id)}" data-v="completed">Mark shipped</button><button class="btn sm" data-ed="${esc(b.id)}">Open</button>`})});
- revs.filter(r=>r.status==='pending').forEach(r=>Q.push({t:'review',l:'Review',who:`${'★'.repeat(r.rating)} ${r.name}`,s:r.text,a:`<button class="btn sm go" data-rv="${esc(r.id)}" data-s="approved">Approve</button><button class="btn sm" data-rv="${esc(r.id)}" data-s="hidden">Hide</button>`}));
- guests.filter(g=>g.status==='new').forEach(g=>Q.push({t:'guest',l:'Guest app',who:g.name,s:[g.operation,g.location].filter(Boolean).join(' · '),a:`<button class="btn sm" data-g="${esc(g.id)}">Open</button><button class="btn sm" data-gs="${esc(g.id)}">Mark contacted</button>`}));
- msgs.filter(m=>m.status==='new').forEach(m=>Q.push({t:'msg',l:'Message',who:m.name,s:`${m.topic||'General'} · ${m.message}`,a:`<a class="btn sm" href="mailto:${esc(m.email)}?subject=${encodeURIComponent('Re: Herd Report')}">Reply</a><button class="btn sm" data-ms="${esc(m.id)}">Mark replied</button>`}));
- const SHORT={approved:'Awaiting payment',pending:'New',refund_requested:'Refund asked'};
- const short=b=>esc((co(b)).split(' ').slice(0,2).join(' '));
- const cell=(d,p)=>{const hit=all.find(b=>b.placement===p&&b.episode_dates.includes(d)&&TAKEN.includes(b.status)),pen=all.find(b=>b.placement===p&&b.episode_dates.includes(d)&&b.status==='pending');
-  return hit?`<td class="b" title="${esc(co(hit))}"><span>${short(hit)}</span></td>`:pen?`<td class="p" title="Pending: ${esc(co(pen))}"><span>${short(pen)}?</span></td>`:'<td class="o">open</td>'};
- const recent=[...all].sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at))).slice(0,8);
- pane.innerHTML=`<div class="ah"><h1>Good ${new Date().getHours()<12?'morning':new Date().getHours()<17?'afternoon':'evening'}, ${esc((me.contact_name||'Scott').split(' ')[0])}</h1><span class="soft">${new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}</span></div>
- <div class="kpis">
-  <button class="kpi ${Q.length?'hot':''}" data-go="home"><div class="v">${Q.length}</div><div class="l">To do</div></button>
-  <button class="kpi" data-go="bookings" data-f="approved"><div class="v">${money(sumOf(['approved']))}</div><div class="l">Awaiting payment</div></button>
-  <button class="kpi" data-go="bookings" data-f="paid"><div class="v">${money(sumOf(['paid','live','completed']))}</div><div class="l">Paid to date</div></button>
-  <button class="kpi" data-go="calendar"><div class="v">${booked4}/${next4.length*SLOTS.length}</div><div class="l">Spots sold, next 4 episodes</div></button>
-  <button class="kpi" data-go="bookings" data-f="paid"><div class="v">${ship.length}</div><div class="l">Hat orders to ship</div></button>
-  <button class="kpi" data-go="clients"><div class="v">${new Set(all.map(b=>b.client_id)).size}</div><div class="l">Clients</div></button></div>
- <div class="hgrid">
-  <div class="card panel"><h2>To do <span class="soft" style="font-weight:400;font-size:13px">${Q.length} item${Q.length===1?'':'s'}</span></h2>
-   ${Q.length?Q.map(q=>`<div class="q"><span class="t ${q.t}">${q.l}</span><div class="w"><b>${esc(q.who)}</b><div class="s" title="${esc(q.s)}">${esc(q.s)}</div></div><div class="a">${q.a}</div></div>`).join(''):'<p class="done">All caught up. New orders, refunds, reviews and messages show up here.</p>'}</div>
-  <div style="display:grid;gap:16px">
-   <div class="card panel"><h2>Next 6 episodes <button data-go="calendar">Full calendar</button></h2><div class="scroll"><table class="grid5"><thead><tr><th>Episode</th>${SLOTS.map(k=>`<th>${PLACE[k].replace('Mid-roll ','Mid ').replace('-roll','')}</th>`).join('')}</tr></thead>
-    <tbody>${weeks.map(d=>`<tr><td><b>${shortDate(d)}</b></td>${SLOTS.map(k=>cell(d,k)).join('')}</tr>`).join('')}</tbody></table></div></div>
-   <div class="card panel"><h2>Recent orders <button data-go="bookings">All orders</button></h2><div class="scroll"><table><tbody>${recent.map(b=>`<tr><td><div class="who">${esc(co(b))}</div><div class="sub">${esc(title(b))}</div></td><td class="num">${money(b.amount)}</td><td><span class="pill st-${esc(b.status)}" style="white-space:nowrap">${esc(SHORT[b.status]||STATUS[b.status]||b.status)}</span></td><td style="text-align:right"><button class="btn sm" data-ed="${esc(b.id)}">Open</button></td></tr>`).join('')||'<tr><td class="soft">No orders yet.</td></tr>'}</tbody></table></div></div>
-  </div></div>`;
+ const sumOf=(ss,f=()=>true)=>all.filter(b=>ss.includes(b.status)&&f(b)).reduce((t,b)=>t+(Number(b.amount)||0),0);
+ const ads=all.filter(b=>!isHat(b)),hats=all.filter(isHat);
+ const weeks=upcoming(5,st.releaseDay??1),next4=weeks.slice(0,4);
+ const booked4=ads.filter(b=>TAKEN.includes(b.status)&&b.placement).reduce((t,b)=>t+b.episode_dates.filter(d=>next4.includes(d)).length,0);
+ const recent=arr=>[...arr].sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at)));
+ const cnt=(arr,k)=>arr.filter(b=>b.status===k).length;
+ const shortCo=b=>esc(co(b).split(' ').slice(0,2).join(' '));
+ const cell=(d,p)=>{const hit=ads.find(b=>b.placement===p&&b.episode_dates.includes(d)&&TAKEN.includes(b.status)),pen=ads.find(b=>b.placement===p&&b.episode_dates.includes(d)&&b.status==='pending');
+  return hit?`<td class="b" title="${esc(co(hit))}"><span>${shortCo(hit)}</span></td>`:pen?`<td class="p" title="Pending: ${esc(co(pen))}"><span>${shortCo(pen)}?</span></td>`:'<td class="o">open</td>'};
+ const W=(id,t,sub,body,cls='')=>`<section class="card wd ${cls}"><h2><button data-go="${id}">${t}</button><span class="soft">${sub}</span></h2>${body}</section>`;
+ const row=(l,r,act='')=>`<div class="wr"><div class="w">${l}</div><div class="r">${r}</div>${act?`<div class="a">${act}</div>`:''}</div>`;
+ const stat=(v,l,hot)=>`<div class="ws ${hot?'hot':''}"><b>${v}</b><span>${l}</span></div>`;
+ const none=t=>`<p class="done">${t}</p>`;
+ const sub=t=>`<div class="sub">${t}</div>`;
+
+ const adQ=recent(ads.filter(b=>['pending','refund_requested'].includes(b.status)));
+ const adW=W('ads','Ad orders',`${ads.length} total`,`<div class="wss">${stat(cnt(ads,'pending'),'New',cnt(ads,'pending'))}${stat(money(sumOf(['approved'],b=>!isHat(b))),'Awaiting payment')}${stat(money(sumOf(['paid','live','completed'],b=>!isHat(b))),'Paid')}${stat(cnt(ads,'refund_requested'),'Refunds asked',cnt(ads,'refund_requested'))}</div>
+  ${adQ.length?adQ.slice(0,4).map(b=>row(`<b>${esc(co(b))}</b>${sub(esc(title(b))+' · '+money(b.amount))}`,`<span class="pill st-${esc(b.status)}">${b.status==='pending'?'New':'Refund asked'}</span>`,
+   b.status==='pending'?`<button class="btn sm go" data-ap="${esc(b.id)}">Approve</button><button class="btn sm" data-ed="${esc(b.id)}">Open</button>`:`<button class="btn sm go" data-st="${esc(b.id)}" data-v="refunded">Mark refunded</button><button class="btn sm" data-st="${esc(b.id)}" data-v="paid">Deny</button>`)).join(''):none('No new ad orders.')}`);
+ const toShip=recent(hats.filter(b=>['paid','refund_requested'].includes(b.status)));
+ const hatW=W('merch','Merch orders',`${hats.length} total`,`<div class="wss">${stat(cnt(hats,'paid'),'To ship',cnt(hats,'paid'))}${stat(cnt(hats,'completed'),'Shipped')}${stat(money(sumOf(['paid','completed'],isHat)),'Sales')}</div>
+  ${toShip.length?toShip.slice(0,4).map(b=>{const ln=String(b.notes||'').split('\n');return row(`<b>${esc(co(b))}</b>${sub(esc(ln.filter(l=>!l.startsWith('Ship to')).join(', ')))}`,money(b.amount),
+   b.status==='paid'?`<button class="btn sm go" data-st="${esc(b.id)}" data-v="completed">Mark shipped</button>`:`<button class="btn sm go" data-st="${esc(b.id)}" data-v="refunded">Mark refunded</button>`)}).join(''):none('Nothing to ship.')}`);
+ const calW=W('calendar','Ad calendar',`${booked4}/${next4.length*SLOTS.length} sold, next 4 episodes`,`<div class="scroll"><table class="grid5"><thead><tr><th></th>${SLOTS.map(k=>`<th>${PLACE[k].replace('Mid-roll ','Mid ').replace('-roll','')}</th>`).join('')}</tr></thead>
+  <tbody>${weeks.map(d=>`<tr><td><b>${shortDate(d)}</b></td>${SLOTS.map(k=>cell(d,k)).join('')}</tr>`).join('')}</tbody></table></div>`,'wide');
+ const gNew=guests.filter(g=>g.status==='new');
+ const guestW=W('guests','Guest applications',`${guests.length} total`,`<div class="wss">${stat(gNew.length,'New',gNew.length)}${stat(guests.filter(g=>g.status==='scheduled').length,'Scheduled')}${stat(guests.filter(g=>g.status==='recorded').length,'Recorded')}</div>
+  ${gNew.length?gNew.slice(0,3).map(g=>row(`<b>${esc(g.name)}</b>${sub(esc([g.operation,g.location].filter(Boolean).join(' · ')))}`,'',`<button class="btn sm" data-g="${esc(g.id)}">Open</button>`)).join(''):none('No new applications.')}`);
+ const mNew=msgs.filter(m=>m.status==='new');
+ const msgW=W('messages','Messages',`${msgs.length} total`,`${mNew.length?mNew.slice(0,3).map(m=>row(`<b>${esc(m.name)}</b>${sub(esc((m.topic||'General')+' · '+m.message))}`,'',`<a class="btn sm" href="mailto:${esc(m.email)}?subject=${encodeURIComponent('Re: Herd Report')}">Reply</a><button class="btn sm" data-ms="${esc(m.id)}">Done</button>`)).join(''):none('No new messages.')}`);
+ const rNew=revs.filter(r=>r.status==='pending'),rOn=revs.filter(r=>r.status==='approved');
+ const revW=W('reviews','Reviews',`${rOn.length} showing on site`,`${rNew.length?rNew.slice(0,3).map(r=>row(`<b><span style="color:var(--red2)">${'★'.repeat(r.rating)}</span> ${esc(r.name)}</b>${sub(esc(r.text))}`,'',`<button class="btn sm go" data-rv="${esc(r.id)}" data-s="approved">Approve</button><button class="btn sm" data-rv="${esc(r.id)}" data-s="hidden">Hide</button>`)).join(''):none('No reviews waiting.')}`);
+ const cl={};all.forEach(b=>{const k=b.client_id;cl[k]=cl[k]||{n:co(b),t:0,c:0};cl[k].c++;if(['paid','live','completed'].includes(b.status))cl[k].t+=Number(b.amount)||0});
+ const top=Object.values(cl).sort((a,b)=>b.t-a.t).slice(0,4);
+ const cliW=W('clients','Clients',`${Object.keys(cl).length} with orders`,top.length?top.map(c=>row(`<b>${esc(c.n)}</b>${sub(c.c+' order'+(c.c>1?'s':''))}`,money(c.t))).join(''):none('No clients yet.'));
+ const setW=W('settings','Ad prices',`Episodes release ${['Sundays','Mondays','Tuesdays','Wednesdays','Thursdays','Fridays','Saturdays'][st.releaseDay??1]}`,SLOTS.map(k=>row(PLACE[k],money(st.rates[k]))).join(''));
+ const todo=adQ.length+toShip.length+gNew.length+mNew.length+rNew.length;
+ pane.innerHTML=`<div class="ah"><h1>Good ${new Date().getHours()<12?'morning':new Date().getHours()<17?'afternoon':'evening'}, ${esc((me.contact_name||'Scott').split(' ')[0])}</h1><span class="soft">${todo?`<b style="color:var(--red2)">${todo} thing${todo>1?'s':''} need you</b> · `:'All caught up · '}${new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}</span></div>
+  <div class="wgrid">${adW}${hatW}${revW}${calW}${guestW}${msgW}${cliW}${setW}</div>`;
  wire(pane);
- pane.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{if(b.dataset.go!=='home')go(b.dataset.go,{status:b.dataset.f||'all'})});
+ pane.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go,{status:'all'}));
  pane.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>{b.disabled=true;setStatus(b.dataset.st,b.dataset.v)});
  pane.querySelectorAll('[data-rv]').forEach(b=>b.onclick=async()=>{b.disabled=true;await API.updateReview(b.dataset.rv,{status:b.dataset.s});await refresh()});
  pane.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>openGuest(b.dataset.g));
- pane.querySelectorAll('[data-gs]').forEach(b=>b.onclick=async()=>{b.disabled=true;await API.updateGuest(b.dataset.gs,{status:'contacted'});await refresh()});
  pane.querySelectorAll('[data-ms]').forEach(b=>b.onclick=async()=>{b.disabled=true;await API.updateMessage(b.dataset.ms,{status:'replied'});await refresh()});
 }
 function wire(el){
@@ -235,22 +261,35 @@ function edit(id,nextStatus){
 
 /* ---------- bookings ---------- */
 let fStatus='all',fText='';
-function bookings(){
- const pane=document.getElementById('sub');
- pane.innerHTML=`<div class="filters"><select id="fs" aria-label="Filter by status"><option value="all">All statuses</option>${Object.keys(STATUS).map(s=>`<option value="${s}">${STATUS[s]}</option>`).join('')}</select>
-  <input id="ft" type="search" placeholder="Search client or package" aria-label="Search bookings" value="${esc(fText)}"></div><div id="bt"></div>`;
- const fs=document.getElementById('fs');fs.value=fStatus;
+const HST={paid:'To ship',completed:'Shipped',refund_requested:'Refund requested',refunded:'Refunded',cancelled:'Cancelled'};
+function bookings(kind){
+ const pane=document.getElementById('sub'),hat=kind==='merch',lab=hat?HST:STATUS;
+ const base=all.filter(b=>hat?isHat(b):!isHat(b));
+ const opts=Object.keys(lab).filter(k=>base.some(b=>b.status===k)||k===fStatus);
+ if(fStatus!=='all'&&!opts.includes(fStatus))fStatus='all';
+ const n=k=>base.filter(b=>k==='all'||b.status===k).length;
+ pane.innerHTML=`<div class="chips">${['all',...opts].map(k=>`<button data-f="${k}" aria-pressed="${k===fStatus}">${k==='all'?'All':lab[k]} <span>${n(k)}</span></button>`).join('')}</div>
+  <div class="filters"><input id="ft" type="search" placeholder="${hat?'Search customer or hat':'Search client or ad'}" aria-label="Search" value="${esc(fText)}"></div><div id="bt"></div>`;
  const draw=()=>{const q=fText.toLowerCase();
-  const rows=all.filter(b=>(fStatus==='all'||b.status===fStatus)&&(!q||(co(b)+' '+title(b)+' '+(b.client?.email||'')).toLowerCase().includes(q)));
-  document.getElementById('bt').innerHTML=rows.length?`<div class="card" style="padding:8px 16px"><table class="stack"><thead><tr><th>Client</th><th>Package</th><th>Details</th><th class="num">Amount</th><th>Status</th><th></th></tr></thead><tbody>
-   ${rows.map(b=>`<tr><td data-l="Client"><div class="who">${esc(co(b))}</div><div class="sub">${esc(b.client?.email||'')}</div></td><td data-l="Package">${esc(title(b))}</td>
-    <td data-l="Details">${esc(detail(b))}</td><td data-l="Amount" class="num">${money(b.amount)}</td><td data-l="Status"><span class="pill st-${esc(b.status)}">${esc(STATUS[b.status]||b.status)}</span></td>
-    <td data-l=""><button class="btn sm" data-ed="${esc(b.id)}">Manage</button></td></tr>`).join('')}</tbody></table></div>`:'<p class="empty">No bookings match.</p>';
-  wire(document.getElementById('bt'))};
- fs.onchange=()=>{fStatus=fs.value;draw()};
+  const rows=base.filter(b=>(fStatus==='all'||b.status===fStatus)&&(!q||(co(b)+' '+title(b)+' '+(b.notes||'')+' '+(b.client?.email||'')).toLowerCase().includes(q)));
+  const lines=b=>String(b.notes||'').split('\n');
+  document.getElementById('bt').innerHTML=!rows.length?'<p class="empty">Nothing here.</p>':hat
+   ?`<div class="card" style="padding:4px 12px"><table class="stack"><thead><tr><th>Customer</th><th>Items</th><th>Ship to</th><th>Ordered</th><th class="num">Total</th><th>Status</th><th></th></tr></thead><tbody>
+    ${rows.map(b=>`<tr><td data-l="Customer"><div class="who">${esc(co(b))}</div><div class="sub">${esc(b.client?.email||'')}</div></td>
+     <td data-l="Items">${esc(lines(b).filter(l=>!l.startsWith('Ship to')).join(', '))}</td><td data-l="Ship to">${esc((lines(b).find(l=>l.startsWith('Ship to'))||'').replace('Ship to: ',''))}</td>
+     <td data-l="Ordered">${shortDate(String(b.created_at).slice(0,10))}</td><td data-l="Total" class="num">${money(b.amount)}</td>
+     <td data-l="Status"><span class="pill st-${esc(b.status)}">${esc(HST[b.status]||STATUS[b.status]||b.status)}</span></td>
+     <td data-l="" style="white-space:nowrap">${b.status==='paid'?`<button class="btn sm go" data-st="${esc(b.id)}" data-v="completed">Mark shipped</button> `:''}${b.status==='refund_requested'?`<button class="btn sm go" data-st="${esc(b.id)}" data-v="refunded">Mark refunded</button> `:''}<button class="btn sm" data-ed="${esc(b.id)}">Open</button></td></tr>`).join('')}</tbody></table></div>`
+   :`<div class="card" style="padding:4px 12px"><table class="stack"><thead><tr><th>Client</th><th>Ad</th><th>Air dates</th><th class="num">Amount</th><th>Status</th><th></th></tr></thead><tbody>
+    ${rows.map(b=>`<tr><td data-l="Client"><div class="who">${esc(co(b))}</div><div class="sub">${esc(b.client?.email||'')}</div></td><td data-l="Ad">${esc(title(b))}${needsInfo(b)?'<div class="sub" style="color:var(--warn)">No talking points yet</div>':''}</td>
+     <td data-l="Air dates">${esc(b.kind==='ad'?b.episode_dates.map(shortDate).join(', '):detail(b))}</td><td data-l="Amount" class="num">${money(b.amount)}</td><td data-l="Status"><span class="pill st-${esc(b.status)}">${esc(STATUS[b.status]||b.status)}</span></td>
+     <td data-l="" style="white-space:nowrap">${b.status==='pending'?`<button class="btn sm go" data-ap="${esc(b.id)}">Approve</button> `:''}${b.status==='refund_requested'?`<button class="btn sm go" data-st="${esc(b.id)}" data-v="refunded">Mark refunded</button> `:''}<button class="btn sm" data-ed="${esc(b.id)}">Open</button></td></tr>`).join('')}</tbody></table></div>`;
+  const bt=document.getElementById('bt');wire(bt);bt.querySelectorAll('[data-st]').forEach(x=>x.onclick=()=>{x.disabled=true;setStatus(x.dataset.st,x.dataset.v)})};
+ pane.querySelectorAll('.chips button').forEach(x=>x.onclick=()=>{fStatus=x.dataset.f;bookings(kind)});
  document.getElementById('ft').oninput=e=>{fText=e.target.value;draw()};
  draw();
 }
+const needsInfo=b=>!isHat(b)&&['approved','paid','live'].includes(b.status)&&!String(b.notes||'').trim();
 
 /* ---------- calendar ---------- */
 function calendar(){

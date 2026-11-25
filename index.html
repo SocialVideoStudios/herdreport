@@ -34,6 +34,11 @@ h1,h2,h3,.disp{font-family:Archivo,Impact,sans-serif;font-weight:900;line-height
 /* header */
 header{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:2px solid var(--line)}
 header .wrap{display:flex;align-items:center;gap:16px;padding:10px max(5vw,16px)}
+.acct{display:flex;align-items:center;gap:8px}.acct[hidden]{display:none}
+.acct a,.acct .so{font:700 13px Archivo,sans-serif;text-transform:uppercase;border:2px solid var(--line);border-radius:999px;height:40px;padding:0 14px;display:inline-flex;align-items:center;background:none;color:inherit;text-decoration:none;cursor:pointer;white-space:nowrap}
+.acct a{background:var(--red);border-color:var(--red);color:var(--cream)}
+.acct .so:hover{background:var(--ink);color:var(--bg)}
+@media(max-width:600px){.acct{display:none}}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none;margin-right:auto}
 .logo img{height:40px;width:auto;flex:none}
 .dk{display:none}
@@ -427,6 +432,7 @@ footer small{opacity:.7}
    <a href="https://www.instagram.com/herdreport/" aria-label="Instagram"><svg><use href="#i-ig"/></svg></a>
    <a href="https://www.tiktok.com/@herd.report" aria-label="TikTok"><svg><use href="#i-tt"/></svg></a>
   </div>
+  <span class="acct" id="acct" hidden><a href="account.html" id="acctLink">My dashboard</a><button type="button" class="so" id="signout">Sign out</button></span>
   <button class="cartbtn" id="cartbtn" aria-label="Open cart"><svg viewBox="0 0 24 24"><path d="M3 4h2l2.4 11h11L21 8H6.2"/><circle cx="9" cy="19.5" r="1.5"/><circle cx="17" cy="19.5" r="1.5"/></svg><b id="count"></b></button>
   <button class="menubtn" id="menubtn" aria-expanded="false" aria-controls="menu"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><span id="menulbl">Menu</span></button>
  </div>
@@ -731,6 +737,16 @@ addEventListener('DOMContentLoaded',()=>{if(!window.HR)return;const {esc}=HR;
   let list=rs;while(list.length<6)list=list.concat(rs);
   tr.innerHTML=list.map(r=>card(r)).join('')+list.map(r=>card(r,1)).join('');el.hidden=false}).catch(()=>{});
 });
+</script>
+<script>
+addEventListener('DOMContentLoaded',()=>{if(!window.HR)return;HR.API.current().then(u=>{if(!u)return;
+ const box=document.getElementById('acct'),lnk=document.getElementById('acctLink');box.hidden=false;
+ if(u.role==='admin'){lnk.textContent='Admin';lnk.href='admin.html'}
+ document.querySelectorAll('#menu a[href="account.html"]').forEach(a=>{a.textContent=u.role==='admin'?'Admin dashboard':'My dashboard';if(u.role==='admin')a.href='admin.html';
+  a.parentElement.insertAdjacentHTML('afterend','<li><a href="#" id="menuSignout">Sign out</a></li>')});
+ const out=async e=>{e.preventDefault();await HR.API.signOut();location.reload()};
+ document.getElementById('signout').onclick=out;document.getElementById('menuSignout')?.addEventListener('click',out);
+}).catch(()=>{})});
 </script>
 </body>
 </html>

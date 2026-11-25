@@ -1,0 +1,26 @@
+name: Import blog and guests
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install --no-save --no-package-lock node-html-parser@6.1.13
+      - run: node scripts/import-content.mjs
+      - name: Save changes
+        run: |
+          git add data/blog.json data/guests.json img/guests || true
+          if git diff --cached --quiet; then echo "No changes"; exit 0; fi
+          git config user.name "herd-report-bot"
+          git config user.email "herd-report-bot@users.noreply.github.com"
+          git commit -m "Import blog posts and past guests"
+          git push

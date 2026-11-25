@@ -620,7 +620,6 @@ button.btn{-webkit-appearance:none;appearance:none;background:transparent;color:
    <div class="btns" style="align-items:center"><span class="avg"><span class="rst" id="ravgS"></span><span id="ravg"></span></span><a class="btn" href="#review" data-pop="review">Leave a review</a></div></div>
  </div>
  <div class="rtick" id="rtick" aria-label="Listener reviews"><div class="rtrack" id="rtrack"></div></div>
- <div class="rnav"><button class="arw" id="revPrev" type="button" aria-label="Previous reviews"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><button class="arw" id="revNext" type="button" aria-label="More reviews"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button></div>
 </section>
 
 <section class="closing">
@@ -830,7 +829,7 @@ addEventListener('DOMContentLoaded',()=>{if(!window.HR)return;const {esc}=HR;
   const card=(r,dup)=>`<figure class="rvc"${dup?' aria-hidden="true"':''}><span class="rst" aria-label="${r.rating} out of 5 stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span>
    <blockquote>${esc(r.text)}</blockquote><figcaption>${r.sample?`<b>${esc(r.place||'Listener')}<span class="tag">Sample</span></b>`:`<b>${esc(r.name)}</b>${esc(r.place||'')}`}</figcaption></figure>`;
   let list=rs;while(list.length<6)list=list.concat(rs);
-  tr.innerHTML=list.map(r=>card(r)).join('')+list.map(r=>card(r,1)).join('');el.hidden=false;window.makeTicker&&makeTicker(document.getElementById('rtick'),tr,document.getElementById('revPrev'),document.getElementById('revNext'),0.03)}).catch(()=>{});
+  tr.innerHTML=list.map(r=>card(r)).join('')+list.map(r=>card(r,1)).join('');el.hidden=false;window.makeTicker&&makeTicker(document.getElementById('rtick'),tr,null,null,0.03)}).catch(()=>{});
 });
 </script>
 <script>

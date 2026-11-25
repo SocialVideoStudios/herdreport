@@ -131,6 +131,22 @@ function guest(){
    $('hrpBox').innerHTML=okMsg('Thanks!',`Got it, ${esc(v('gN').split(' ')[0])}`,"Scott will reach out if it's a fit. Let's get to it!!");$('hrpDone').onclick=close}
   catch(x){er.textContent=x.message;b.disabled=false;b.textContent='Send'}};
 }
+function adminLogin(){
+ show(`<p class="k">Herd Report admin</p><h2 id="hrpT">Admin sign in</h2><p class="sub">For the Herd Report team.</p>
+ <form id="hpAI" novalidate>
+  <div class="hrp-f"><label for="aE">Email</label><input id="aE" type="email" autocomplete="email"></div>
+  <div class="hrp-f"><label for="aP">Password</label><input id="aP" type="password" autocomplete="current-password"></div>
+  <p class="hrp-err" id="aErr"></p><button class="hrp-btn solid" type="submit" id="aGo">Sign in</button>
+  ${HR.LIVE?'':'<button class="hrp-btn wide" type="button" id="aPrev" style="margin-top:8px">Preview sign in</button>'}
+ </form>`);
+ const go=u=>{if(u.role!=='admin'){$('aErr').textContent="That account isn't an admin. Use Client login instead.";HR.API.signOut();return}
+  if(document.body.dataset.page==='admin')location.reload();else location.href='admin.html'};
+ $('hpAI').onsubmit=async e=>{e.preventDefault();const er=$('aErr'),b=$('aGo');er.textContent='';
+  if(!$('aE').value.trim()||!$('aP').value){er.textContent='Enter your email and password.';return}
+  b.disabled=true;b.textContent='Signing in…';
+  try{go(await HR.API.signIn($('aE').value,$('aP').value))}catch(x){er.textContent=x.message}b.disabled=false;b.textContent='Sign in'};
+ if($('aPrev'))$('aPrev').onclick=async()=>{try{go(await HR.API.signIn('admin@herdreport.com','herdadmin2026'))}catch(x){$('aErr').textContent=x.message}};
+}
 function login(startNew){
  show(`<div class="hrp-slide"><div class="hrp-track${startNew?' new':''}" id="hpTrack">
   <section aria-label="Sign in" id="hpIn">
@@ -180,14 +196,15 @@ document.addEventListener('click',e=>{
  if(e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||!window.HR)return;
  const el=e.target.closest('[data-pop],a[href]');if(!el)return;
  const href=el.getAttribute('href')||'';
- const pop=el.dataset.pop||(/(^|\/)contact\.html(\?|$)/.test(href)?'contact':/reviews\/new/.test(href)?'review':/(^|\/)account\.html(\?|#|$)/.test(href)?'login':/(^|\/)guest\.html(\?|#|$)/.test(href)?'guest':'');
+ const pop=el.dataset.pop||(/(^|\/)contact\.html(\?|$)/.test(href)?'contact':/reviews\/new/.test(href)?'review':/(^|\/)account\.html(\?|#|$)/.test(href)?'login':/(^|\/)guest\.html(\?|#|$)/.test(href)?'guest':/(^|\/)admin\.html(\?|#|$)/.test(href)?'admin':'');
  if(!pop)return;
  if(document.body.dataset.page==='contact'&&pop==='contact')return;
  if(pop==='login'&&document.body.dataset.page==='account')return;
  e.preventDefault();last=el;
  if(pop==='login'){HR.API.current().then(u=>{if(u)location.href='account.html';else login(el.dataset.new==='1')}).catch(()=>login());return}
  if(pop==='guest'){guest();return}
+ if(pop==='admin'){if(document.body.dataset.page==='admin'){adminLogin();return}HR.API.current().then(u=>{if(u&&u.role==='admin')location.href='admin.html';else adminLogin()}).catch(()=>adminLogin());return}
  if(pop==='review')review();else contact(new URL(el.href||location.href,location.href).searchParams.get('topic'));
 });
-window.HRPop={contact,review,login,guest};
+window.HRPop={contact,review,login,guest,adminLogin};
 })();

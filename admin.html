@@ -104,8 +104,9 @@ td .who{font-weight:600}td .sub{color:var(--soft);font-size:12.5px}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="js/config.js"></script>
 <script src="js/app.js"></script>
+<script src="js/popups.js"></script>
 </head>
-<body class="adm">
+<body class="adm" data-page="admin">
 <div id="app"><p class="soft" style="padding:20px">Loading…</p></div>
 <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mt"><div class="card" id="mbody"></div></div>
 <script>
@@ -126,18 +127,11 @@ async function start(){
 }
 async function load(){[pkgs,st,all,guests]=await Promise.all([API.packages(),API.settings(),API.allBookings(),API.guests()]);msgs=await API.messages();revs=await API.reviews()}
 
-function login(msg){
- app.innerHTML=`<div class="alogin"><p style="text-align:center;margin-bottom:16px"><img src="logo.png" alt="Herd Report" style="height:64px" class="lt"><img src="logo-light.png" alt="Herd Report" style="height:64px" class="dk"></p><form class="card" id="lf" novalidate>
-  <p class="kick">Herd Report admin</p><h2 style="font-size:20px;margin-bottom:16px">Sign in</h2>
-  <div class="field"><label for="le">Email</label><input id="le" type="email" autocomplete="email"></div>
-  <div class="field"><label for="lp">Password</label><input id="lp" type="password" autocomplete="current-password"></div>
-  <div class="btns"><button class="btn solid" type="submit">Sign in</button>${HR.LIVE?'':'<button class="btn" type="button" id="prev">Preview sign in</button>'}</div><p class="err" id="lerr">${msg?esc(msg):''}</p>
-</form><p style="text-align:center;margin-top:14px"><a href="index.html">Back to the site</a> · <a href="account.html">Client login</a></p></div>`;
- const pv=document.getElementById('prev');
- if(pv)pv.onclick=async()=>{try{await API.signIn('admin@herdreport.com','herdadmin2026');start()}catch(x){document.getElementById('lerr').textContent=x.message}};
- document.getElementById('lf').addEventListener('submit',async e=>{e.preventDefault();
-  try{await API.signIn(document.getElementById('le').value,document.getElementById('lp').value);start()}
-  catch(x){document.getElementById('lerr').textContent=x.message}});
+function login(){
+ app.innerHTML=`<div class="alogin" style="text-align:center"><p><img src="logo.png" alt="Herd Report" style="height:64px" class="lt"><img src="logo-light.png" alt="Herd Report" style="height:64px" class="dk"></p>
+  <h2 style="margin:12px 0 6px">Herd Report admin</h2><p class="soft">Sign in to manage orders, ads, guests and reviews.</p>
+  <div class="btns" style="justify-content:center;margin-top:16px"><button class="btn solid" data-pop="admin">Sign in</button><a class="btn" href="index.html">Back to the site</a></div></div>`;
+ HRPop.adminLogin();
 }
 
 const TABS=[['home','Home'],['ads','Ad orders'],['merch','Merch orders'],['calendar','Ad calendar'],['guests','Guest applications'],['messages','Messages'],['reviews','Reviews'],['clients','Clients'],['packages','Packages'],['settings','Settings']];

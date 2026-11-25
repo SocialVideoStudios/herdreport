@@ -213,3 +213,31 @@ create policy "creative upload own" on storage.objects for insert to authenticat
 drop policy if exists "creative delete own" on storage.objects;
 create policy "creative delete own" on storage.objects for delete to authenticated
   using (bucket_id = 'creative' and ((storage.foldername(name))[1] = auth.uid()::text or public.is_admin()));
+
+-- Listener reviews: anyone can submit, Scott approves before they show on the site --
+create table if not exists public.reviews (
+  id uuid primary key default gen_random_uuid(),
+  rating int not null check (rating between 1 and 5),
+  name text not null,
+  place text,
+  email text,
+  text text not null,
+  sample boolean not null default false,
+  status text not null default 'pending' check (status in ('pending','approved','hidden')),
+  created_at timestamptz not null default now()
+);
+alter table public.reviews enable row level security;
+drop policy if exists "review submit" on public.reviews;
+create policy "review submit" on public.reviews for insert to anon, authenticated with check (status = 'pending' and sample = false);
+drop policy if exists "review public read" on public.reviews;
+create policy "review public read" on public.reviews for select using (status = 'approved' or public.is_admin());
+drop policy if exists "review admin" on public.reviews;
+create policy "review admin" on public.reviews for all using (public.is_admin()) with check (public.is_admin());
+insert into public.reviews (rating, name, place, text, sample, status)
+select * from (values
+ (5,'Sample review','Cow-calf operator','The ranch visits are the best part. You get to hear how breeders actually make their decisions, not just the sale catalog version.',true,'approved'),
+ (5,'Sample review','Seedstock breeder','Scott asks the questions I would ask. Good conversations about cow families and sire selection, and he lets the guests talk.',true,'approved'),
+ (5,'Sample review','Bull buyer','I listen before every sale season. The sale previews help me know which programs to watch.',true,'approved'),
+ (4,'Sample review','Ranch hand and 4-H dad','Practical, down-to-earth and easy to listen to on the road. My kids have started asking about EPDs.',true,'approved'),
+ (5,'Sample review','Commercial cattleman','Honest talk about genetics, management and marketing from people who live it. Let''s get to it!',true,'approved')
+) v where not exists (select 1 from public.reviews);

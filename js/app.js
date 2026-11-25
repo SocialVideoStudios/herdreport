@@ -49,7 +49,7 @@ function seed(){const w=upcoming(6,1);const now=new Date().toISOString();
   {id:'b1',client_id:'u-prairie',package_id:'ads',kind:'ad',placement:'mid1',episode_dates:[w[0],w[1]],amount:700,status:'paid',notes:'Fall mineral program, 60-second read.',creative_url:'',admin_note:'',created_at:now},
   {id:'b2',client_id:'u-bigsky',package_id:'spotlight',kind:'spotlight',placement:null,episode_dates:[],sale_date:w[5],location:'Billings, MT',amount:null,status:'pending',notes:'Bull sale preview, 80 head.',creative_url:'',admin_note:'',created_at:now},
   {id:'b3',client_id:'u-bigsky',package_id:'ads',kind:'ad',placement:'pre',episode_dates:[w[2]],amount:500,status:'approved',notes:'Sale reminder.',creative_url:'',admin_note:'Invoice sent.',created_at:now}]}}
-function db(){if(mem)return mem;try{const d=JSON.parse(localStorage.getItem(K));if(d&&d.users){mem=d;return d}}catch(e){}mem=seed();put();return mem}
+function db(){if(mem)return mem;try{const d=JSON.parse(localStorage.getItem(K));if(d&&d.users){mem=d;if(!d.reviews){d.reviews=seedReviews();put()}return d}}catch(e){}mem=seed();mem.reviews=seedReviews();put();return mem}
 function put(){try{localStorage.setItem(K,JSON.stringify(mem))}catch(e){}}
 const strip=u=>u&&({id:u.id,email:u.email,role:u.role,company:u.company,contact_name:u.contact_name,phone:u.phone,brand:structuredClone(u.brand||{}),created_at:u.created_at});
 const EDITABLE=['pending','approved','paid','live'];
@@ -64,6 +64,13 @@ async function shrink(file){const url=await readFile(file);if(!/^image\/(png|jpe
  const img=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=url});
  const k=Math.min(1,900/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);
  c.getContext('2d').drawImage(img,0,0,c.width,c.height);return c.toDataURL(file.type==='image/png'?'image/png':'image/jpeg',.85)}
+const SAMPLE_REVIEWS=[
+ {rating:5,name:'Sample review',place:'Cow-calf operator',text:'The ranch visits are the best part. You get to hear how breeders actually make their decisions, not just the sale catalog version.'},
+ {rating:5,name:'Sample review',place:'Seedstock breeder',text:'Scott asks the questions I would ask. Good conversations about cow families and sire selection, and he lets the guests talk.'},
+ {rating:5,name:'Sample review',place:'Bull buyer',text:'I listen before every sale season. The sale previews help me know which programs to watch.'},
+ {rating:4,name:'Sample review',place:'Ranch hand and 4-H dad',text:'Practical, down-to-earth and easy to listen to on the road. My kids have started asking about EPDs.'},
+ {rating:5,name:'Sample review',place:'Commercial cattleman',text:'Honest talk about genetics, management and marketing from people who live it. Let\'s get to it!'}];
+const seedReviews=()=>SAMPLE_REVIEWS.map((r,i)=>({...r,id:'r-s'+i,email:'',sample:true,status:'approved',created_at:new Date(Date.now()-i*864e5).toISOString()}));
 const Demo={
  async current(){const d=db();return wait(strip(d.users.find(u=>u.id===d.session)))},
  async signIn(email,pw){const d=db();const u=d.users.find(u=>u.email.toLowerCase()===String(email).trim().toLowerCase()&&u.pw===pw);if(!u)return fail('That email and password do not match.');d.session=u.id;put();return wait(strip(u))},
@@ -96,6 +103,11 @@ const Demo={
  async submitMessage(m){const d=db();d.messages=d.messages||[];const nm={...m,id:'m-'+uid(),status:'new',created_at:new Date().toISOString()};d.messages.push(nm);put();return wait(nm)},
  async messages(){return wait(structuredClone(db().messages||[]).reverse())},
  async updateMessage(id,patch){const d=db();const m=(d.messages||[]).find(x=>x.id===id);Object.assign(m,patch);put();return wait(m)},
+ async submitReview(r){const d=db();const nr={...r,id:'r-'+uid(),status:'pending',created_at:new Date().toISOString()};d.reviews.push(nr);put();return wait(nr)},
+ async reviews(){return wait(structuredClone(db().reviews).sort((a,b)=>b.created_at.localeCompare(a.created_at)))},
+ async publicReviews(){return wait(structuredClone(db().reviews.filter(r=>r.status==='approved')).sort((a,b)=>b.created_at.localeCompare(a.created_at)).map(({email,...r})=>r))},
+ async updateReview(id,patch){const d=db();const r=d.reviews.find(x=>x.id===id);Object.assign(r,patch);put();return wait(r)},
+ async deleteReview(id){const d=db();d.reviews=d.reviews.filter(x=>x.id!==id);put();return wait()},
  async updateGuest(id,patch){const d=db();const g=(d.guests||[]).find(x=>x.id===id);Object.assign(g,patch);put();return wait(g)},
  reset(){mem=seed();put()}
 };
@@ -133,6 +145,11 @@ const Live={
  async submitMessage(m){ok(await sb.from('contact_messages').insert({...m,status:'new'}));return m},
  async messages(){return ok(await sb.from('contact_messages').select('*').order('created_at',{ascending:false}))},
  async updateMessage(id,patch){return ok(await sb.from('contact_messages').update(patch).eq('id',id).select().single())},
+ async submitReview(r){ok(await sb.from('reviews').insert({rating:r.rating,name:r.name,place:r.place,email:r.email,text:r.text,status:'pending'}));return r},
+ async reviews(){return ok(await sb.from('reviews').select('*').order('created_at',{ascending:false}))},
+ async publicReviews(){return ok(await sb.from('reviews').select('id,rating,name,place,text,sample,created_at').eq('status','approved').order('created_at',{ascending:false}))},
+ async updateReview(id,patch){return ok(await sb.from('reviews').update(patch).eq('id',id).select().single())},
+ async deleteReview(id){ok(await sb.from('reviews').delete().eq('id',id))},
  async updateGuest(id,patch){return ok(await sb.from('guest_requests').update(patch).eq('id',id).select().single())}
 };
 if(LIVE)sb=window.supabase.createClient(C.supabaseUrl,C.supabaseAnonKey);

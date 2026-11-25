@@ -288,6 +288,25 @@ body.cart-open .scrim{opacity:1;pointer-events:auto}body.cart-open .drawer{trans
 .ep.feature .links a{border-color:var(--cream)}
 .more{text-align:center;margin-top:36px}
 
+
+/* reviews */
+.revs{border-top:2px solid var(--line);overflow:hidden}
+.revs[hidden]{display:none}
+.revs .kick{color:var(--red2)}
+.revs .sh{display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap;margin-bottom:28px}
+.revs .avg{display:flex;align-items:center;gap:12px;font:900 18px Archivo,sans-serif;text-transform:uppercase}
+.revs .avg .rst{color:var(--red2);letter-spacing:2px;font-size:22px}
+.rtick{overflow:hidden;max-width:1240px;margin:0 auto}
+.rtrack{display:flex;gap:18px;width:max-content;animation:rtick 48s linear infinite}
+.rtick:hover .rtrack,.rtick:focus-within .rtrack{animation-play-state:paused}
+@keyframes rtick{to{transform:translateX(calc(-50% - 9px))}}
+.rvc{width:clamp(270px,30vw,360px);flex:none;background:var(--card);border:2px solid var(--line);border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:12px;margin:0}
+.rvc .rst{color:var(--red2);letter-spacing:2px;font-size:18px}
+.rvc blockquote{margin:0;font-size:17px;line-height:1.5;flex:1}
+.rvc figcaption{font-size:14px;color:var(--soft)}.rvc figcaption b{display:block;color:var(--ink);font:900 15px Archivo,sans-serif;text-transform:uppercase}
+.rvc .tag{display:inline-block;margin-left:6px;font:700 11px Archivo,sans-serif;text-transform:uppercase;border:1.5px solid currentColor;border-radius:999px;padding:1px 7px;vertical-align:middle}
+@media (prefers-reduced-motion:reduce){.rtrack{animation:none}.rtick{overflow-x:auto}}
+@media(max-width:600px){.rtrack{animation-duration:36s}.rvc{width:78vw;padding:18px}.rvc blockquote{font-size:16px}}
 /* closing */
 .closing{border-top:2px solid var(--line)}
 .big{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:2px solid var(--line)}
@@ -510,6 +529,14 @@ footer small{opacity:.7}
 
 
 
+<section class="revs band" id="reviews" hidden>
+ <div class="wrap">
+  <div class="sh"><div><p class="kick">Listener reviews</p><h2>Straight from the herd</h2></div>
+   <div class="btns" style="align-items:center"><span class="avg"><span class="rst" id="ravgS"></span><span id="ravg"></span></span><a class="btn" href="#review" data-pop="review">Leave a review</a></div></div>
+ </div>
+ <div class="rtick" aria-label="Listener reviews"><div class="rtrack" id="rtrack"></div></div>
+</section>
+
 <section class="closing">
  <div class="big">
   <a href="#store"><b>Shop</b><span>Hats and gear<svg viewBox="0 0 34 34"><path d="M6 17h22M19 8l9 9-9 9"/></svg></span></a>
@@ -683,6 +710,17 @@ menu.addEventListener('click',e=>{if(e.target.closest('a'))setMenu(false)});
 ms.addEventListener('click',()=>setMenu(false));
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&menu.classList.contains('open')){setMenu(false);btn.focus()}});
 }
+</script>
+<script>
+addEventListener('DOMContentLoaded',()=>{if(!window.HR)return;const {esc}=HR;
+ HR.API.publicReviews().then(rs=>{if(!rs.length)return;const el=document.getElementById('reviews'),tr=document.getElementById('rtrack');
+  const avg=rs.reduce((a,r)=>a+r.rating,0)/rs.length;
+  document.getElementById('ravgS').textContent='★'.repeat(Math.round(avg));document.getElementById('ravg').textContent=avg.toFixed(1)+' from '+rs.length+' review'+(rs.length>1?'s':'');
+  const card=(r,dup)=>`<figure class="rvc"${dup?' aria-hidden="true"':''}><span class="rst" aria-label="${r.rating} out of 5 stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span>
+   <blockquote>${esc(r.text)}</blockquote><figcaption>${r.sample?`<b>${esc(r.place||'Listener')}<span class="tag">Sample</span></b>`:`<b>${esc(r.name)}</b>${esc(r.place||'')}`}</figcaption></figure>`;
+  let list=rs;while(list.length<6)list=list.concat(rs);
+  tr.innerHTML=list.map(r=>card(r)).join('')+list.map(r=>card(r,1)).join('');el.hidden=false}).catch(()=>{});
+});
 </script>
 </body>
 </html>

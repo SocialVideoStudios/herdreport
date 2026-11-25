@@ -50,8 +50,8 @@ td .who{font-weight:600}td .sub{color:var(--soft);font-size:14px}
 const {API,LIVE,esc,money,fmtDate,shortDate,upcoming,SLOTS,PLACE,STATUS,TAKEN}=HR;
 HR.chrome('admin');
 const app=document.getElementById('app');
-let me=null,pkgs=[],st=null,all=[],guests=[],msgs=[],tab=location.hash.slice(1)||'overview';
-const TABS=[['overview','Overview'],['bookings','Bookings'],['calendar','Calendar'],['guests','Guests'],['messages','Messages'],['clients','Clients'],['packages','Packages'],['settings','Settings']];
+let me=null,pkgs=[],st=null,all=[],guests=[],msgs=[],revs=[],tab=location.hash.slice(1)||'overview';
+const TABS=[['overview','Overview'],['bookings','Bookings'],['calendar','Calendar'],['guests','Guests'],['messages','Messages'],['reviews','Reviews'],['clients','Clients'],['packages','Packages'],['settings','Settings']];
 const pkgName=id=>(pkgs.find(p=>p.id===id)||{}).name||id;
 const title=b=>b.kind==='store'?'Hat order':b.kind==='ad'?(PLACE[b.placement]||'Episode ad')+' ad':pkgName(b.package_id);
 const co=b=>b.client?.company||b.client?.email||'Unknown client';
@@ -63,7 +63,7 @@ async function start(){
   document.getElementById('out').onclick=async()=>{await API.signOut();location.reload()};return}
  await load();shell();
 }
-async function load(){[pkgs,st,all,guests]=await Promise.all([API.packages(),API.settings(),API.allBookings(),API.guests()]);msgs=await API.messages()}
+async function load(){[pkgs,st,all,guests]=await Promise.all([API.packages(),API.settings(),API.allBookings(),API.guests()]);msgs=await API.messages();revs=await API.reviews()}
 
 function login(msg){
  app.innerHTML=`<form class="card" id="lf" style="max-width:460px;margin:0 auto" novalidate>
@@ -80,10 +80,10 @@ function login(msg){
 }
 
 function shell(){
- const pend=all.filter(b=>b.status==='pending').length,gnew=guests.filter(g=>g.status==='new').length,mnew=msgs.filter(m=>m.status==='new').length;
+ const pend=all.filter(b=>b.status==='pending').length,gnew=guests.filter(g=>g.status==='new').length,mnew=msgs.filter(m=>m.status==='new').length,rnew=revs.filter(r=>r.status==='pending').length;
  app.innerHTML=`<div class="top2"><div><p class="kick">Admin dashboard</p><h1 style="font-size:clamp(36px,5vw,64px)">Sponsors &amp; ads</h1></div>
   <div class="btns"><a class="btn" href="advertise.html">View Advertise page</a><button class="btn" id="out">Sign out</button></div></div>
-  <div class="tabs" role="tablist">${TABS.map(([k,n])=>`<button role="tab" data-t="${k}">${n}${k==='bookings'&&pend?`<span class="n">${pend}</span>`:''}${k==='guests'&&gnew?`<span class="n">${gnew}</span>`:''}${k==='messages'&&mnew?`<span class="n">${mnew}</span>`:''}</button>`).join('')}</div>
+  <div class="tabs" role="tablist">${TABS.map(([k,n])=>`<button role="tab" data-t="${k}">${n}${k==='bookings'&&pend?`<span class="n">${pend}</span>`:''}${k==='guests'&&gnew?`<span class="n">${gnew}</span>`:''}${k==='messages'&&mnew?`<span class="n">${mnew}</span>`:''}${k==='reviews'&&rnew?`<span class="n">${rnew}</span>`:''}</button>`).join('')}</div>
   <div id="pane"></div>`;
  document.getElementById('out').onclick=async()=>{await API.signOut();HR.chrome('admin');login()};
  app.querySelector('.tabs').addEventListener('click',e=>{const b=e.target.closest('button[data-t]');if(b){tab=b.dataset.t;history.replaceState(null,'','#'+tab);show()}});
@@ -92,7 +92,7 @@ function shell(){
 function show(){
  if(!TABS.some(t=>t[0]===tab))tab='overview';
  app.querySelectorAll('.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===tab));
- ({overview,bookings,calendar,guests:guestsView,messages:messagesView,clients,packages,settings})[tab]();
+ ({overview,bookings,calendar,guests:guestsView,messages:messagesView,reviews:reviewsView,clients,packages,settings})[tab]();
 }
 async function refresh(){await load();shell()}
 
@@ -247,6 +247,23 @@ function messagesView(){
     <select data-m="${esc(m.id)}" aria-label="Message status" style="min-height:36px;width:auto">${Object.keys(MST).map(k=>`<option value="${k}" ${k===m.status?'selected':''}>${MST[k]}</option>`).join('')}</select></div></div>`).join('')}</div>`
   :'<p class="empty">No messages yet. They show up here as soon as someone uses the Contact page.</p>';
  pane.querySelectorAll('select[data-m]').forEach(sel=>sel.onchange=async()=>{await API.updateMessage(sel.dataset.m,{status:sel.value});await refresh()});
+}
+
+/* ---------- reviews ---------- */
+const RST={pending:'Waiting for approval',approved:'Showing on site',hidden:'Hidden'},rcls={pending:'pending',approved:'paid',hidden:'completed'};
+function reviewsView(){
+ const pane=document.getElementById('pane'),order={pending:0,approved:1,hidden:2};
+ const rs=[...revs].sort((a,b)=>order[a.status]-order[b.status]||b.created_at.localeCompare(a.created_at));
+ pane.innerHTML=`<p class="soft" style="margin-bottom:16px">Reviews from the Leave a review pop-up land here. Approved reviews scroll on the homepage under Meet the host.</p>`+(rs.length?`<div class="rev">${rs.map(r=>`<div class="card rv"><div>
+   <span style="color:var(--red2);letter-spacing:2px;font-size:18px">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span>${r.sample?' <span class="pill">Sample</span>':''}
+   <div style="margin-top:6px"><b>${esc(r.name)}</b>${r.place?' · '+esc(r.place):''}</div>
+   <div class="meta">${r.email?esc(r.email)+' · ':''}${fmtDate(String(r.created_at).slice(0,10))}</div>
+   <p style="margin:10px 0 0;white-space:pre-wrap">${esc(r.text)}</p></div>
+   <div class="acts" style="flex-direction:column;align-items:flex-end"><span class="pill st-${rcls[r.status]}">${RST[r.status]}</span>
+    ${r.status!=='approved'?`<button class="btn sm solid" data-rv="${esc(r.id)}" data-s="approved">Approve</button>`:`<button class="btn sm" data-rv="${esc(r.id)}" data-s="hidden">Hide</button>`}
+    <button class="btn sm" data-rdel="${esc(r.id)}">Delete</button></div></div>`).join('')}</div>`:'<p class="empty">No reviews yet.</p>');
+ pane.querySelectorAll('[data-rv]').forEach(b=>b.onclick=async()=>{b.disabled=true;await API.updateReview(b.dataset.rv,{status:b.dataset.s});await refresh()});
+ pane.querySelectorAll('[data-rdel]').forEach(b=>b.onclick=async()=>{if(!confirm('Delete this review for good?'))return;await API.deleteReview(b.dataset.rdel);await refresh()});
 }
 
 /* ---------- clients ---------- */

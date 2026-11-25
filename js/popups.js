@@ -53,7 +53,7 @@ function inject(){
 }
 function close(){$('hrpop').classList.remove('open');document.documentElement.style.overflow='';if(last)last.focus()}
 function show(html){inject();$('hrpBox').innerHTML='<button class="hrp-x" id="hrpX" aria-label="Close">×</button>'+html;$('hrpX').onclick=close;$('hrpop').classList.add('open');document.documentElement.style.overflow='hidden';setTimeout(()=>{const f=$('hrpBox').querySelector('input,textarea,button:not(.hrp-x)');f&&f.focus()},30)}
-const okMsg=(t,b)=>`<div class="hrp-done"><p class="k">${t}</p><h2 id="hrpT">${b}</h2><p class="sub">Let's get to it!!</p><button class="hrp-btn solid" id="hrpDone">Close</button></div>`;
+const okMsg=(t,b,sub)=>`<div class="hrp-done"><p class="k">${t}</p><h2 id="hrpT">${b}</h2><p class="sub">${sub||"Let's get to it!!"}</p><button class="hrp-btn solid" id="hrpDone">Close</button></div>`;
 
 function contact(topic){
  const topics=['General','Advertising','Be a guest','Hat order','Press'];
@@ -96,8 +96,8 @@ function review(){
   if(!v('hpN')||!v('hpM')){er.textContent='Add your name and a few words.';return}
   if(v('hpE')&&!/^\S+@\S+\.\S+$/.test(v('hpE'))){er.textContent="That email address doesn't look right.";return}
   const b=$('hpGo');b.disabled=true;b.textContent='Sending…';
-  try{await HR.API.submitMessage({topic:'Review',rating,name:v('hpN'),company:v('hpC'),email:v('hpE')||'(not given)',phone:'',message:v('hpM')});
-   $('hrpBox').innerHTML=okMsg('Review received',`Thanks, ${esc(v('hpN').split(' ')[0])}!`);$('hrpDone').onclick=close}
+  try{await HR.API.submitReview({rating,name:v('hpN'),place:v('hpC'),email:v('hpE'),text:v('hpM')});
+   $('hrpBox').innerHTML=okMsg('Review received',`Thanks, ${esc(v('hpN').split(' ')[0])}!`,'Your review will show on the site once Scott approves it.');$('hrpDone').onclick=close}
   catch(x){er.textContent=x.message;b.disabled=false;b.textContent='Submit review'}};
 }
 

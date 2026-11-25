@@ -28,6 +28,17 @@
 .slot .pr{font:900 28px Archivo,sans-serif}.slot .pr small{font:500 14px "IBM Plex Sans",sans-serif;color:var(--soft);margin-left:4px}
 .slot p{margin:0;color:var(--soft);font-size:15px}
 .slot .btn{margin-top:auto}
+.slot .incart:empty{display:none}
+@media(max-width:600px){
+ .slots{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .slot{padding:14px;gap:6px;border-radius:16px}
+ .slot:last-child{grid-column:1/-1}
+ .slot .pos{font-size:11px}.slot h3{font-size:18px}
+ .slot .pr{font-size:22px}.slot .pr small{display:block;margin:0;font-size:12px}
+ .slot .info{display:none}.slot .open{font-size:13px}
+ .slot .btn{min-height:40px;padding:0 10px;font-size:13px;width:100%;justify-content:center;margin-top:6px}
+ .slot .incart{font-size:12.5px}
+}
 .slot .incart{font-size:14px;font-weight:600;color:var(--red2);min-height:1.2em}
 .track{display:flex;gap:4px;margin:2px 0 4px}
 .track i{flex:1;height:8px;border-radius:4px;background:var(--hair)}
@@ -162,7 +173,7 @@ function renderSlots(){
   return `<article class="card slot"><span class="pos">Spot ${i+1} of 5</span>
    <div class="track" aria-hidden="true">${SLOTS.map(x=>`<i class="${x===k?'on':''}"></i>`).join('')}</div>
    <h3>${PLACE[k]}</h3><div class="pr">${money(st.rates[k])}<small>per episode</small></div>
-   <p>${esc(SLOT_INFO[k])}</p><p>${open} of ${weeks.length} upcoming weeks open</p>
+   <p class="info">${esc(SLOT_INFO[k])}</p><p class="open">${open} of ${weeks.length} weeks open</p>
    <div class="incart">${it?`In cart: ${it.dates.length} week${it.dates.length===1?'':'s'}`:''}</div>
    <button class="btn ${it?'':'solid'}" data-slot="${k}">${it?'Change weeks':'Choose weeks'}</button></article>`}).join('');
 }

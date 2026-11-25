@@ -150,6 +150,17 @@ nav.menu.open{opacity:1;visibility:visible;transform:none;transition:opacity .2s
 .item h3{font-size:22px;flex:1 1 auto;min-width:0;overflow-wrap:anywhere}
 .item .pr{font:900 20px Archivo,sans-serif;white-space:nowrap;flex:none}
 .item small{color:var(--soft);font-size:14px}
+@media(max-width:600px){
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .grid .item{border-radius:16px}
+ .grid .item .bd{padding:10px 10px 12px;gap:6px}
+ .grid .item h3{font-size:15px;line-height:1.05}
+ .grid .item .row{flex-direction:column;align-items:flex-start;gap:2px}
+ .grid .item .pr{font-size:16px}
+ .grid .item small{display:none}
+ .grid .item .btn{min-height:38px;padding:0 8px;font-size:12.5px;width:100%;justify-content:center}
+ .grid .item .so{top:8px;left:8px;font-size:11px;padding:3px 8px}
+}
 .add{margin-top:auto;width:100%;justify-content:center;cursor:pointer;background:var(--red);color:var(--cream);border-color:var(--red)}
 .add:hover{filter:brightness(1.12)}
 .add[disabled]{background:transparent;color:var(--soft);border-color:var(--soft);cursor:not-allowed;filter:none}

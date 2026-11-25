@@ -149,6 +149,19 @@ body.cart-open .scrim{opacity:1;pointer-events:auto}body.cart-open .drawer{trans
 .back{display:inline-block;font-weight:600;text-decoration:none;padding:10px 0;margin-bottom:12px}
 .back:hover{text-decoration:underline}
 
+/* advertise */
+.adv{border-top:2px solid var(--line)}
+.adv .wrap{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:clamp(24px,4vw,64px);align-items:center}
+.adv h2{font-size:clamp(44px,6.4vw,92px);letter-spacing:-.02em}
+.adv .lede{font-size:18px;max-width:34em;margin:20px 0 26px}
+.ratecard{background:var(--red);color:var(--cream);border:2px solid var(--line);border-radius:28px;padding:clamp(22px,3vw,34px);box-shadow:10px 10px 0 var(--ink);transform:rotate(1.2deg)}
+.ratecard h3{font-size:clamp(22px,2.4vw,30px);margin-bottom:4px}
+.ratecard .sub{opacity:.8;font-size:14px;margin-bottom:12px}
+.rc-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:9px 0;border-top:1.5px dashed rgb(243 239 231/.45)}
+.rc-row b{font:900 18px Archivo,sans-serif;text-transform:uppercase}
+.rc-row span{font:900 20px Archivo,sans-serif;white-space:nowrap}
+@media(max-width:860px){.adv .wrap{grid-template-columns:minmax(0,1fr)}.ratecard{transform:none;box-shadow:6px 6px 0 var(--ink)}}
+
 /* host */
 .host{background:var(--ink);color:var(--bg)}
 .host .wrap{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(24px,4vw,64px);align-items:center}
@@ -238,6 +251,9 @@ footer small{opacity:.7}
  .hero p.lede{font-size:17px}
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" defer></script>
+<script src="js/config.js" defer></script>
+<script src="js/app.js" defer></script>
 </head>
 <body>
 
@@ -339,6 +355,24 @@ footer small{opacity:.7}
   </div>
   <div class="eps rail" id="eps"></div>
   <div class="more"><button class="btn" id="allEps" type="button" aria-controls="eps" aria-expanded="false">See all episodes</button><a class="btn" id="archive" href="https://www.herdreportpodcast.com/episodes/" hidden>Full episode archive</a></div>
+ </div>
+</section>
+
+<section class="adv band" id="advertise">
+ <div class="wrap">
+  <div>
+   <p class="kick">Advertise with Herd Report</p>
+   <h2>Reach the cattlemen who buy</h2>
+   <p class="lede">Herd Report goes inside the operations shaping the cattle business, every week on YouTube and every podcast app. Pick your spots, add them to your cart and check out in a couple of minutes. You only create an account when you're ready to send your request.</p>
+   <div class="btns"><a class="btn solid" href="advertise.html#shop">Shop ad spots</a><a class="btn" href="account.html">Client login</a></div>
+  </div>
+  <aside class="ratecard" aria-label="Episode ad rates">
+   <h3>Episode ad rates</h3>
+   <div class="sub">Five host-read spots per episode. Price per episode.</div>
+   <div id="homeRates">
+    <div class="rc-row"><b>Pre-roll</b><span>$500</span></div><div class="rc-row"><b>Mid-roll 1</b><span>$350</span></div><div class="rc-row"><b>Mid-roll 2</b><span>$350</span></div><div class="rc-row"><b>Mid-roll 3</b><span>$350</span></div><div class="rc-row"><b>Post-roll</b><span>$250</span></div>
+   </div>
+  </aside>
  </div>
 </section>
 
@@ -535,6 +569,7 @@ document.querySelectorAll('.vid').forEach(a=>{const im=a.querySelector('img.yt')
  rail.addEventListener('scroll',upd,{passive:true});window.addEventListener('resize',upd);upd();
  document.getElementById('allEps').addEventListener('click',e=>{rail.classList.remove('rail');rail.scrollLeft=0;document.getElementById('arrows').hidden=true;
   e.currentTarget.hidden=true;e.currentTarget.setAttribute('aria-expanded','true');document.getElementById('archive').hidden=false});}
+window.addEventListener('load',()=>{if(!window.HR)return;HR.API.settings().then(st=>{document.getElementById('homeRates').innerHTML=HR.SLOTS.map(k=>`<div class="rc-row"><b>${HR.PLACE[k]}</b><span>${HR.money(st.rates[k])}</span></div>`).join('')}).catch(()=>{})});
 const btn=document.getElementById('menubtn'),menu=document.getElementById('menu');
 btn.addEventListener('click',()=>{const o=menu.classList.toggle('open');btn.setAttribute('aria-expanded',o);btn.textContent=o?'Close':'Menu'});
 menu.addEventListener('click',e=>{if(e.target.closest('a')){menu.classList.remove('open');btn.setAttribute('aria-expanded','false');btn.textContent='Menu'}});

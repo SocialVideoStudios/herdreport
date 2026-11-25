@@ -411,19 +411,12 @@ html,body{overflow-x:clip}.v2-after{position:relative;z-index:1;background:var(-
 [data-rv]{opacity:0;transform:translateY(46px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1);transition-delay:var(--d,0s)}
 [data-rv].in{opacity:1;transform:none}
 [data-rv=left]{transform:translateX(-60px)}[data-rv=right]{transform:translateX(60px)}[data-rv=zoom]{transform:scale(.92)}
-/* episodes: pinned, vertical scroll moves the rail sideways */
-.v2pin{position:relative}
-@media(min-width:761px){.v2pin>#episodes{position:sticky;top:64px;min-height:calc(100svh - 64px);display:flex;flex-direction:column;justify-content:center;overflow:hidden}.v2pin>#episodes>.wrap{width:100%;min-width:0}}
-.v2pin .eps.rail{scroll-snap-type:none!important;scroll-behavior:auto!important}
-.v2hint{display:flex;align-items:center;gap:10px;font:700 13px Archivo,sans-serif;text-transform:uppercase;color:var(--soft);margin-top:14px}
-.v2hint i{flex:1;height:3px;background:var(--hair);border-radius:3px;overflow:hidden;position:relative}
-.v2hint i::after{content:"";position:absolute;inset:0;background:var(--red);transform-origin:0;transform:scaleX(var(--ep,0))}
 /* host photo parallax */
 .host .portrait{overflow:hidden}
 .host .portrait img{transform:translateY(calc(var(--hp,0)*-40px)) scale(1.12);will-change:transform}
 /* closing: giant sign-off grows in */
 .signoff{transform:scale(calc(.7 + var(--cp,0)*.3));opacity:calc(.2 + var(--cp,0)*.8);transform-origin:50% 100%}
-@media (prefers-reduced-motion:reduce){.hero{position:relative}.hero .bg,.hero .wrap,.hero .stamp,.host .portrait img,.signoff{transform:none!important;opacity:1!important}[data-rv]{opacity:1;transform:none;transition:none}.v2pin>#episodes{position:relative;min-height:0}}
+@media (prefers-reduced-motion:reduce){.hero{position:relative}.hero .bg,.hero .wrap,.hero .stamp,.host .portrait img,.signoff{transform:none!important;opacity:1!important}[data-rv]{opacity:1;transform:none;transition:none}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" defer></script>
 <script src="js/config.js" defer></script>
@@ -509,7 +502,7 @@ html,body{overflow-x:clip}.v2-after{position:relative;z-index:1;background:var(-
 <div class="v2-after">
 <div class="marquee" aria-hidden="true"><span>Angus ✦ Simmental ✦ Charolais ✦ Hereford ✦ Gelbvieh ✦ Limousin ✦ Registered &amp; crossbred ✦ Angus ✦ Simmental ✦ Charolais ✦ Hereford ✦ Gelbvieh ✦ Limousin ✦ Registered &amp; crossbred ✦&nbsp;</span></div>
 
-<div class="v2pin" id="v2pin"><section class="band" id="episodes">
+<section class="band" id="episodes">
  <div class="wrap">
   <div class="sh">
    <h2>Fresh from the barn</h2>
@@ -521,7 +514,6 @@ html,body{overflow-x:clip}.v2-after{position:relative;z-index:1;background:var(-
  </div>
 </section>
 
-</div>
 <section class="aud sell band" id="advertise">
  <div class="wrap sgrid">
   <div class="spitch">
@@ -819,26 +811,16 @@ addEventListener('DOMContentLoaded',()=>{
  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{rootMargin:'0px 0px -12% 0px'});
  const watch=()=>document.querySelectorAll('[data-rv]:not(.in)').forEach(el=>io.observe(el));watch();
  new MutationObserver(watch).observe(document.body,{childList:true,subtree:true});
- // episodes pin
- const pin=document.getElementById('v2pin'),sec=document.getElementById('episodes'),rail=document.getElementById('eps');
- const hint=document.createElement('div');hint.className='v2hint wrap';hint.innerHTML='<span>Keep scrolling</span><i></i><span id="v2n"></span>';sec.querySelector('.wrap').appendChild(hint);
- let extra=0;
- const size=()=>{if(reduce||!desk()||rail.classList.contains('grid')||!rail.classList.contains('rail')){pin.style.height='';hint.hidden=true;extra=0;return}
-  extra=Math.max(0,rail.scrollWidth-rail.clientWidth);hint.hidden=!extra;pin.style.height=(sec.offsetHeight+extra+64)+'px'};
  const clamp=v=>Math.max(0,Math.min(1,v));
  function frame(){
   const y=scrollY,vh=innerHeight;
   bar.style.transform=`scaleX(${clamp(y/(R.scrollHeight-vh))})`;
   if(!reduce){hero.style.setProperty('--p',clamp(y/(hero.offsetHeight||vh)).toFixed(3));
-   if(extra){const top=pin.getBoundingClientRect().top;const p=clamp(-top/extra);rail.scrollLeft=p*extra;sec.style.setProperty('--ep',p.toFixed(3))}
    const hp=document.querySelector('.host .portrait');if(hp){const r=hp.getBoundingClientRect();hp.style.setProperty('--hp',clamp((vh-r.top)/(vh+r.height)).toFixed(3))}
    const so=document.querySelector('.signoff');if(so){const r=so.getBoundingClientRect();so.style.setProperty('--cp',clamp((vh-r.top)/(vh*.6)).toFixed(3))}}
  }
  let tick=false;addEventListener('scroll',()=>{if(!tick){tick=true;requestAnimationFrame(()=>{frame();tick=false})}},{passive:true});
- addEventListener('resize',()=>{size();frame()});
- document.getElementById('allEps')?.addEventListener('click',()=>setTimeout(()=>{size();frame()},60));
- new MutationObserver(()=>{size();frame()}).observe(rail,{childList:true,attributes:true,attributeFilter:['class']});
- setTimeout(()=>{size();frame()},300);size();frame();
+ addEventListener('resize',frame);frame();
 });
 </script>
 </body>

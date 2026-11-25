@@ -331,6 +331,46 @@ footer small{opacity:.7}
  .stamp{max-width:260px}
  .hero p.lede{font-size:17px}
 }
+
+/* ---- phone polish ---- */
+@media(max-width:600px){
+ .util{display:none}
+ .band{padding:36px 18px}
+ .hero h1{font-size:40px}
+ .hero p.lede{margin:16px 0 22px}
+ .hero .btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+ .hero .btns .btn{justify-content:center;padding:0 8px;font-size:13px;gap:6px;white-space:nowrap}
+ .hero .btns .btn:first-child{grid-column:1/-1}
+ .sh{margin-bottom:18px}
+ .sh h2{font-size:38px}
+ .shr{display:block}
+ .arrows{display:none}
+ .eps.rail .ep{flex-basis:84%}
+ .ep{padding:16px;gap:10px}
+ .ep .links{flex-wrap:nowrap;gap:6px}
+ .ep .links a{width:40px;height:40px;flex:none}
+ .ep .links a.lis{flex:1 1 0;min-width:0;padding:0 8px;font-size:13px;min-height:40px}
+ .more{margin-top:24px}
+ .sell h2{font-size:38px}
+ .sell .lede{font-size:16px}
+ .proof{gap:10px 20px}
+ .why{gap:10px;margin-bottom:22px}
+ .sell .btns,.host .btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+ .sell .btns .btn,.host .btns .btn{justify-content:center;padding:0 10px;font-size:13px}
+ .shop .sh p{font-size:15px}
+ .host .wrap{gap:22px}
+ .portrait{aspect-ratio:1/1;max-height:360px}
+ .host h2{font-size:34px}
+ .host p{font-size:16px}
+ .breeds{margin-top:16px}
+ .big a{min-height:0;padding:18px;gap:6px;flex-direction:row;align-items:center;justify-content:space-between}
+ .big b{font-size:24px}
+ .big span{font-size:14px;gap:12px}
+ .big span{display:none}
+ .big a::after{content:"→";font-size:24px}
+ .signoff{font-size:52px;padding:32px 16px}
+ footer .wrap{padding:24px 18px}
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" defer></script>
 <script src="js/config.js" defer></script>

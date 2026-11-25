@@ -307,6 +307,9 @@ body.cart-open .scrim{opacity:1;pointer-events:auto}body.cart-open .drawer{trans
 .ep h3 em{display:block;font-style:normal;color:var(--red2)}
 .ep p{margin:0;color:var(--soft);font-size:15px}
 .ep .links{margin-top:auto;display:flex;gap:8px;padding-top:6px}
+@media(max-width:600px){.ep .links{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 42px 42px;gap:6px}.ep .links:has(> :nth-child(3):last-child){grid-template-columns:minmax(0,1fr) 42px 42px}
+ .ep .links a.lis{padding:0 8px;font-size:13px;min-height:42px;gap:6px;white-space:nowrap}.ep .links a.lis svg{width:14px;height:14px}
+ .ep .links > a:not(.lis){width:42px;height:42px}}
 .ep .links a{width:44px;height:44px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center}
 .ep .links a:hover{background:var(--ink);color:var(--bg)}
 .ep .links svg{width:18px;height:18px;fill:currentColor}
@@ -445,6 +448,13 @@ html,body{overflow-x:clip}.v2-after{position:relative;z-index:1;background:var(-
 /* closing: giant sign-off grows in */
 .signoff{transform:scale(calc(.7 + var(--cp,0)*.3));opacity:calc(.2 + var(--cp,0)*.8);transform-origin:50% 100%}
 @media (prefers-reduced-motion:reduce){#episodes .sh h2{transform:none!important;opacity:1!important}#eps .ep img{transform:none!important}.ratecard{transform:rotate(1.2deg)!important;box-shadow:12px 12px 0 #e9a9ad!important}.hero{position:relative}.hero .bg,.hero .wrap,.hero .stamp,.host .portrait img,.signoff{transform:none!important;opacity:1!important}[data-rv]{opacity:1;transform:none;transition:none}}
+
+/* holiday snow (top section only) */
+.snow{position:absolute;inset:0;z-index:1;pointer-events:none;-webkit-mask-image:linear-gradient(to bottom,#000 55%,transparent 100%);mask-image:linear-gradient(to bottom,#000 55%,transparent 100%)}
+.snowbtn{position:absolute;right:16px;top:14px;z-index:3;display:inline-flex;align-items:center;gap:6px;background:rgb(11 11 13/.45);color:#F3EFE7;border:1px solid rgb(243 239 231/.35);border-radius:999px;padding:5px 11px;font:600 12px "IBM Plex Sans",sans-serif;cursor:pointer;backdrop-filter:blur(4px)}
+.snowbtn:hover{background:rgb(11 11 13/.7)}
+@media (prefers-reduced-motion:reduce){.snow,.snowbtn{display:none}}
+button.btn{-webkit-appearance:none;appearance:none;background:transparent;color:inherit}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" defer></script>
 <script src="js/config.js" defer></script>
@@ -500,7 +510,7 @@ html,body{overflow-x:clip}.v2-after{position:relative;z-index:1;background:var(-
 
 <main id="top">
 <div class="v2bar" id="v2bar"></div>
-<section class="hero band"><div class="bg" aria-hidden="true"></div>
+<section class="hero band"><div class="bg" aria-hidden="true"></div><canvas class="snow" id="snow" aria-hidden="true"></canvas><button class="snowbtn" id="snowbtn" type="button" aria-pressed="true">❄ Snow on</button>
  <div class="wrap">
   <div>
    <p class="kick onair"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>The Herd Report Podcast with Scott Beck</p>
@@ -861,6 +871,31 @@ addEventListener('DOMContentLoaded',()=>{
  let tick=false;addEventListener('scroll',()=>{if(!tick){tick=true;requestAnimationFrame(()=>{frame();tick=false})}},{passive:true});
  addEventListener('resize',frame);frame();
 });
+</script>
+<script>
+/* light holiday snow, top section only */
+(()=>{const cv=document.getElementById('snow'),btn=document.getElementById('snowbtn');if(!cv)return;
+ if(matchMedia('(prefers-reduced-motion: reduce)').matches){cv.remove();btn.remove();return}
+ const hero=cv.parentElement,ctx=cv.getContext('2d');let W=0,H=0,dpr=1,flakes=[],on=true,vis=true,raf=0,t0=0,wind=0;
+ try{on=localStorage.getItem('hr-snow')!=='off'}catch(e){}
+ const N=()=>innerWidth<=760?34:70;
+ const mk=y=>({x:Math.random()*W,y:y??Math.random()*H,r:.8+Math.random()*2.2,v:.25+Math.random()*.55,a:.55+Math.random()*.4,ph:Math.random()*6.28,sw:.3+Math.random()*.7});
+ function size(){const r=hero.getBoundingClientRect();dpr=Math.min(2,devicePixelRatio||1);W=r.width;H=r.height;cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0);
+  const n=N();while(flakes.length<n)flakes.push(mk());flakes.length=n;flakes.forEach(f=>{if(f.x>W)f.x=Math.random()*W;if(f.y>H)f.y=Math.random()*H})}
+ function frame(t){raf=0;const dt=Math.min(50,t-(t0||t))/16.7;t0=t;wind=Math.sin(t/7000)*.35+Math.sin(t/2300)*.12;
+  ctx.clearRect(0,0,W,H);ctx.fillStyle='#fff';
+  for(const f of flakes){f.y+=f.v*dt;f.ph+=.012*dt;f.x+=(Math.sin(f.ph)*f.sw*.35+wind)*dt;
+   if(f.y>H+4){Object.assign(f,mk(-4))}if(f.x>W+4)f.x=-4;if(f.x<-4)f.x=W+4;
+   ctx.globalAlpha=f.a;ctx.beginPath();ctx.arc(f.x,f.y,f.r,0,6.283);ctx.fill()}
+  ctx.globalAlpha=1;go()}
+ const go=()=>{if(on&&vis&&!document.hidden&&!raf)raf=requestAnimationFrame(frame)};
+ const stop=()=>{if(raf)cancelAnimationFrame(raf);raf=0;t0=0};
+ const set=v=>{on=v;try{localStorage.setItem('hr-snow',v?'on':'off')}catch(e){}btn.textContent=v?'❄ Snow on':'❄ Snow off';btn.setAttribute('aria-pressed',v);cv.style.display=v?'':'none';v?go():(stop(),ctx.clearRect(0,0,W,H))};
+ btn.onclick=()=>set(!on);
+ new IntersectionObserver(e=>{vis=e[0].isIntersecting;vis?go():stop()}).observe(hero);
+ document.addEventListener('visibilitychange',()=>document.hidden?stop():go());
+ new ResizeObserver(size).observe(hero);size();set(on);
+})();
 </script>
 </body>
 </html>

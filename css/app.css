@@ -100,3 +100,5 @@ td.num,th.num{text-align:right;white-space:nowrap}
 .modal{position:fixed;inset:0;background:rgb(0 0 0/.5);display:none;place-items:center;z-index:50;padding:16px}
 .modal.open{display:grid}
 .modal .card{width:min(560px,100%);max-height:90vh;overflow:auto}
+
+button.btn{-webkit-appearance:none;appearance:none;background:transparent;color:inherit}

@@ -308,6 +308,9 @@ body.cart-open .scrim{opacity:1;pointer-events:auto}body.cart-open .drawer{trans
 .ep h3 em{display:block;font-style:normal;color:var(--red2)}
 .ep p{margin:0;color:var(--soft);font-size:15px}
 .ep .links{margin-top:auto;display:flex;gap:8px;padding-top:6px}
+@media(max-width:600px){.ep .links{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 42px 42px;gap:6px}.ep .links:has(> :nth-child(3):last-child){grid-template-columns:minmax(0,1fr) 42px 42px}
+ .ep .links a.lis{padding:0 8px;font-size:13px;min-height:42px;gap:6px;white-space:nowrap}.ep .links a.lis svg{width:14px;height:14px}
+ .ep .links > a:not(.lis){width:42px;height:42px}}
 .ep .links a{width:44px;height:44px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center}
 .ep .links a:hover{background:var(--ink);color:var(--bg)}
 .ep .links svg{width:18px;height:18px;fill:currentColor}
@@ -406,6 +409,7 @@ footer small{opacity:.7}
  .signoff{font-size:52px;padding:32px 16px}
  footer .wrap{padding:24px 18px}
 }
+button.btn{-webkit-appearance:none;appearance:none;background:transparent;color:inherit}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" defer></script>
 <script src="js/config.js" defer></script>

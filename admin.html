@@ -19,7 +19,7 @@
 .rv{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 16px;align-items:center;border-radius:16px;padding:16px 18px}
 .rv .meta{color:var(--soft);font-size:14px}
 .rv .acts{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-.cal td{min-width:150px}
+.cal td{min-width:130px}
 .cal .open{color:var(--soft)}
 .cal .slot{display:block;font-weight:600}
 .cal .slot.pend{font-weight:400;font-style:italic;color:var(--warn)}
@@ -44,12 +44,13 @@ td .who{font-weight:600}td .sub{color:var(--soft);font-size:14px}
 <div id="ftr"></div>
 <script>
 {
-const {API,LIVE,esc,money,fmtDate,shortDate,upcoming,PLACE,STATUS,TAKEN}=HR;
+const {API,LIVE,esc,money,fmtDate,shortDate,upcoming,SLOTS,PLACE,STATUS,TAKEN}=HR;
 HR.chrome('admin');
 const app=document.getElementById('app');
 let me=null,pkgs=[],st=null,all=[],tab=location.hash.slice(1)||'overview';
 const TABS=[['overview','Overview'],['bookings','Bookings'],['calendar','Calendar'],['clients','Clients'],['packages','Packages'],['settings','Settings']];
 const pkgName=id=>(pkgs.find(p=>p.id===id)||{}).name||id;
+const title=b=>b.kind==='ad'?(PLACE[b.placement]||'Episode ad')+' ad':pkgName(b.package_id);
 const co=b=>b.client?.company||b.client?.email||'Unknown client';
 
 async function start(){
@@ -111,7 +112,7 @@ function overview(){
   <div class="card stat"><div class="l">Paid and booked</div><div class="v">${money(sumOf(['paid','live','completed']))}</div></div>
   <div class="card stat"><div class="l">Ad spots in the next 4 episodes</div><div class="v">${liveSpots}</div></div></div>
  <div class="sh" style="margin-bottom:16px"><h2 style="font-size:32px">Needs your review</h2></div>
- <div class="rev">${pend.length?pend.map(b=>`<div class="card rv"><div><b>${esc(co(b))}</b> · ${esc(pkgName(b.package_id))} · ${money(b.amount)}<div class="meta">${esc(detail(b))}</div>${b.notes?`<div class="meta">“${esc(b.notes)}”</div>`:''}</div>
+ <div class="rev">${pend.length?pend.map(b=>`<div class="card rv"><div><b>${esc(co(b))}</b> · ${esc(title(b))} · ${money(b.amount)}<div class="meta">${esc(detail(b))}</div>${b.notes?`<div class="meta">“${esc(b.notes)}”</div>`:''}</div>
    <div class="acts"><button class="btn sm solid" data-ap="${esc(b.id)}">Approve</button><button class="btn sm" data-de="${esc(b.id)}">Decline</button><button class="btn sm" data-ed="${esc(b.id)}">Details</button></div></div>`).join(''):'<p class="empty">Nothing waiting. New requests will show up here.</p>'}</div>`;
  wire(pane);
 }
@@ -128,7 +129,7 @@ modal.addEventListener('click',e=>{if(e.target===modal)close()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
 function edit(id,nextStatus){
  const b=all.find(x=>x.id===id);
- mbody.innerHTML=`<h3 id="mt" style="margin-bottom:4px">${esc(pkgName(b.package_id))}</h3>
+ mbody.innerHTML=`<h3 id="mt" style="margin-bottom:4px">${esc(title(b))}</h3>
   <p class="soft" style="margin-bottom:16px">${esc(co(b))} · ${esc(b.client?.contact_name||'')} · ${esc(b.client?.email||'')}${b.client?.phone?' · '+esc(b.client.phone):''}</p>
   <p><b>Details:</b> ${esc(detail(b))}</p>
   ${b.notes?`<p><b>Talking points:</b><br>${esc(b.notes).replace(/\n/g,'<br>')}</p>`:''}
@@ -156,9 +157,9 @@ function bookings(){
   <input id="ft" type="search" placeholder="Search client or package" aria-label="Search bookings" value="${esc(fText)}"></div><div id="bt"></div>`;
  const fs=document.getElementById('fs');fs.value=fStatus;
  const draw=()=>{const q=fText.toLowerCase();
-  const rows=all.filter(b=>(fStatus==='all'||b.status===fStatus)&&(!q||(co(b)+' '+pkgName(b.package_id)+' '+(b.client?.email||'')).toLowerCase().includes(q)));
+  const rows=all.filter(b=>(fStatus==='all'||b.status===fStatus)&&(!q||(co(b)+' '+title(b)+' '+(b.client?.email||'')).toLowerCase().includes(q)));
   document.getElementById('bt').innerHTML=rows.length?`<div class="card" style="padding:8px 16px"><table class="stack"><thead><tr><th>Client</th><th>Package</th><th>Details</th><th class="num">Amount</th><th>Status</th><th></th></tr></thead><tbody>
-   ${rows.map(b=>`<tr><td data-l="Client"><div class="who">${esc(co(b))}</div><div class="sub">${esc(b.client?.email||'')}</div></td><td data-l="Package">${esc(pkgName(b.package_id))}</td>
+   ${rows.map(b=>`<tr><td data-l="Client"><div class="who">${esc(co(b))}</div><div class="sub">${esc(b.client?.email||'')}</div></td><td data-l="Package">${esc(title(b))}</td>
     <td data-l="Details">${esc(detail(b))}</td><td data-l="Amount" class="num">${money(b.amount)}</td><td data-l="Status"><span class="pill st-${esc(b.status)}">${esc(STATUS[b.status]||b.status)}</span></td>
     <td data-l=""><button class="btn sm" data-ed="${esc(b.id)}">Manage</button></td></tr>`).join('')}</tbody></table></div>`:'<p class="empty">No bookings match.</p>';
   wire(document.getElementById('bt'))};
@@ -174,8 +175,8 @@ function calendar(){
   const taken=hits.filter(b=>TAKEN.includes(b.status)).length,cap=st.capacity[p]||0;
   return `<td data-l="${PLACE[p]}" class="${taken>=cap?'full':''}">${hits.map(b=>`<span class="slot ${b.status==='pending'?'pend':''}">${esc(co(b))}${b.status==='pending'?' (pending)':''}</span>`).join('')}${taken<cap?`<span class="open">${cap-taken} open</span>`:''}</td>`};
  pane.innerHTML=`<p class="soft" style="margin-bottom:14px">Ad slots for the next ${weeks.length} weekly episodes. Pending requests are shown in italics and don't hold a slot until approved.</p>
-  <div class="card scroll" style="padding:8px 16px"><table class="stack cal"><thead><tr><th>Episode</th><th>Pre-roll</th><th>Mid-roll</th><th>Post-roll</th></tr></thead><tbody>
-  ${weeks.map(d=>`<tr><td data-l="Episode"><b>${fmtDate(d)}</b></td>${cell(d,'pre')}${cell(d,'mid')}${cell(d,'post')}</tr>`).join('')}</tbody></table></div>`;
+  <div class="card scroll" style="padding:8px 16px"><table class="stack cal"><thead><tr><th>Episode</th>${SLOTS.map(k=>`<th>${PLACE[k]}</th>`).join('')}</tr></thead><tbody>
+  ${weeks.map(d=>`<tr><td data-l="Episode"><b>${fmtDate(d)}</b></td>${SLOTS.map(k=>cell(d,k)).join('')}</tr>`).join('')}</tbody></table></div>`;
 }
 
 /* ---------- clients ---------- */
@@ -191,7 +192,7 @@ async function clients(){
 /* ---------- packages ---------- */
 function packages(){
  const pane=document.getElementById('pane');
- pane.innerHTML=`<p class="soft" style="margin-bottom:16px">Edit what appears on the Advertise page. Leave the price blank to show "Custom quote". Episode ad prices are set in Settings.</p><div class="pk">${pkgs.map(p=>`<form class="card" data-id="${esc(p.id)}" novalidate>
+ pane.innerHTML=`<p class="soft" style="margin-bottom:16px">Edit what appears on the Advertise page. Leave the price blank to show "Custom quote". Prices for the five episode ad spots are set in Settings.</p><div class="pk">${pkgs.map(p=>`<form class="card" data-id="${esc(p.id)}" novalidate>
   <div class="row2"><div class="field"><label>Name</label><input name="name" value="${esc(p.name)}"></div>
   ${p.kind==='ad'?'<div class="field"><label>Price</label><input disabled value="Set per position in Settings"></div>':`<div class="field"><label>Price ($)</label><input name="price" type="number" min="0" inputmode="numeric" value="${p.price??''}" placeholder="Custom quote"></div>`}
   <div class="field"><label>Price label</label><input name="unit" value="${esc(p.unit||'')}"></div></div>
@@ -209,9 +210,9 @@ function settings(){
  const pane=document.getElementById('pane');const s=st;const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
  pane.innerHTML=`<form class="set" id="sf" novalidate style="max-width:860px">
   <div class="card"><h3>Episode ad prices</h3><div class="row2">
-   ${['pre','mid','post'].map(k=>`<div class="field"><label for="r-${k}">${PLACE[k]} ($ per episode)</label><input id="r-${k}" type="number" min="0" inputmode="numeric" value="${s.rates[k]}"></div>`).join('')}</div></div>
+   ${SLOTS.map(k=>`<div class="field"><label for="r-${k}">${PLACE[k]} ($ per episode)</label><input id="r-${k}" type="number" min="0" inputmode="numeric" value="${s.rates[k]}"></div>`).join('')}</div></div>
   <div class="card"><h3>Ad slots per episode</h3><div class="row2">
-   ${['pre','mid','post'].map(k=>`<div class="field"><label for="c-${k}">${PLACE[k]}</label><input id="c-${k}" type="number" min="0" max="10" inputmode="numeric" value="${s.capacity[k]}"></div>`).join('')}</div>
+   ${SLOTS.map(k=>`<div class="field"><label for="c-${k}">${PLACE[k]}</label><input id="c-${k}" type="number" min="0" max="10" inputmode="numeric" value="${s.capacity[k]}"></div>`).join('')}</div>
    <div class="row2"><div class="field"><label for="rd">Episodes release on</label><select id="rd">${days.map((d,i)=>`<option value="${i}" ${i===Number(s.releaseDay)?'selected':''}>${d}</option>`).join('')}</select></div>
    <div class="field"><label for="wa">Weeks open for booking</label><input id="wa" type="number" min="4" max="52" inputmode="numeric" value="${s.weeksAhead}"></div></div></div>
   <div class="card"><h3>Audience numbers on the Advertise page</h3><p class="hint" style="margin:-6px 0 14px">Leave blank to hide a number. Use what Scott's hosting and YouTube dashboards report, like "4,800".</p><div class="row2">
@@ -222,7 +223,7 @@ function settings(){
    ${LIVE?'':'<button class="btn" type="button" id="reset">Reset demo data</button>'}</div></form>`;
  const n=id=>Number(document.getElementById(id).value)||0;
  document.getElementById('sf').addEventListener('submit',async e=>{e.preventDefault();
-  const ns={...s,rates:{pre:n('r-pre'),mid:n('r-mid'),post:n('r-post')},capacity:{pre:n('c-pre'),mid:n('c-mid'),post:n('c-post')},releaseDay:n('rd'),weeksAhead:Math.min(52,Math.max(4,n('wa'))),
+  const ns={...s,rates:Object.fromEntries(SLOTS.map(k=>[k,n('r-'+k)])),capacity:Object.fromEntries(SLOTS.map(k=>[k,n('c-'+k)])),releaseDay:n('rd'),weeksAhead:Math.min(52,Math.max(4,n('wa'))),
    stats:{downloads:document.getElementById('sd').value.trim(),views:document.getElementById('sv').value.trim(),followers:document.getElementById('sfw').value.trim()}};
   try{st=await API.saveSettings(ns);document.getElementById('sok').textContent='Saved.'}catch(x){document.getElementById('sok').textContent=x.message}});
  const r=document.getElementById('reset');if(r)r.onclick=()=>{API.reset();location.reload()};

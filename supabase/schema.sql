@@ -56,7 +56,7 @@ create table if not exists public.bookings (
   client_id uuid not null references public.profiles(id) on delete cascade,
   package_id text not null references public.packages(id),
   kind text not null,
-  placement text check (placement in ('pre','mid','post')),
+  placement text check (placement in ('pre','mid1','mid2','mid3','post')),
   episode_dates date[] not null default '{}',
   sale_date date,
   location text,
@@ -130,13 +130,13 @@ insert into public.packages (id, kind, name, description, features, price, unit,
  ('presenting','presenting','Presenting sponsor','Own the show for a year. Your brand opens every episode with a host-read "brought to you by" from Scott.',
    array['Pre-roll on 52 weekly episodes','"Brought to you by" from Scott','Logo on the Herd Report website','Annual discount on the weekly rate'], 23400,'per year',true,2),
  ('ads','ad','Episode ads','Host-read spots in the episodes you choose. Book a single week or a run of weeks from open slots.',
-   array['Read by Scott, in his own words','Pre-roll, mid-roll or post-roll','Pick your weeks from the live calendar','Great for sale announcements'], null,'per episode',true,3),
+   array['Read by Scott, in his own words','Five spots per episode: pre-roll, three mid-rolls and post-roll','Pick your weeks from the live calendar','Great for sale announcements'], null,'per episode',true,3),
  ('merch','merch','Merch partnership','Co-branded Herd Report gear for your sale, field day or customer appreciation event.',
    array['Co-branded Signature Hats','Giveaways for sale-day buyers','Mention on the show','Quantities and pricing on request'], null,'custom',true,4)
 on conflict (id) do nothing;
 
 insert into public.settings (key, value) values ('main',
- '{"rates":{"pre":500,"mid":350,"post":250},"capacity":{"pre":1,"mid":2,"post":1},"annualDiscount":10,"weeksAhead":16,"releaseDay":1,"stats":{"downloads":"","views":"","followers":""},"contactEmail":""}')
+ '{"rates":{"pre":500,"mid1":350,"mid2":350,"mid3":350,"post":250},"capacity":{"pre":1,"mid1":1,"mid2":1,"mid3":1,"post":1},"annualDiscount":10,"weeksAhead":16,"releaseDay":1,"stats":{"downloads":"","views":"","followers":""},"contactEmail":""}')
 on conflict (key) do nothing;
 
 -- Make Scott an admin: sign up on the site first, then run this with his email.

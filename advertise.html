@@ -4,25 +4,35 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Advertise | Herd Report</title>
-<meta name="description" content="Sponsor the Herd Report podcast: Spotlight Series episodes, presenting sponsorships and host-read ads for the cattle industry.">
+<meta name="description" content="Sponsor the Herd Report podcast: host-read episode ads, Spotlight Series episodes, presenting sponsorships and merch partnerships for the cattle industry.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/app.css">
 <style>
 .hero .wrap{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:clamp(24px,4vw,64px);align-items:center}
 .hero .lede{font-size:18px;max-width:34em;margin:20px 0 26px}
-.ratecard{background:var(--red);color:var(--cream);border:2px solid var(--line);border-radius:28px;padding:clamp(22px,3vw,36px);box-shadow:10px 10px 0 var(--ink);transform:rotate(1.2deg)}
-.ratecard h3{font-size:clamp(22px,2.4vw,30px);margin-bottom:6px}
-.ratecard .sub{opacity:.8;font-size:14px;margin-bottom:18px}
-.rc-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:12px 0;border-top:1.5px dashed rgb(243 239 231/.45)}
-.rc-row b{font:900 20px Archivo,sans-serif;text-transform:uppercase}
-.rc-row span{font:900 22px Archivo,sans-serif;white-space:nowrap}
-.rc-row small{display:block;font-size:13px;opacity:.8;font-weight:400;font-family:"IBM Plex Sans",sans-serif;text-transform:none}
+.ratecard{background:var(--red);color:var(--cream);border:2px solid var(--line);border-radius:28px;padding:clamp(22px,3vw,34px);box-shadow:10px 10px 0 var(--ink);transform:rotate(1.2deg)}
+.ratecard h3{font-size:clamp(22px,2.4vw,30px);margin-bottom:4px}
+.ratecard .sub{opacity:.8;font-size:14px;margin-bottom:12px}
+.rc-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:9px 0;border-top:1.5px dashed rgb(243 239 231/.45)}
+.rc-row b{font:900 18px Archivo,sans-serif;text-transform:uppercase}
+.rc-row span{font:900 20px Archivo,sans-serif;white-space:nowrap}
 .aud{background:var(--ink);color:var(--bg)}
 .aud .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:28px}
 .aud .big{font:900 clamp(34px,4vw,52px)/1 Archivo,sans-serif;text-transform:uppercase;color:#e9a9ad;margin-bottom:8px}
 .aud p{margin:0;opacity:.85}
-.pkgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr));gap:20px}
+.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));gap:16px}
+.slot{display:flex;flex-direction:column;gap:10px;border-radius:20px;padding:20px}
+.slot .pos{font:700 13px Archivo,sans-serif;text-transform:uppercase;color:var(--soft)}
+.slot h3{font-size:24px}
+.slot .pr{font:900 28px Archivo,sans-serif}.slot .pr small{font:500 14px "IBM Plex Sans",sans-serif;color:var(--soft);margin-left:4px}
+.slot p{margin:0;color:var(--soft);font-size:15px}
+.slot .btn{margin-top:auto}
+.slot .incart{font-size:14px;font-weight:600;color:var(--red2);min-height:1.2em}
+.track{display:flex;gap:4px;margin:2px 0 4px}
+.track i{flex:1;height:8px;border-radius:4px;background:var(--hair)}
+.track i.on{background:var(--red)}
+.pkgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:20px}
 .pkg{display:flex;flex-direction:column;gap:12px}
 .pkg.feature{background:var(--red);color:var(--cream);border-color:var(--red)}
 .pkg .pr{font:900 30px Archivo,sans-serif}
@@ -32,6 +42,7 @@
 .pkg.feature .btn{background:var(--cream);color:#85272C;border-color:var(--cream)}
 .pkg .tag{align-self:flex-start;background:var(--ink);color:var(--bg);border-radius:999px;padding:3px 12px;font-size:13px;font-weight:600}
 .pkg.feature .tag{background:var(--cream);color:#85272C}
+.pkg .incart{font-size:14px;font-weight:600;min-height:1.2em}
 .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:20px}
 .steps .card{border-radius:18px}
 .steps h3{font-size:20px;margin-bottom:8px;color:var(--red2)}
@@ -41,10 +52,38 @@ summary{font:700 18px Archivo,sans-serif;cursor:pointer;list-style:none;display:
 summary::after{content:"+";font-size:24px;line-height:1}
 details[open] summary::after{content:"–"}
 details p{margin:10px 0 0;max-width:62em;color:var(--soft)}
-.cta{background:var(--red);color:var(--cream);text-align:center}
-.cta h2{margin-bottom:16px}.cta .btn{border-color:var(--cream)}
-.cta .btn.solid{background:var(--cream);color:#85272C}
+.cartbar{position:fixed;left:50%;bottom:18px;transform:translate(-50%,140%);z-index:30;display:flex;align-items:center;gap:14px;background:var(--ink);color:var(--bg);border-radius:999px;padding:8px 8px 8px 22px;box-shadow:0 10px 30px rgb(0 0 0/.25);transition:transform .25s;max-width:calc(100% - 24px)}
+.cartbar.show{transform:translate(-50%,0)}
+.cartbar:not(.show){visibility:hidden;transition:transform .25s,visibility 0s .25s}
+.cartbar b{font:900 18px Archivo,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cartbar span{font-size:14px;opacity:.8;white-space:nowrap}
+.cartbar .btn{background:var(--red);border-color:var(--red);color:var(--cream);flex:none}
+.scrim{position:fixed;inset:0;background:rgb(0 0 0/.45);z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(480px,100%);background:var(--bg);border-left:2px solid var(--line);z-index:41;transform:translateX(100%);transition:transform .25s;display:flex;flex-direction:column}
+body.open .scrim{opacity:1;pointer-events:auto}body.open .drawer{transform:none}
+.dtop{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:2px solid var(--line)}
+.dtop h2{font-size:28px}
+.x{width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:none;color:inherit;font-size:22px;cursor:pointer}
+.dbody{flex:1;overflow:auto;padding:16px 20px}
+.dfoot{padding:16px 20px 22px;border-top:2px solid var(--line)}
+.line{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:12px 0;border-bottom:1px solid var(--hair)}
+.line b{font:900 17px Archivo,sans-serif;text-transform:uppercase}
+.line .d{grid-column:1/-1;font-size:14px;color:var(--soft)}
+.line .p{font:900 17px Archivo,sans-serif;text-align:right;white-space:nowrap}
+.line .acts{grid-column:1/-1;display:flex;gap:14px}
+.tot{display:flex;justify-content:space-between;align-items:baseline;font:900 24px Archivo,sans-serif;text-transform:uppercase;margin-bottom:4px}
+.dfoot .btn{width:100%}
+.dfoot small{display:block;color:var(--soft);font-size:13px;margin:8px 0 0}
+.switch{font-size:14px;margin:12px 0 0}
+.done{text-align:center;padding:30px 0}
+.done h3{font-size:30px;margin-bottom:10px}
+.pick .card{width:min(640px,100%)}
+.pick h3{font-size:28px}
+.quick{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.psum{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:18px;padding-top:16px;border-top:2px solid var(--line);flex-wrap:wrap}
+.psum .v{font:900 26px Archivo,sans-serif}
 @media(max-width:860px){.hero .wrap{grid-template-columns:minmax(0,1fr)}.ratecard{transform:none;box-shadow:6px 6px 0 var(--ink)}}
+@media (prefers-reduced-motion:reduce){.cartbar,.drawer,.scrim{transition:none}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="js/config.js"></script>
@@ -58,36 +97,41 @@ details p{margin:10px 0 0;max-width:62em;color:var(--soft)}
   <div>
    <p class="kick">Advertise with Herd Report</p>
    <h1>Reach the cattlemen who buy</h1>
-   <p class="lede">Herd Report goes inside the operations shaping the cattle business, every week on YouTube and every podcast app. Put your sale, your genetics or your product in front of breeders, producers and buyers who listen start to finish.</p>
-   <div class="btns"><a class="btn solid" href="#packages">See packages</a><a class="btn" href="account.html">Client login</a></div>
+   <p class="lede">Herd Report goes inside the operations shaping the cattle business, every week on YouTube and every podcast app. Pick your spots, add them to your cart and check out in a couple of minutes. You only create an account when you're ready to send your request.</p>
+   <div class="btns"><a class="btn solid" href="#shop">Shop ad spots</a><a class="btn" href="account.html">Client login</a></div>
   </div>
   <aside class="ratecard" aria-label="Episode ad rates">
    <h3>Episode ad rates</h3>
-   <div class="sub">Host-read by Scott Beck. Price per episode.</div>
+   <div class="sub">Five host-read spots per episode. Price per episode.</div>
    <div id="rates"></div>
   </aside>
  </div>
 </section>
 
-<section class="aud band" aria-label="Audience">
- <div class="wrap grid" id="aud"></div>
+<section class="aud band" aria-label="Audience"><div class="wrap grid" id="aud"></div></section>
+
+<section class="band" id="shop">
+ <div class="wrap">
+  <div class="sh"><h2>Episode ads</h2><p>Every episode has five spots, each read by Scott. Pick a spot, choose your weeks and add it to your cart.</p></div>
+  <div class="slots" id="slots"></div>
+ </div>
 </section>
 
-<section class="band" id="packages">
+<section class="band" style="padding-top:0" id="packages">
  <div class="wrap">
-  <div class="sh"><h2>Packages</h2><p>Pick a package and book it online. Scott reviews every request, and you'll see its status in your client account.</p></div>
+  <div class="sh"><h2>Sponsorships</h2><p>Bigger ways to put your name on the show. Add one to your cart, and Scott will follow up with a quote where needed.</p></div>
   <div class="pkgs" id="pkgs"></div>
  </div>
 </section>
 
 <section class="band" style="padding-top:0">
  <div class="wrap">
-  <div class="sh"><h2>How booking works</h2></div>
+  <div class="sh"><h2>How it works</h2></div>
   <div class="steps">
-   <div class="card"><h3>Create an account</h3><p class="soft">Set up a free client login for your ranch or company in under a minute.</p></div>
-   <div class="card"><h3>Choose your weeks</h3><p class="soft">Pick a package and the open episode dates that line up with your sale or campaign.</p></div>
-   <div class="card"><h3>Scott approves</h3><p class="soft">Scott reviews the request, confirms the details and sends your invoice.</p></div>
-   <div class="card"><h3>You go live</h3><p class="soft">Your spot airs on the dates you booked. Track everything from your account.</p></div>
+   <div class="card"><h3>Pick your spots</h3><p class="soft">Choose ad spots and weeks, or a sponsorship, and add them to your cart.</p></div>
+   <div class="card"><h3>Check out</h3><p class="soft">Review your cart, add talking points and create your account in one step.</p></div>
+   <div class="card"><h3>Scott approves</h3><p class="soft">Scott reviews your request, confirms the details and sends your invoice.</p></div>
+   <div class="card"><h3>You go live</h3><p class="soft">Your spots air on the weeks you booked. Track everything from your account.</p></div>
   </div>
  </div>
 </section>
@@ -95,45 +139,205 @@ details p{margin:10px 0 0;max-width:62em;color:var(--soft)}
 <section class="band" style="padding-top:0">
  <div class="wrap">
   <div class="sh"><h2>Questions</h2></div>
+  <details><summary>Do I need an account to look around?</summary><p>No. Browse and fill your cart first. You'll create an account at checkout so Scott can reach you and you can track your bookings.</p></details>
   <details><summary>Who reads the ad?</summary><p>Scott reads every spot himself, in his own words, from the talking points you provide. Host-read ads sound like part of the show, which is why listeners trust them.</p></details>
-  <details><summary>What's the difference between pre-roll, mid-roll and post-roll?</summary><p>Pre-roll plays at the start of the episode, mid-roll in the middle of the conversation and post-roll at the end. Each episode has a limited number of slots, and the booking calendar only shows dates that are still open.</p></details>
-  <details><summary>How far ahead should I book a Spotlight Series episode?</summary><p>Give Scott as much lead time as you can before your sale so the episode can be recorded, edited and released with time for buyers to watch. Add your sale date when you request it.</p></details>
-  <details><summary>How do I pay?</summary><p>Once Scott approves your booking, you'll receive an invoice. Online card payment is coming soon.</p></details>
+  <details><summary>What are the five spots?</summary><p>Pre-roll plays at the start of the episode. Mid-roll 1, 2 and 3 are breaks during the conversation. Post-roll closes the episode. Each spot is sold to one advertiser per episode, so open weeks go first come, first served.</p></details>
+  <details><summary>How do I pay?</summary><p>Nothing is charged at checkout. Once Scott approves your request, you'll receive an invoice. Online card payment is coming soon.</p></details>
   <details><summary>Can I change or cancel a request?</summary><p>You can cancel any request that's still pending from your client account. For changes after approval, contact Scott directly.</p></details>
- </div>
-</section>
-
-<section class="cta band">
- <div class="wrap">
-  <h2>Ready to get in front of the herd?</h2>
-  <div class="btns" style="justify-content:center"><a class="btn solid" href="account.html?new=1">Start a booking</a><a class="btn" href="https://www.herdreportpodcast.com/contact/">Talk to Scott</a></div>
  </div>
 </section>
 </main>
 <div id="ftr"></div>
+
+<div class="cartbar" id="cartbar" aria-live="polite"><b id="cbCount">0 items</b><span id="cbTot"></span><button class="btn sm" id="cbOpen">Review cart</button></div>
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Ad cart" aria-hidden="true">
+ <div class="dtop"><h2 id="dTitle">Your cart</h2><button class="x" id="dClose" aria-label="Close cart">×</button></div>
+ <div class="dbody" id="dBody"></div>
+ <div class="dfoot" id="dFoot"></div>
+</aside>
+<div class="modal pick" id="pick" role="dialog" aria-modal="true" aria-labelledby="pTitle"><div class="card" id="pBody"></div></div>
+
 <script>
 {
-const {API,esc,money,chrome}=HR;
-chrome('advertise');
-Promise.all([API.packages(),API.settings()]).then(([pk,st])=>{
- const r=st.rates;
- document.getElementById('rates').innerHTML=[['pre','Pre-roll','Opens the episode'],['mid','Mid-roll','Middle of the conversation'],['post','Post-roll','Closes the episode']]
-  .map(([k,n,s])=>`<div class="rc-row"><b>${n}<small>${s}</small></b><span>${money(r[k])}</span></div>`).join('');
- const s=st.stats||{};
- const facts=[
-  s.downloads?[s.downloads,'Average downloads per episode']:['Weekly','New episodes every week, on YouTube and every podcast app'],
+const {API,LIVE,esc,money,fmtDate,shortDate,upcoming,SLOTS,PLACE,SLOT_INFO}=HR;
+HR.chrome('advertise');
+let pkgs=[],st=null,usage={},weeks=[],me=null;
+let cart=[];try{cart=JSON.parse(localStorage.getItem('hr-ad-cart')||'[]')||[]}catch(e){cart=[]}
+const save=()=>{try{localStorage.setItem('hr-ad-cart',JSON.stringify(cart))}catch(e){}};
+const $=id=>document.getElementById(id);
+const pkg=id=>pkgs.find(p=>p.id===id)||{};
+const left=(d,k)=>(st.capacity[k]??1)-(usage[d+'|'+k]||0);
+const presentDates=s=>{const out=[];const d=new Date(s+'T12:00:00');for(let i=0;i<52;i++){out.push(d.toISOString().slice(0,10));d.setDate(d.getDate()+7)}return out};
+
+function price(it){
+ if(it.type==='slot')return it.dates.length*st.rates[it.slot];
+ const p=pkg(it.type);return p.price==null||p.price===''?null:Number(p.price);
+}
+function label(it){return it.type==='slot'?PLACE[it.slot]:pkg(it.type).name}
+function desc(it){
+ if(it.type==='slot')return `${it.dates.length} episode${it.dates.length===1?'':'s'}: ${it.dates.map(shortDate).join(', ')}`;
+ if(it.type==='presenting')return `52 weekly episodes starting ${fmtDate(it.start)}`;
+ if(it.type==='spotlight')return [it.sale_date?'Sale '+fmtDate(it.sale_date):'Sale date to be confirmed',it.location].filter(Boolean).join(' · ');
+ return [it.event?'Event '+fmtDate(it.event):'',it.qty?it.qty+' hats':''].filter(Boolean).join(' · ')||'Details to be confirmed';
+}
+const totals=()=>{let sum=0,quotes=0;cart.forEach(it=>{const p=price(it);p==null?quotes++:sum+=p});return{sum,quotes}};
+
+function renderRates(){$('rates').innerHTML=SLOTS.map(k=>`<div class="rc-row"><b>${PLACE[k]}</b><span>${money(st.rates[k])}</span></div>`).join('')}
+function renderAud(){const s=st.stats||{};
+ const facts=[s.downloads?[s.downloads,'Average downloads per episode']:['Weekly','New episodes every week, on YouTube and every podcast app'],
   s.views?[s.views,'YouTube views']:['Coast to coast','Ranch visits and sale previews from operations across the country'],
   s.followers?[s.followers,'Followers across social']:['Every breed','Angus, Simmental, Charolais, Hereford, Gelbvieh and Limousin, registered or crossbred'],
   ['Host-read','Every spot is read by Scott Beck, in his own words']];
- document.getElementById('aud').innerHTML=facts.map(([b,p])=>`<div><div class="big">${esc(b)}</div><p>${esc(p)}</p></div>`).join('');
- const minAd=Math.min(r.pre,r.mid,r.post);
- document.getElementById('pkgs').innerHTML=pk.filter(p=>p.active).map((p,i)=>{
-  const price=p.kind==='ad'?`<span class="soft" style="font:500 14px 'IBM Plex Sans'">from</span> ${money(minAd)}<small>per episode</small>`:p.price!=null&&p.price!==''?`${money(p.price)}<small>${esc(p.unit)}</small>`:`Custom quote`;
+ $('aud').innerHTML=facts.map(([b,p])=>`<div><div class="big">${esc(b)}</div><p>${esc(p)}</p></div>`).join('')}
+function renderSlots(){
+ $('slots').innerHTML=SLOTS.map((k,i)=>{const it=cart.find(c=>c.type==='slot'&&c.slot===k);const open=weeks.filter(w=>left(w,k)>0).length;
+  return `<article class="card slot"><span class="pos">Spot ${i+1} of 5</span>
+   <div class="track" aria-hidden="true">${SLOTS.map(x=>`<i class="${x===k?'on':''}"></i>`).join('')}</div>
+   <h3>${PLACE[k]}</h3><div class="pr">${money(st.rates[k])}<small>per episode</small></div>
+   <p>${esc(SLOT_INFO[k])}</p><p>${open} of ${weeks.length} upcoming weeks open</p>
+   <div class="incart">${it?`In cart: ${it.dates.length} week${it.dates.length===1?'':'s'}`:''}</div>
+   <button class="btn ${it?'':'solid'}" data-slot="${k}">${it?'Change weeks':'Choose weeks'}</button></article>`}).join('');
+}
+function renderPkgs(){
+ const list=pkgs.filter(p=>p.active&&p.kind!=='ad');
+ $('pkgs').innerHTML=list.map((p,i)=>{const inC=cart.some(c=>c.type===p.id);
+  const pr=p.price!=null&&p.price!==''?`${money(p.price)}<small>${esc(p.unit||'')}</small>`:'Custom quote';
   return `<article class="card pkg${i===0?' feature':''}">${i===0?'<span class="tag">Signature package</span>':''}
-   <h3>${esc(p.name)}</h3><div class="pr">${price}</div><p style="margin:0">${esc(p.description)}</p>
+   <h3>${esc(p.name)}</h3><div class="pr">${pr}</div><p style="margin:0">${esc(p.description)}</p>
    <ul>${(p.features||[]).map(f=>`<li>${esc(f)}</li>`).join('')}</ul>
-   <a class="btn ${i===0?'':'solid'}" href="account.html?book=${encodeURIComponent(p.id)}">Book ${esc(p.name)}</a></article>`}).join('');
-}).catch(e=>{document.getElementById('pkgs').innerHTML=`<p class="err">Couldn't load packages: ${esc(e.message)}</p>`});
+   <div class="incart">${inC?'In your cart':''}</div>
+   <button class="btn ${i===0?'':'solid'}" data-pkg="${esc(p.id)}">${inC?'Edit details':'Add to cart'}</button></article>`}).join('');
+}
+function renderBar(){
+ const n=cart.length,{sum,quotes}=totals();
+ $('cbCount').textContent=`${n} item${n===1?'':'s'}`;
+ $('cbTot').textContent=sum?money(sum)+(quotes?' + quote':''):(quotes?'Quote':'');
+ $('cartbar').classList.toggle('show',n>0&&!document.body.classList.contains('open'));
+}
+function renderAll(){renderSlots();renderPkgs();renderBar();save()}
+
+const pick=$('pick'),pBody=$('pBody');
+function closePick(){pick.classList.remove('open')}
+pick.addEventListener('click',e=>{if(e.target===pick)closePick()});
+function pickSlot(k){
+ const ex=cart.find(c=>c.type==='slot'&&c.slot===k);const sel=new Set(ex?ex.dates:[]);
+ pBody.innerHTML=`<p class="kick" style="margin-bottom:6px">${money(st.rates[k])} per episode</p><h3 id="pTitle">${PLACE[k]}</h3><p class="soft" style="margin:6px 0 0">${esc(SLOT_INFO[k])} Pick the weeks you want.</p>
+  <div class="quick"><button class="btn sm" type="button" data-q="1">Next open week</button><button class="btn sm" type="button" data-q="4">Next 4 open weeks</button><button class="btn sm" type="button" data-q="8">Next 8 open weeks</button><button class="btn sm" type="button" data-q="0">Clear</button></div>
+  <div class="chips" id="pChips"></div>
+  <div class="psum"><div><div class="soft" style="font-size:14px" id="pCount"></div><div class="v" id="pTot"></div></div>
+   <div class="btns"><button class="btn" id="pCancel" type="button">Cancel</button><button class="btn solid" id="pAdd" type="button"></button></div></div>`;
+ const draw=()=>{$('pChips').innerHTML=weeks.map(w=>{const l=left(w,k);const on=sel.has(w);
+   return `<button type="button" class="chip" data-d="${w}" aria-pressed="${on}" ${l<=0?'disabled':''}>${shortDate(w)}<small>${l<=0?'Booked':on?'Selected':'Open'}</small></button>`}).join('');
+  $('pCount').textContent=`${sel.size} week${sel.size===1?'':'s'} selected`;$('pTot').textContent=money(sel.size*st.rates[k]);
+  $('pAdd').disabled=!sel.size&&!ex;$('pAdd').textContent=!sel.size&&ex?'Remove from cart':ex?'Update cart':'Add to cart'};
+ pBody.onclick=e=>{const c=e.target.closest('.chip');if(c&&!c.disabled){const d=c.dataset.d;sel.has(d)?sel.delete(d):sel.add(d);draw();return}
+  const q=e.target.closest('[data-q]');if(q){const n=+q.dataset.q;sel.clear();if(n)weeks.filter(w=>left(w,k)>0).slice(0,n).forEach(w=>sel.add(w));draw()}};
+ $('pCancel').onclick=closePick;
+ $('pAdd').onclick=()=>{cart=cart.filter(c=>!(c.type==='slot'&&c.slot===k));if(sel.size)cart.push({type:'slot',slot:k,dates:[...sel].sort()});closePick();renderAll();if(document.body.classList.contains('open'))drawCart();else if(sel.size)flash(`${PLACE[k]} added`)};
+ draw();pick.classList.add('open');pBody.querySelector('[data-q="4"]').focus();
+}
+function pickPkg(id){
+ const p=pkg(id);const ex=cart.find(c=>c.type===id)||{};
+ let fields='';
+ if(p.kind==='presenting')fields=`<div class="field"><label for="f1">First episode</label><select id="f1">${weeks.map(w=>`<option value="${w}" ${w===ex.start?'selected':''}>${fmtDate(w)}</option>`).join('')}</select><div class="hint">Runs pre-roll on 52 weekly episodes.</div></div><p class="hint" id="clash"></p>`;
+ if(p.kind==='spotlight')fields=`<div class="row2"><div class="field"><label for="f1">Sale date</label><input id="f1" type="date" value="${esc(ex.sale_date||'')}"></div><div class="field"><label for="f2">Ranch location</label><input id="f2" placeholder="Town, state" value="${esc(ex.location||'')}"></div></div><div class="hint">Not sure yet? Leave it blank and Scott will work it out with you.</div>`;
+ if(p.kind==='merch')fields=`<div class="row2"><div class="field"><label for="f1">Event or sale date</label><input id="f1" type="date" value="${esc(ex.event||'')}"></div><div class="field"><label for="f2">Estimated hats</label><input id="f2" type="number" min="1" inputmode="numeric" value="${esc(ex.qty||'')}"></div></div>`;
+ pBody.innerHTML=`<p class="kick" style="margin-bottom:6px">${p.price!=null&&p.price!==''?money(p.price)+' '+esc(p.unit||''):'Custom quote'}</p><h3 id="pTitle">${esc(p.name)}</h3><p class="soft" style="margin:6px 0 16px">${esc(p.description)}</p>${fields}
+  <div class="psum"><div></div><div class="btns">${ex.type?'<button class="btn" id="pRem" type="button">Remove</button>':'<button class="btn" id="pCancel" type="button">Cancel</button>'}<button class="btn solid" id="pAdd" type="button">${ex.type?'Update cart':'Add to cart'}</button></div></div>`;
+ pBody.onclick=null;
+ const clash=()=>{const c=$('clash');if(!c)return;const n=presentDates($('f1').value).filter(d=>left(d,'pre')<=0).length;c.textContent=n?`${n} of these weeks already have a pre-roll booked. Scott will confirm availability.`:''};
+ if(p.kind==='presenting'){$('f1').onchange=clash;clash()}
+ if($('pCancel'))$('pCancel').onclick=closePick;
+ if($('pRem'))$('pRem').onclick=()=>{cart=cart.filter(c=>c.type!==id);closePick();renderAll();if(document.body.classList.contains('open'))drawCart()};
+ $('pAdd').onclick=()=>{const it={type:id};
+  if(p.kind==='presenting')it.start=$('f1').value;
+  if(p.kind==='spotlight'){it.sale_date=$('f1').value;it.location=$('f2').value.trim()}
+  if(p.kind==='merch'){it.event=$('f1').value;it.qty=$('f2').value}
+  const i=cart.findIndex(c=>c.type===id);i>=0?cart[i]=it:cart.push(it);closePick();renderAll();if(document.body.classList.contains('open'))drawCart();else flash(`${p.name} added`)};
+ pick.classList.add('open');pBody.querySelector('input,select,button').focus();
+}
+document.addEventListener('click',e=>{const s=e.target.closest('[data-slot]');if(s)return pickSlot(s.dataset.slot);const p=e.target.closest('[data-pkg]');if(p)return pickPkg(p.dataset.pkg)});
+
+let fl;function flash(t){renderBar();$('cbCount').textContent=t+' ✓';clearTimeout(fl);fl=setTimeout(renderBar,1800)}
+
+let step='cart',authMode='new',notes='',files='';
+function openCart(){step='cart';document.body.classList.add('open');$('drawer').setAttribute('aria-hidden','false');renderBar();drawCart();$('dClose').focus()}
+function closeCart(){document.body.classList.remove('open');$('drawer').setAttribute('aria-hidden','true');renderBar()}
+$('cbOpen').onclick=openCart;$('dClose').onclick=closeCart;$('scrim').onclick=closeCart;
+document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(pick.classList.contains('open'))closePick();else closeCart()});
+
+function drawCart(){
+ $('dTitle').textContent=step==='done'?'Request sent':step==='account'?'Checkout':'Your cart';
+ if(step==='done')return;
+ const {sum,quotes}=totals();
+ if(step==='cart'){
+  $('dBody').innerHTML=cart.length?cart.map((it,i)=>`<div class="line"><b>${esc(label(it))}</b><span class="p">${price(it)==null?'Quote':money(price(it))}</span>
+    <span class="d">${esc(desc(it))}</span><span class="acts"><button class="link" data-edit="${i}">Edit</button><button class="link" data-rm="${i}">Remove</button></span></div>`).join('')+
+   `<div class="field" style="margin-top:18px"><label for="cn">Talking points for Scott</label><textarea id="cn" placeholder="Products, sale details, offers, website.">${esc(notes)}</textarea></div>
+    <div class="field"><label for="cf">Link to logos or files (optional)</label><input id="cf" type="url" placeholder="https://" value="${esc(files)}"></div>`
+   :'<p class="empty">Your cart is empty. Pick an ad spot or a sponsorship to get started.</p>';
+  $('dFoot').innerHTML=`<div class="tot"><span>Total</span><span>${money(sum)}${quotes?' + quote':''}</span></div>
+   <small style="margin:0 0 12px">${quotes?'Items marked Quote are priced by Scott after he reviews them. ':''}Nothing is charged now.</small>
+   <button class="btn solid" id="toCheckout" ${cart.length?'':'disabled'}>Checkout</button>`;
+  $('dBody').oninput=e=>{if(e.target.id==='cn')notes=e.target.value;if(e.target.id==='cf')files=e.target.value};
+  $('dBody').onclick=e=>{const r=e.target.closest('[data-rm]');if(r){cart.splice(+r.dataset.rm,1);renderAll();drawCart();return}
+   const ed=e.target.closest('[data-edit]');if(ed){const it=cart[+ed.dataset.edit];it.type==='slot'?pickSlot(it.slot):pickPkg(it.type)}};
+  $('toCheckout').onclick=async()=>{me=await API.current();if(me){submit();return}step='account';drawCart()};
+  return;
+ }
+ $('dBody').onclick=null;$('dBody').oninput=null;
+ $('dBody').innerHTML=`<p class="soft" style="margin:0 0 16px">${authMode==='new'?'Create your free account so Scott can confirm your booking and you can track it.':'Sign in to send this request from your account.'}</p>
+  <form id="af" novalidate>
+   ${authMode==='new'?`<div class="field"><label for="ac">Ranch or company</label><input id="ac" autocomplete="organization"></div>
+   <div class="row2"><div class="field"><label for="an">Your name</label><input id="an" autocomplete="name"></div><div class="field"><label for="aph">Phone</label><input id="aph" type="tel" autocomplete="tel"></div></div>`:''}
+   <div class="field"><label for="ae">Email</label><input id="ae" type="email" autocomplete="email"></div>
+   <div class="field"><label for="ap">Password</label><input id="ap" type="password" autocomplete="${authMode==='new'?'new-password':'current-password'}">${authMode==='new'?'<div class="hint">At least 8 characters.</div>':''}</div>
+   <p class="err" id="aerr"></p><button type="submit" hidden></button>
+  </form>
+  <p class="switch">${authMode==='new'?'Already have an account? <button class="link" id="sw" type="button">Sign in</button>':'New to Herd Report? <button class="link" id="sw" type="button">Create an account</button>'}</p>
+  ${LIVE||authMode==='new'?'':'<p class="hint">Demo client: demo@prairieline.co / sponsor2026</p>'}`;
+ $('dFoot').innerHTML=`<div class="tot"><span>Total</span><span>${money(sum)}${quotes?' + quote':''}</span></div><small style="margin:0 0 12px">Nothing is charged now.</small>
+  <div class="btns" style="flex-wrap:nowrap"><button class="btn" id="back" style="width:auto">Back</button><button class="btn solid" id="go">${authMode==='new'?'Create account & send':'Sign in & send'}</button></div>`;
+ $('sw').onclick=()=>{authMode=authMode==='new'?'in':'new';drawCart()};
+ $('back').onclick=()=>{step='cart';drawCart()};
+ const go=async()=>{const er=$('aerr');er.textContent='';const btn=$('go');
+  try{
+   if(authMode==='new'){
+    if(!$('ac').value.trim()||!$('an').value.trim()||!$('ae').value.trim()){er.textContent='Add your company, name and email.';return}
+    if($('ap').value.length<8){er.textContent='Use a password with at least 8 characters.';return}
+    btn.disabled=true;btn.textContent='Creating account…';
+    const r=await API.signUp({company:$('ac').value.trim(),contact_name:$('an').value.trim(),phone:$('aph').value.trim(),email:$('ae').value,password:$('ap').value});
+    if(r.confirm){step='done';$('dTitle').textContent='Almost there';$('dBody').innerHTML=`<div class="done"><h3>Check your email</h3><p>Confirm your email address, then sign in here to send your request. Your cart is saved.</p></div>`;$('dFoot').innerHTML=`<button class="btn solid" id="again">Sign in</button>`;$('again').onclick=()=>{authMode='in';step='account';drawCart()};return}
+   }else{btn.disabled=true;btn.textContent='Signing in…';await API.signIn($('ae').value,$('ap').value)}
+   HR.chrome('advertise');submit();
+  }catch(x){er.textContent=x.message;btn.disabled=false;btn.textContent=authMode==='new'?'Create account & send':'Sign in & send'}};
+ $('go').onclick=go;$('af').onsubmit=e=>{e.preventDefault();go()};
+}
+async function submit(){
+ const b=$('go')||$('toCheckout');if(b){b.disabled=true;b.textContent='Sending…'}
+ try{
+  for(const it of cart){
+   const base={notes:notes.trim(),creative_url:files.trim(),amount:price(it),placement:null,episode_dates:[]};
+   if(it.type==='slot')Object.assign(base,{package_id:'ads',kind:'ad',placement:it.slot,episode_dates:it.dates});
+   else{const p=pkg(it.type);Object.assign(base,{package_id:p.id,kind:p.kind});
+    if(p.kind==='presenting')Object.assign(base,{placement:'pre',episode_dates:presentDates(it.start)});
+    if(p.kind==='spotlight')Object.assign(base,{sale_date:it.sale_date||null,location:it.location||''});
+    if(p.kind==='merch'){base.sale_date=it.event||null;if(it.qty)base.notes=`Estimated hats: ${it.qty}\n`+base.notes}}
+   await API.createBooking(base);
+  }
+  const n=cart.length;cart=[];notes='';files='';renderAll();step='done';
+  $('dTitle').textContent='Request sent';
+  $('dBody').innerHTML=`<div class="done"><h3>Thanks, you're all set</h3><p>We sent ${n} request${n===1?'':'s'} to Scott. He'll review ${n===1?'it':'them'} and send your invoice. You can track the status anytime in your account.</p></div>`;
+  $('dFoot').innerHTML=`<a class="btn solid" href="account.html">View my bookings</a>`;
+  usage=await API.usage();renderSlots();
+ }catch(x){$('dBody').insertAdjacentHTML('beforeend',`<p class="err">${esc(x.message)}</p>`);if(b){b.disabled=false;b.textContent='Try again'}}
+}
+
+Promise.all([API.packages(),API.settings(),API.usage()]).then(([p,s,u])=>{pkgs=p;st=s;usage=u;weeks=upcoming(st.weeksAhead||16,st.releaseDay??1);
+ cart=cart.filter(it=>it.type==='slot'?SLOTS.includes(it.slot):pkgs.some(p=>p.id===it.type));
+ renderRates();renderAud();renderAll();
+}).catch(e=>{$('slots').innerHTML=`<p class="err">Couldn't load the shop: ${esc(e.message)}</p>`});
 }
 </script>
 </body>

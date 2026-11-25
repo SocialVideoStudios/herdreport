@@ -9,11 +9,13 @@ const money=v=>v==null||v===''?'Quote':'$'+Number(v).toLocaleString('en-US',{max
 const fmtDate=iso=>{if(!iso)return'';const d=new Date(iso+'T12:00:00');return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})};
 const shortDate=iso=>{const d=new Date(iso+'T12:00:00');return d.toLocaleDateString('en-US',{month:'short',day:'numeric'})};
 const iso=d=>d.toISOString().slice(0,10);
-const PLACE={pre:'Pre-roll',mid:'Mid-roll',post:'Post-roll'};
+const SLOTS=['pre','mid1','mid2','mid3','post'];
+const PLACE={pre:'Pre-roll',mid1:'Mid-roll 1',mid2:'Mid-roll 2',mid3:'Mid-roll 3',post:'Post-roll'};
+const SLOT_INFO={pre:'Opens the episode, before the conversation starts.',mid1:'First break in the conversation.',mid2:'Second break, in the heart of the episode.',mid3:'Third break, later in the episode.',post:'Closes the episode as listeners wrap up.'};
 const STATUS={pending:'Pending review',approved:'Approved, awaiting payment',paid:'Paid',live:'Live',completed:'Completed',declined:'Declined',cancelled:'Cancelled'};
 const TAKEN=['approved','paid','live'];
 
-const DEF_SETTINGS={rates:{pre:500,mid:350,post:250},capacity:{pre:1,mid:2,post:1},annualDiscount:10,weeksAhead:16,releaseDay:1,
+const DEF_SETTINGS={rates:{pre:500,mid1:350,mid2:350,mid3:350,post:250},capacity:{pre:1,mid1:1,mid2:1,mid3:1,post:1},annualDiscount:10,weeksAhead:16,releaseDay:1,
  stats:{downloads:'',views:'',followers:''},contactEmail:''};
 const DEF_PACKAGES=[
  {id:'spotlight',kind:'spotlight',sort:1,active:true,price:null,unit:'per episode',name:'Spotlight Series',
@@ -24,25 +26,26 @@ const DEF_PACKAGES=[
   features:['Pre-roll on 52 weekly episodes','"Brought to you by" from Scott','Logo on the Herd Report website','Annual discount on the weekly rate']},
  {id:'ads',kind:'ad',sort:3,active:true,price:null,unit:'per episode',name:'Episode ads',
   description:'Host-read spots in the episodes you choose. Book a single week or a run of weeks from open slots.',
-  features:['Read by Scott, in his own words','Pre-roll, mid-roll or post-roll','Pick your weeks from the live calendar','Great for sale announcements']},
+  features:['Read by Scott, in his own words','Five spots per episode: pre-roll, three mid-rolls and post-roll','Pick your weeks from the live calendar','Great for sale announcements']},
  {id:'merch',kind:'merch',sort:4,active:true,price:null,unit:'custom',name:'Merch partnership',
   description:'Co-branded Herd Report gear for your sale, field day or customer appreciation event.',
   features:['Co-branded Signature Hats','Giveaways for sale-day buyers','Mention on the show','Quantities and pricing on request']}
 ];
 
+const mergeSet=v=>({...DEF_SETTINGS,...v,rates:{...DEF_SETTINGS.rates,...(v.rates||{})},capacity:{...DEF_SETTINGS.capacity,...(v.capacity||{})},stats:{...DEF_SETTINGS.stats,...(v.stats||{})}});
 /* upcoming release dates (weekly) */
 function upcoming(n,day){const out=[];const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()+1);
  while(d.getDay()!==day)d.setDate(d.getDate()+1);for(let i=0;i<n;i++){out.push(iso(d));d.setDate(d.getDate()+7)}return out}
 
 /* ---------- demo backend (browser storage) ---------- */
-const K='hr-ads-demo-v1';let mem=null;
+const K='hr-ads-demo-v2';let mem=null;
 function seed(){const w=upcoming(6,1);const now=new Date().toISOString();
  return{session:null,settings:DEF_SETTINGS,packages:DEF_PACKAGES,
  users:[{id:'u-admin',email:'admin@herdreport.com',pw:'herdadmin2026',role:'admin',company:'Herd Report',contact_name:'Scott Beck',phone:'',created_at:now},
   {id:'u-prairie',email:'demo@prairieline.co',pw:'sponsor2026',role:'client',company:'Prairie Line Feed Co.',contact_name:'Demo Sponsor',phone:'',created_at:now},
   {id:'u-bigsky',email:'demo@bigskygenetics.com',pw:'sponsor2026',role:'client',company:'Big Sky Genetics',contact_name:'Demo Buyer',phone:'',created_at:now}],
  bookings:[
-  {id:'b1',client_id:'u-prairie',package_id:'ads',kind:'ad',placement:'mid',episode_dates:[w[0],w[1]],amount:700,status:'paid',notes:'Fall mineral program, 60-second read.',creative_url:'',admin_note:'',created_at:now},
+  {id:'b1',client_id:'u-prairie',package_id:'ads',kind:'ad',placement:'mid1',episode_dates:[w[0],w[1]],amount:700,status:'paid',notes:'Fall mineral program, 60-second read.',creative_url:'',admin_note:'',created_at:now},
   {id:'b2',client_id:'u-bigsky',package_id:'spotlight',kind:'spotlight',placement:null,episode_dates:[],sale_date:w[5],location:'Billings, MT',amount:null,status:'pending',notes:'Bull sale preview, 80 head.',creative_url:'',admin_note:'',created_at:now},
   {id:'b3',client_id:'u-bigsky',package_id:'ads',kind:'ad',placement:'pre',episode_dates:[w[2]],amount:500,status:'approved',notes:'Sale reminder.',creative_url:'',admin_note:'Invoice sent.',created_at:now}]}}
 function db(){if(mem)return mem;try{const d=JSON.parse(localStorage.getItem(K));if(d&&d.users){mem=d;return d}}catch(e){}mem=seed();put();return mem}
@@ -61,7 +64,7 @@ const Demo={
  async saveProfile(p){const d=db();const u=d.users.find(u=>u.id===d.session);Object.assign(u,{company:p.company,contact_name:p.contact_name,phone:p.phone});put();return wait(strip(u))},
  async packages(){return wait(structuredClone(db().packages).sort((a,b)=>a.sort-b.sort))},
  async savePackage(p){const d=db();const i=d.packages.findIndex(x=>x.id===p.id);if(i>=0)d.packages[i]=p;else d.packages.push(p);put();return wait(p)},
- async settings(){return wait({...DEF_SETTINGS,...structuredClone(db().settings)})},
+ async settings(){return wait(mergeSet(structuredClone(db().settings)))},
  async saveSettings(s){db().settings=s;put();return wait(s)},
  async myBookings(){const d=db();return wait(structuredClone(d.bookings.filter(b=>b.client_id===d.session)).reverse())},
  async allBookings(){const d=db();return wait(d.bookings.map(b=>({...structuredClone(b),client:strip(d.users.find(u=>u.id===b.client_id))||{}})).reverse())},
@@ -85,7 +88,7 @@ const Live={
  async saveProfile(p){const me=await Live.current();return ok(await sb.from('profiles').update({company:p.company,contact_name:p.contact_name,phone:p.phone}).eq('id',me.id).select().single())},
  async packages(){const r=ok(await sb.from('packages').select('*').order('sort'));return r.length?r:DEF_PACKAGES},
  async savePackage(p){return ok(await sb.from('packages').upsert(p).select().single())},
- async settings(){const r=ok(await sb.from('settings').select('value').eq('key','main').maybeSingle());return{...DEF_SETTINGS,...(r?.value||{})}},
+ async settings(){const r=ok(await sb.from('settings').select('value').eq('key','main').maybeSingle());return mergeSet(r?.value||{})},
  async saveSettings(s){ok(await sb.from('settings').upsert({key:'main',value:s}));return s},
  async myBookings(){const me=await Live.current();return ok(await sb.from('bookings').select('*').eq('client_id',me.id).order('created_at',{ascending:false}))},
  async allBookings(){const r=ok(await sb.from('bookings').select('*, client:profiles(id,email,company,contact_name,phone)').order('created_at',{ascending:false}));return r.map(b=>({...b,client:b.client||{}}))},
@@ -114,5 +117,5 @@ function chrome(active){
   if(u.role==='admin'){b.textContent='Admin';b.href='admin.html'}else b.textContent='My account'}).catch(()=>{});
 }
 
-window.HR={API,LIVE,esc,money,fmtDate,shortDate,upcoming,PLACE,STATUS,TAKEN,DEF_SETTINGS,DEF_PACKAGES,chrome};
+window.HR={API,LIVE,esc,money,fmtDate,shortDate,upcoming,SLOTS,PLACE,SLOT_INFO,STATUS,TAKEN,DEF_SETTINGS,DEF_PACKAGES,chrome};
 })();

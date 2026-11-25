@@ -17,8 +17,8 @@ It's a static site: open `index.html`, or serve the folder from any static host 
 
 ## Advertising, client accounts and admin
 
-- `advertise.html`: public page with packages and ad rates. Companies click **Book** to start.
-- `account.html`: client login. Clients create an account, request bookings (pick open episode dates for ads), and track status.
+- `advertise.html`: the ad shop. Five episode ad spots (Pre-roll, Mid-roll 1, 2 and 3, Post-roll), each its own product with its own weeks, plus Spotlight Series, Presenting sponsor and Merch partnership. Visitors fill a cart first and only create an account at checkout.
+- `account.html`: client login. Clients track their requests, approvals and invoices.
 - `admin.html`: Scott's dashboard. Review and approve requests, set quotes, mark paid, see the ad calendar, manage clients, edit packages, prices and audience numbers.
 
 ### Demo mode

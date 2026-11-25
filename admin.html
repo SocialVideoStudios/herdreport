@@ -67,8 +67,10 @@ function login(msg){
   <p class="kick">Herd Report admin</p><h2 style="font-size:36px;margin-bottom:20px">Sign in</h2>
   <div class="field"><label for="le">Email</label><input id="le" type="email" autocomplete="email"></div>
   <div class="field"><label for="lp">Password</label><input id="lp" type="password" autocomplete="current-password"></div>
-  <button class="btn solid" type="submit">Sign in</button><p class="err" id="lerr">${msg?esc(msg):''}</p>
+  <div class="btns"><button class="btn solid" type="submit">Sign in</button>${HR.LIVE?'':'<button class="btn" type="button" id="prev">Preview sign in</button>'}</div><p class="err" id="lerr">${msg?esc(msg):''}</p>
 </form>`;
+ const pv=document.getElementById('prev');
+ if(pv)pv.onclick=async()=>{try{await API.signIn('admin@herdreport.com','herdadmin2026');HR.chrome('admin');start()}catch(x){document.getElementById('lerr').textContent=x.message}};
  document.getElementById('lf').addEventListener('submit',async e=>{e.preventDefault();
   try{await API.signIn(document.getElementById('le').value,document.getElementById('lp').value);HR.chrome('admin');start()}
   catch(x){document.getElementById('lerr').textContent=x.message}});

@@ -468,8 +468,11 @@ html,body{overflow-x:clip}.v2-after{position:relative;z-index:1;background:var(-
 
 /* holiday snow (top section only) */
 .snow{position:absolute;inset:0;z-index:1;pointer-events:none;-webkit-mask-image:linear-gradient(to bottom,#000 55%,transparent 100%);mask-image:linear-gradient(to bottom,#000 55%,transparent 100%)}
-.snowbtn{position:absolute;right:16px;top:14px;z-index:3;display:inline-flex;align-items:center;gap:6px;background:rgb(11 11 13/.45);color:#F3EFE7;border:1px solid rgb(243 239 231/.35);border-radius:999px;padding:5px 11px;font:600 12px "IBM Plex Sans",sans-serif;cursor:pointer;backdrop-filter:blur(4px)}
-.snowbtn:hover{background:rgb(11 11 13/.7)}
+.snowbtn{position:absolute;right:16px;top:14px;z-index:3;width:40px;height:22px;padding:0;border-radius:999px;border:1.5px solid rgb(243 239 231/.55);background:rgb(11 11 13/.35);cursor:pointer;transition:background .2s,border-color .2s}
+.snowbtn i{position:absolute;top:2px;left:2px;width:15px;height:15px;border-radius:50%;background:rgb(243 239 231/.75);transition:transform .2s,background .2s}
+.snowbtn[aria-checked=true]{background:rgb(243 239 231/.3);border-color:#F3EFE7}
+.snowbtn[aria-checked=true] i{transform:translateX(18px);background:#fff}
+.snowbtn:focus-visible{outline:2px solid #fff;outline-offset:3px}
 @media (prefers-reduced-motion:reduce){.snow,.snowbtn{display:none}}
 button.btn{-webkit-appearance:none;appearance:none;background:transparent;color:inherit}
 
@@ -532,7 +535,7 @@ button.btn{-webkit-appearance:none;appearance:none;background:transparent;color:
 
 <main id="top">
 <div class="v2bar" id="v2bar"></div>
-<section class="hero band"><div class="bg" aria-hidden="true"></div><canvas class="snow" id="snow" aria-hidden="true"></canvas><button class="snowbtn" id="snowbtn" type="button" aria-pressed="true">❄ Snow on</button>
+<section class="hero band"><div class="bg" aria-hidden="true"></div><canvas class="snow" id="snow" aria-hidden="true"></canvas><button class="snowbtn" id="snowbtn" type="button" role="switch" aria-checked="true" aria-label="Snow"><i></i></button>
  <div class="wrap">
   <div>
    <p class="kick onair"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>The Herd Report Podcast with Scott Beck</p>
@@ -931,7 +934,7 @@ addEventListener('DOMContentLoaded',()=>{
   ctx.globalAlpha=1;go()}
  const go=()=>{if(on&&vis&&!document.hidden&&!raf)raf=requestAnimationFrame(frame)};
  const stop=()=>{if(raf)cancelAnimationFrame(raf);raf=0;t0=0};
- const set=v=>{on=v;try{localStorage.setItem('hr-snow',v?'on':'off')}catch(e){}btn.textContent=v?'❄ Snow on':'❄ Snow off';btn.setAttribute('aria-pressed',v);cv.style.display=v?'':'none';v?go():(stop(),ctx.clearRect(0,0,W,H))};
+ const set=v=>{on=v;try{localStorage.setItem('hr-snow',v?'on':'off')}catch(e){}btn.setAttribute('aria-checked',v);cv.style.display=v?'':'none';v?go():(stop(),ctx.clearRect(0,0,W,H))};
  btn.onclick=()=>set(!on);
  new IntersectionObserver(e=>{vis=e[0].isIntersecting;vis?go():stop()}).observe(hero);
  document.addEventListener('visibilitychange',()=>document.hidden?stop():go());

@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-25T19:43:04.975Z",
+  "updated": "2026-11-26T19:39:37.936Z",
   "platforms": {
     "instagram": {
       "followers": 24000,
@@ -7,23 +7,23 @@
       "updated": "2026-11-25T19:40:00.000Z"
     },
     "facebook": {
-      "followers": 9159,
-      "updated": "2026-11-25T19:43:04.975Z"
+      "followers": 9161,
+      "updated": "2026-11-26T19:39:37.936Z"
     },
     "youtube": {
-      "subscribers": 5780,
-      "views": 83228,
-      "updated": "2026-11-25T19:43:04.975Z"
+      "subscribers": 5770,
+      "views": 83239,
+      "updated": "2026-11-26T19:39:37.936Z"
     },
     "tiktok": {
-      "followers": 3938,
+      "followers": 3899,
       "likes": 23700,
-      "updated": "2026-11-25T19:43:04.975Z"
+      "updated": "2026-11-26T19:39:37.936Z"
     },
     "apple": {
       "rating": 4.9,
       "ratings": 16,
-      "updated": "2026-11-25T19:43:04.975Z"
+      "updated": "2026-11-26T19:39:37.936Z"
     },
     "spotify": {
       "rating": 5,
@@ -31,5 +31,5 @@
       "updated": "2026-11-25T19:40:00.000Z"
     }
   },
-  "totalFollowers": 42877
+  "totalFollowers": 42830
 }

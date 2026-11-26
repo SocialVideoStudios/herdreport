@@ -317,8 +317,8 @@ body.cart-open .scrim{opacity:1;pointer-events:auto}body.cart-open .drawer{trans
 .ep .links{flex-wrap:wrap}
 .ep .links .lis{width:auto;height:auto;border-radius:999px;padding:0 16px;font-size:14px;min-height:44px;flex:1 1 90px;display:inline-flex;justify-content:center;gap:8px}
 .ep .links .lis svg{width:16px;height:16px;flex:none}
-.ep .links a.watch{background:var(--ink);color:var(--bg)}.ep .links a.watch:hover{background:var(--red);border-color:var(--red);color:var(--cream)}
-.ep.feature .links a.watch{background:var(--cream);color:#85272C}
+.ep .links .watch{background:var(--ink);color:var(--bg)}.ep .links .watch:hover{background:var(--red);border-color:var(--red);color:var(--cream)}
+.ep.feature .links .watch{background:var(--cream);color:#85272C}
 .ep h3 em{display:block;font-style:normal;color:var(--red2)}
 .ep p{margin:0;color:var(--soft);font-size:15px}
 .ep .links{margin-top:auto;display:flex;gap:8px;padding-top:6px}
@@ -476,15 +476,7 @@ html,body{overflow-x:clip}.v2-after{position:relative;z-index:1;background:var(-
 @media (prefers-reduced-motion:reduce){.snow,.snowbtn{display:none}}
 button.btn{-webkit-appearance:none;appearance:none;background:transparent;color:inherit}
 
-/* Listen chooser */
-.lpop{position:fixed;z-index:120;background:#F3EFE7;color:#0B0B0D;border:2px solid #0B0B0D;border-radius:18px;padding:10px;box-shadow:0 14px 40px rgb(0 0 0/.28);width:240px;display:grid;gap:8px}
-.lpop[hidden]{display:none}
-.lpop p{margin:2px 4px 2px;font:700 12px Archivo,sans-serif;text-transform:uppercase;color:#5a5450}
-.lpop a{display:flex;align-items:center;gap:10px;min-height:46px;padding:0 14px;border-radius:12px;border:2px solid #0B0B0D;font:700 14px Archivo,sans-serif;text-transform:uppercase;text-decoration:none;color:inherit}
-.lpop a:hover{background:#0B0B0D;color:#F3EFE7}
-.lpop svg{width:20px;height:20px;fill:currentColor;flex:none}
-.ep .links button.lis{font-family:Archivo,sans-serif;font-weight:700;text-transform:uppercase;cursor:pointer;background:none;color:inherit;-webkit-appearance:none;appearance:none}
-@media(max-width:600px){.lpop{left:12px!important;right:12px;bottom:12px;top:auto!important;width:auto;padding:14px;border-radius:22px}.lpop a{min-height:54px;font-size:16px}}
+.ep .links button.lis{font-family:Archivo,sans-serif;font-weight:700;text-transform:uppercase;cursor:pointer;-webkit-appearance:none;appearance:none}
 
 /* video pop-up */
 .vpop{position:fixed;inset:0;z-index:300;background:rgb(11 11 13/.88);display:none;place-items:center;padding:20px}
@@ -493,7 +485,7 @@ button.btn{-webkit-appearance:none;appearance:none;background:transparent;color:
 .vframe{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgb(0 0 0/.5)}
 .vframe iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .vx{position:absolute;top:-52px;right:0;width:44px;height:44px;border-radius:50%;border:2px solid #F3EFE7;background:none;color:#F3EFE7;font:700 24px/1 Archivo,sans-serif;cursor:pointer}
-.vyt{color:#F3EFE7;font:600 14px "IBM Plex Sans",sans-serif;opacity:.85}
+.vbox:has(.audio){width:min(660px,100%)}.vframe.audio{aspect-ratio:auto;height:175px;max-width:660px;background:#fff;border-radius:14px}
 @media(max-width:600px){.vpop{padding:12px}.vframe{border-radius:10px}}
 </style>
 <script src="js/config.js"></script>
@@ -719,8 +711,8 @@ document.getElementById('eps').innerHTML=eps.map((e,i)=>`
   <h3><a href="${SITE+e.u}/">${esc(e.a)}<em>${esc(e.b)}</em></a></h3>
   <p>${esc(e.s)}</p>
   <div class="links">
-   <a class="btn lis watch" href="${YT}" target="_blank" rel="noopener">Watch</a>
-   <button class="btn lis" type="button" data-listen aria-haspopup="true" aria-expanded="false">Listen</button>
+   ${e.yt?`<button class="btn lis watch" type="button" data-watch="${esc(e.yt)}" aria-haspopup="dialog">Watch</button>`:''}
+   <button class="btn lis" type="button" data-listen="${esc(e.ap||'')}" aria-haspopup="dialog">Listen</button>
    <a href="${APE+e.ap}" aria-label="${esc(e.a)} on Apple Podcasts"><svg><use href="#i-ap"/></svg></a>
    <a href="${SP}" aria-label="Herd Report on Spotify"><svg><use href="#i-sp"/></svg></a>
   </div>
@@ -806,17 +798,22 @@ window.addEventListener('hashchange',route);route();
 document.querySelectorAll('.vid').forEach(a=>{const im=a.querySelector('img.yt');const ok=()=>{if(im.naturalWidth>0)a.classList.add('ok')};
  if(im.complete)ok();im.addEventListener('load',ok);
  a.addEventListener('click',e=>{if(location.protocol==='file:')return;e.preventDefault();openVideo(a.dataset.yt,a)});});
-/* YouTube player pop-up */
-function openVideo(id,from){let m=document.getElementById('vpop');
+document.addEventListener('click',e=>{const w=e.target.closest('[data-watch]'),l=e.target.closest('[data-listen]');
+ if(w){e.preventDefault();openPlayer('yt',w.dataset.watch,w)}else if(l&&l.dataset.listen){e.preventDefault();openPlayer('ap',l.dataset.listen,l)}});
+/* YouTube / podcast player pop-up */
+function openVideo(id,from){return openPlayer('yt',id,from)}
+function openPlayer(kind,id,from){let m=document.getElementById('vpop');
  if(!m){m=document.createElement('div');m.id='vpop';m.className='vpop';m.setAttribute('role','dialog');m.setAttribute('aria-modal','true');m.setAttribute('aria-label','Herd Report video');
-  m.innerHTML='<div class="vbox"><button class="vx" type="button" aria-label="Close video">×</button><div class="vframe"></div><a class="vyt" target="_blank" rel="noopener">Watch on YouTube ↗</a></div>';
+  m.innerHTML='<div class="vbox"><button class="vx" type="button" aria-label="Close">×</button><div class="vframe"></div></div>';
   document.body.appendChild(m);
   const close=()=>{m.classList.remove('open');m.querySelector('.vframe').innerHTML='';document.documentElement.style.overflow='';m._from&&m._from.focus({preventScroll:true})};
   m.querySelector('.vx').onclick=close;m.addEventListener('click',e=>{if(e.target===m)close()});
   addEventListener('keydown',e=>{if(e.key==='Escape'&&m.classList.contains('open'))close()});}
  m._from=from;
- m.querySelector('.vframe').innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+encodeURIComponent(id)+'?autoplay=1&rel=0&playsinline=1" title="Herd Report video" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
- m.querySelector('.vyt').href='https://www.youtube.com/watch?v='+encodeURIComponent(id);
+ const fr=m.querySelector('.vframe');fr.classList.toggle('audio',kind==='ap');
+ fr.innerHTML=kind==='ap'
+  ?'<iframe src="https://embed.podcasts.apple.com/us/podcast/herd-report/id1835474334?i='+encodeURIComponent(id)+'&theme=light" title="Herd Report episode" allow="autoplay *; encrypted-media *; clipboard-write" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"></iframe>'
+  :'<iframe src="https://www.youtube-nocookie.com/embed/'+encodeURIComponent(id)+'?autoplay=1&rel=0&playsinline=1" title="Herd Report video" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
  m.classList.add('open');document.documentElement.style.overflow='hidden';m.querySelector('.vx').focus({preventScroll:true});}
 {const rail=document.getElementById('eps'),pv=document.getElementById('prevEp'),nx=document.getElementById('nextEp');
  const step=()=>{const c=rail.querySelector('.ep');return c?c.getBoundingClientRect().width+20:300};
@@ -939,25 +936,6 @@ addEventListener('DOMContentLoaded',()=>{
  new IntersectionObserver(e=>{vis=e[0].isIntersecting;vis?go():stop()}).observe(hero);
  document.addEventListener('visibilitychange',()=>document.hidden?stop():go());
  new ResizeObserver(size).observe(hero);size();set(on);
-})();
-</script>
-<script>
-/* Listen -> choose Apple Podcasts or Spotify */
-(()=>{const AP="https://podcasts.apple.com/us/podcast/id1835474334?mt=2&ls=1",SP="https://open.spotify.com/show/37IlQvHObaNPHxXoUcjEyz";
- const pop=document.createElement('div');pop.className='lpop';pop.hidden=true;pop.setAttribute('role','menu');
- pop.innerHTML=`<p>Listen on</p><a role="menuitem" href="${AP}" target="_blank" rel="noopener"><svg><use href="#i-ap"/></svg>Apple Podcasts</a><a role="menuitem" href="${SP}" target="_blank" rel="noopener"><svg><use href="#i-sp"/></svg>Spotify</a>`;
- document.body.appendChild(pop);let from=null;
- const close=()=>{if(pop.hidden)return;pop.hidden=true;if(from){from.setAttribute('aria-expanded','false');from=null}};
- const open=b=>{from=b;b.setAttribute('aria-expanded','true');pop.hidden=false;
-  if(innerWidth>600){const r=b.getBoundingClientRect(),h=pop.offsetHeight,w=pop.offsetWidth;
-   let top=r.top-h-8;if(top<70)top=r.bottom+8;let left=Math.min(Math.max(8,r.left),innerWidth-w-8);pop.style.top=top+'px';pop.style.left=left+'px'}
-  pop.querySelector('a').focus({preventScroll:true})};
- document.addEventListener('click',e=>{const b=e.target.closest('[data-listen]');
-  if(b){e.preventDefault();from===b?close():(close(),open(b));return}
-  if(!e.target.closest('.lpop'))close();else if(e.target.closest('a'))setTimeout(close,0)});
- addEventListener('keydown',e=>{if(e.key==='Escape')close()});
- addEventListener('scroll',close,{passive:true});addEventListener('resize',close);
- document.getElementById('eps')?.addEventListener('scroll',close,{passive:true});
 })();
 </script>
 </body>

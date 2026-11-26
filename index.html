@@ -452,6 +452,7 @@ html,body{overflow-x:clip}.v2-after{position:relative;z-index:1;background:var(-
 #eps .ep .thumb img,#eps .ep img{transition:transform 1.4s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--d,0s) + .1s)}
 #eps .ep[data-rv]:not(.in) img{transform:scale(1.15)}
 @media(max-width:760px){
+ .closing .signoff{transform:scale(.82);opacity:.2;transition:transform .9s cubic-bezier(.2,.7,.2,1),opacity .9s ease}.closing .signoff.in{transform:none;opacity:1}
  .hero .bg{background-image:url(img/hero-sm.jpg);background-position:62% 85%}
  .v2bar,.aud.sell::before{display:none}
  .hero{position:relative;min-height:0}.hero::after{opacity:0}
@@ -695,8 +696,8 @@ document.getElementById('eps').innerHTML=eps.map((e,i)=>`
   <h3><a href="${SITE+e.u}/">${esc(e.a)}<em>${esc(e.b)}</em></a></h3>
   <p>${esc(e.s)}</p>
   <div class="links">
-   ${e.yt?`<a class="btn lis watch" href="https://www.youtube.com/watch?v=${esc(e.yt)}"><svg><use href="#i-yt"/></svg>Watch</a>`:''}
-   <a class="btn lis" href="${SITE+e.u}/"><svg><use href="#i-play"/></svg>Listen</a>
+   ${e.yt?`<a class="btn lis watch" href="https://www.youtube.com/watch?v=${esc(e.yt)}">Watch</a>`:''}
+   <a class="btn lis" href="${SITE+e.u}/">Listen</a>
    <a href="${APE+e.ap}" aria-label="${esc(e.a)} on Apple Podcasts"><svg><use href="#i-ap"/></svg></a>
    <a href="${SP}" aria-label="Herd Report on Spotify"><svg><use href="#i-sp"/></svg></a>
   </div>
@@ -862,6 +863,8 @@ addEventListener('DOMContentLoaded',()=>{
  new MutationObserver(()=>{document.querySelectorAll('.rc-row:not([data-rv])').forEach((el,i)=>{el.dataset.rv='right';el.style.setProperty('--d',(0.15+i*.09)+'s')});document.querySelectorAll('#eps .ep:not([data-rv])').forEach((el,i)=>{el.dataset.rv='';el.style.setProperty('--d',(i%3)*.12+'s')});watch()}).observe(document.body,{childList:true,subtree:true});
  document.querySelectorAll('#eps .ep').forEach((el,i)=>{el.dataset.rv='';el.style.setProperty('--d',(i%3)*.12+'s')});
  document.querySelectorAll('.rc-row').forEach((el,i)=>{el.dataset.rv='right';el.style.setProperty('--d',(0.15+i*.09)+'s')});
+ // phones: sign-off grows in once
+ {const so=document.querySelector('.signoff');if(so){if(reduce)so.classList.add('in');else{const o=new IntersectionObserver(es=>{if(es[0].isIntersecting){so.classList.add('in');o.disconnect()}},{threshold:.35});o.observe(so)}}}
  // count up the proof numbers once
  const cu=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;cu.unobserve(e.target);const el=e.target,txt=el.textContent,m=txt.match(/[\d.]+/);if(!m||reduce||innerWidth<=760)return;
   const end=parseFloat(m[0]),dec=(m[0].split('.')[1]||'').length,t0=performance.now(),dur=1400;
@@ -875,7 +878,7 @@ addEventListener('DOMContentLoaded',()=>{
    const eh=document.querySelector('#episodes .sh h2');if(eh){const r=eh.getBoundingClientRect();document.getElementById('episodes').style.setProperty('--eh',clamp((vh-r.top)/(vh*.55)).toFixed(3))}
    const ad=document.getElementById('advertise');if(ad){const r=ad.getBoundingClientRect();ad.style.setProperty('--ap',clamp((vh-r.top)/(vh*.75)).toFixed(3));ad.style.setProperty('--af',clamp(-r.top/Math.max(1,r.height)).toFixed(3))}
    const hp=document.querySelector('.host .portrait');if(hp){const r=hp.getBoundingClientRect();hp.style.setProperty('--hp',clamp((vh-r.top)/(vh+r.height)).toFixed(3))}
-   const so=document.querySelector('.signoff');if(so){const r=so.getBoundingClientRect();const end=scrollY+vh>=document.documentElement.scrollHeight-4;so.style.setProperty('--cp',end?'1':clamp((vh-r.top)/Math.max(1,r.height*.9)).toFixed(3))}}
+   const so=document.querySelector('.signoff');if(so&&innerWidth>760){const r=so.getBoundingClientRect();const end=scrollY+vh>=document.documentElement.scrollHeight-4;so.style.setProperty('--cp',end?'1':clamp((vh-r.top)/Math.max(1,r.height*.9)).toFixed(3))}}
  }
  let tick=false;addEventListener('scroll',()=>{if(!tick){tick=true;requestAnimationFrame(()=>{frame();tick=false})}},{passive:true});
  addEventListener('resize',frame);frame();

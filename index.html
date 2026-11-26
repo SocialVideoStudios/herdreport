@@ -49,9 +49,9 @@ h1,h2,h3,.disp{font-family:Archivo,Impact,sans-serif;font-weight:900;line-height
 header{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:2px solid var(--line)}
 header .wrap{display:flex;align-items:center;gap:16px;padding:10px max(5vw,16px)}
 .acct{display:flex;align-items:center;gap:8px}.acct[hidden]{display:none}
-.acct a,.acct .so{font:700 13px Archivo,sans-serif;text-transform:uppercase;border:2px solid var(--line);border-radius:999px;height:40px;padding:0 14px;display:inline-flex;align-items:center;background:none;color:inherit;text-decoration:none;cursor:pointer;white-space:nowrap}
-.acct a{background:var(--red);border-color:var(--red);color:var(--cream)}
-.acct .so:hover{background:var(--ink);color:var(--bg)}
+.acct a,.acct .so{font:700 14px Archivo,sans-serif;text-transform:uppercase;border:0;background:none;color:inherit;padding:8px 4px;text-decoration:none;cursor:pointer;white-space:nowrap}
+.acct{gap:18px!important;margin-left:auto}.acct a{color:var(--red2)}.acct a:hover,.acct .so:hover{text-decoration:underline;text-underline-offset:4px}
+
 @media(max-width:600px){.acct{display:none}}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none;margin-right:auto}
 .logo img{height:40px;width:auto;flex:none}
@@ -64,12 +64,12 @@ header .wrap{display:flex;align-items:center;gap:16px;padding:10px max(5vw,16px)
 .socials a{display:grid;place-items:center;width:44px;height:44px;border-radius:50%}
 .socials a:hover{background:color-mix(in srgb,var(--red) 14%,transparent)}
 .socials svg{width:20px;height:20px;fill:currentColor}
-.menubtn{font:700 15px Archivo,sans-serif;text-transform:uppercase;background:var(--ink);color:var(--bg);border:0;border-radius:999px;padding:0 20px;height:44px;cursor:pointer}
+.menubtn{font:700 15px Archivo,sans-serif;text-transform:uppercase;background:none;color:inherit;border:0;border-radius:0;padding:0 4px;height:44px;cursor:pointer}
 .menubtn{display:inline-flex;align-items:center;gap:10px}
 .menubtn .bars{position:relative;width:16px;height:12px}
 .menubtn .bars i{position:absolute;left:0;width:16px;height:2px;border-radius:2px;background:currentColor;transition:transform .25s,opacity .2s,top .25s}
 .menubtn .bars i:nth-child(1){top:0}.menubtn .bars i:nth-child(2){top:5px}.menubtn .bars i:nth-child(3){top:10px}
-.menubtn[aria-expanded=true]{background:var(--red)}
+.menubtn[aria-expanded=true]{color:var(--red2)}
 .menubtn[aria-expanded=true] .bars i:nth-child(1){top:5px;transform:rotate(45deg)}
 .menubtn[aria-expanded=true] .bars i:nth-child(2){opacity:0}
 .menubtn[aria-expanded=true] .bars i:nth-child(3){top:5px;transform:rotate(-45deg)}
@@ -502,14 +502,6 @@ button.btn{-webkit-appearance:none;appearance:none;background:transparent;color:
    <img class="lt" src="mark.png" alt="">
    <b>Herd Report</b>
   </a>
-  <div class="socials">
-   <a href="https://www.youtube.com/@herdreportpodcast" aria-label="YouTube"><svg><use href="#i-yt"/></svg></a>
-   <a href="https://open.spotify.com/show/37IlQvHObaNPHxXoUcjEyz" aria-label="Spotify"><svg><use href="#i-sp"/></svg></a>
-   <a href="https://podcasts.apple.com/us/podcast/id1835474334?mt=2&amp;ls=1" aria-label="Apple Podcasts"><svg><use href="#i-ap"/></svg></a>
-   <a href="https://www.facebook.com/theherdreport" aria-label="Facebook"><svg><use href="#i-fb"/></svg></a>
-   <a href="https://www.instagram.com/herdreport/" aria-label="Instagram"><svg><use href="#i-ig"/></svg></a>
-   <a href="https://www.tiktok.com/@herd.report" aria-label="TikTok"><svg><use href="#i-tt"/></svg></a>
-  </div>
   <span class="acct" id="acct" hidden><a href="account.html" id="acctLink">My dashboard</a><button type="button" class="so" id="signout">Sign out</button></span>
   <button class="cartbtn" id="cartbtn" aria-label="Open cart"><svg viewBox="0 0 24 24"><path d="M3 4h2l2.4 11h11L21 8H6.2"/><circle cx="9" cy="19.5" r="1.5"/><circle cx="17" cy="19.5" r="1.5"/></svg><b id="count"></b></button>
   <button class="menubtn" id="menubtn" aria-expanded="false" aria-controls="menu"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><span id="menulbl">Menu</span></button>
@@ -671,6 +663,8 @@ button.btn{-webkit-appearance:none;appearance:none;background:transparent;color:
   </nav>
   <div class="socials" style="display:flex">
    <a href="https://www.youtube.com/@herdreportpodcast" aria-label="YouTube"><svg><use href="#i-yt"/></svg></a>
+   <a href="https://open.spotify.com/show/37IlQvHObaNPHxXoUcjEyz" aria-label="Spotify"><svg><use href="#i-sp"/></svg></a>
+   <a href="https://podcasts.apple.com/us/podcast/id1835474334?mt=2&amp;ls=1" aria-label="Apple Podcasts"><svg><use href="#i-ap"/></svg></a>
    <a href="https://www.facebook.com/theherdreport" aria-label="Facebook"><svg><use href="#i-fb"/></svg></a>
    <a href="https://www.instagram.com/herdreport/" aria-label="Instagram"><svg><use href="#i-ig"/></svg></a>
    <a href="https://www.tiktok.com/@herd.report" aria-label="TikTok"><svg><use href="#i-tt"/></svg></a>

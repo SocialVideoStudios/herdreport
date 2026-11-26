@@ -168,13 +168,13 @@ function chrome(active){
  <header class="top"><div class="wrap">
   <a class="logo" href="index.html" aria-label="Herd Report home"><img class="lt" src="mark.png" alt=""><b>Herd Report</b></a>
   <nav class="nav" aria-label="Main"><a href="index.html#episodes">Episodes</a><a href="index.html#store">Shop</a><a href="advertise.html" class="${active==='advertise'?'on':''}">Advertise</a><a href="guest.html" class="${active==='guest'?'on':''}">Be a guest</a></nav>
-  <span style="display:flex;gap:8px;align-items:center"><a class="btn sm ${active==='account'?'solid':''}" href="account.html" id="acctbtn">Client login</a><button class="btn sm" id="soBtn" hidden>Sign out</button></span>
+  <span class="hacct"><a class="hlink ${active==='account'?'on':''}" href="account.html" id="acctbtn">Client login</a><button class="hlink" id="soBtn" type="button" hidden>Sign out</button></span>
  </div></header>`;
  if(f)f.innerHTML=`<footer class="foot"><div class="wrap">
   <nav aria-label="Footer"><a href="index.html">Home</a><a href="index.html#episodes">Episodes</a><a href="advertise.html">Advertise</a><a href="guest.html">Be a guest</a><a href="account.html">Client login</a><a href="#review" data-pop="review">Leave a review</a><a href="blog.html">Blog</a><a href="guests.html">Past guests</a><a href="contact.html">Contact</a><a href="admin.html">Admin login</a></nav>
   <small>© ${new Date().getFullYear()} Herd Report Podcast</small></div></footer>`;
  API.current().then(u=>{const b=document.getElementById('acctbtn');if(!b||!u)return;
-  if(u.role!=='admin')b.textContent='My dashboard';
+  if(u.role==='admin'){b.textContent='Admin';b.href='admin.html'}else b.textContent='My dashboard';
   const so=document.getElementById('soBtn');if(so){so.hidden=false;so.onclick=async()=>{await API.signOut();location.href='index.html'}}}).catch(()=>{});
 }
 
